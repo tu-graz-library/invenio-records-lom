@@ -9,13 +9,13 @@
 =========
 
 .. image:: https://img.shields.io/github/license/tug_lom/tug_lom.svg
-        :target: https://github.com/tug_lom/tug_lom/blob/master/LICENSE
+        :target: https://github.com/tu-graz-library/invenio-records-lom/blob/master/LICENSE
 
 .. image:: https://img.shields.io/travis/tug_lom/tug_lom.svg
         :target: https://travis-ci.org/tug_lom/tug_lom
 
 .. image:: https://img.shields.io/coveralls/tug_lom/tug_lom.svg
-        :target: https://coveralls.io/r/tug_lom/tug_lom
+        :target: https://coveralls.io/r/tu-graz-library/invenio-records-lom
 
 .. image:: https://img.shields.io/pypi/v/tug_lom.svg
         :target: https://pypi.org/pypi/tug_lom
@@ -24,4 +24,3 @@ Invenio data model.
 
 Further documentation is available on
 https://tug_lom.readthedocs.io/
-

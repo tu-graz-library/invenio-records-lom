@@ -7,6 +7,7 @@
 Authors
 =======
 
-Invenio data model.
+Invenio data model for lom records.
 
 - Nikita Lvov
+- Graz University of Technology
