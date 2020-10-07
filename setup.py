@@ -8,10 +8,9 @@
 """invenio data model for Learning object metadata"""
 
 import os
-
 from setuptools import find_packages, setup
-
 readme = open('README.rst').read()
+history = open('CHANGES.rst').read()
 
 tests_require = [
     'check-manifest>=0.25',
@@ -35,11 +34,8 @@ extras_require = {
         'Sphinx>=1.5.1',
     ],
     # Elasticsearch version
-    'elasticsearch5': [
-        'invenio-search[elasticsearch5]>={}'.format(invenio_search_version),
-    ],
-    'elasticsearch6': [
-        'invenio-search[elasticsearch6]>={}'.format(invenio_search_version),
+    'elasticsearch7': [
+        'invenio-search[elasticsearch7]>={}'.format(invenio_search_version),
     ],
     # Databases
     'mysql': [
@@ -53,8 +49,7 @@ extras_require = {
 
 extras_require['all'] = []
 for name, reqs in extras_require.items():
-    if name[0] == ':' or name in ('elasticsearch5', 'elasticsearch6', 'mysql',
-                                  'postgresql'):
+    if name[0] == ':' or name in ('elasticsearch7', 'mysql', 'postgresql'):
         continue
     extras_require['all'].extend(reqs)
 
@@ -64,9 +59,28 @@ setup_requires = [
 ]
 
 install_requires = [
-    'Flask-BabelEx>=0.9.3',
-    'invenio-records-rest>=1.1.0,<1.3.0',
-    'arrow>=0.12.1',
+    'arrow>=0.13.0',
+    'CairoSVG>=1.0.20',
+    'edtf>=4.0.1',
+    'Faker>=2.0.3',
+    'Flask-BabelEx>=0.9.4',
+    'idutils>=1.1.7',
+    'invenio-assets>=1.2.2',
+    'invenio-communities>=2.0.4',
+    'invenio-drafts-resources>=0.1.3',
+    'invenio-formatter[badges]>=1.1.0a1',
+    'invenio-jsonschemas>=1.1.0',
+    'invenio-pidstore>=1.2.1',
+    'invenio-records-rest>=1.7.1',
+    'invenio-records>=1.3.2',
+    'invenio-records-files>=1.2.1',
+    'invenio-records-permissions>=0.9.0',
+    'invenio-records-resources>=0.3.2',
+    'invenio-records-ui>=1.2.0a1',
+    'invenio-previewer>=1.2.1',
+    'marshmallow>=3.3.0'
+    'pycountry>=18.12.8',
+    'six>=1.12.0'  # Needed to pass CI tests
 ]
 
 packages = find_packages()
@@ -74,39 +88,43 @@ packages = find_packages()
 
 # Get the version string. Cannot be done with import!
 g = {}
-with open(os.path.join('invenio_records_lom', 'version.py'), 'rt') as fp:
+with open(os.path.join('invenio_dm_tugraz', 'version.py'), 'rt') as fp:
     exec(fp.read(), g)
     version = g['__version__']
 
 setup(
-    name='invenio-records-lom',
+    name='invenio-dm-tugraz',
     version=version,
     description=__doc__,
     long_description=readme,
-    keywords='invenio-records-lom Invenio',
+    keywords='invenio-dm-tugraz Invenio',
     license='MIT',
-    author='Graz University of Technology',
-    author_email='info@tugraz.at',
-    url='https://github.com/tu-graz-library/invenio-records-lom',
+    author='CERN',
+    author_email='info@inveniosoftware.org',
+    url='https://github.com/invenio-dm-tugraz/invenio-dm-tugraz',
     packages=packages,
     zip_safe=False,
     include_package_data=True,
     platforms='any',
     entry_points={
         'invenio_base.apps': [
-            'invenio_records_lom = invenio_records_lom:invenio_records_lom',
+            'invenio_dm_tugraz = invenio_dm_tugraz:inveniodmtugraz',
         ],
         'invenio_base.api_apps': [
-            'invenio_records_lom = invenio_records_lom:invenio_records_lom',
+            'invenio_dm_tugraz = invenio_dm_tugraz:inveniodmtugraz',
         ],
+        # 'invenio_base.api_blueprints': [
+        #     'dm_api = invenio_app_rdm.theme.views:dm_record_bp',
+        # ],
         'invenio_base.blueprints': [
-            'invenio_records_lom = invenio_records_lom.views:blueprint',
+            'invenio_dm_tugraz = invenio_dm_tugraz.views:blueprint',
         ],
         'invenio_jsonschemas.schemas': [
-            'invenio_records_lom = invenio_records_lom.jsonschemas'
+            'invenio_dm_tugraz = invenio_dm_tugraz.jsonschemas'
         ],
         'invenio_search.mappings': [
-            'records = invenio_records_lom.mappings'
+            'dmrec = invenio_dm_tugraz.mappings',
+            # 'dmdrafts = invenio_rdm_records.mappings.drafts',
         ],
     },
     extras_require=extras_require,

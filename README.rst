@@ -24,4 +24,3 @@ invenio data model for Learning object metadata
 
 Further documentation is available on
 https://invenio-records-lom.readthedocs.io/
-

@@ -7,6 +7,7 @@
 Authors
 =======
 
-invenio data model for Learning object metadata
+Invenio data model for lom records. 
 
+- Nikita Lvov
 - Graz University of Technology
