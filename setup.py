@@ -13,7 +13,7 @@ readme = open('README.rst').read()
 history = open('CHANGES.rst').read()
 
 tests_require = [
-    'pytest-invenio>=1.0.1',
+    'pytest-invenio>=1.4.0',
     'invenio-app>=1.0.1',
     'redis>=2.10.6'
 ]
