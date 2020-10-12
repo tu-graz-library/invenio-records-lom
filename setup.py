@@ -88,42 +88,42 @@ packages = find_packages()
 
 # Get the version string. Cannot be done with import!
 g = {}
-with open(os.path.join('invenio_dm_tugraz', 'version.py'), 'rt') as fp:
+with open(os.path.join('invenio_records_lom', 'version.py'), 'rt') as fp:
     exec(fp.read(), g)
     version = g['__version__']
 
 setup(
-    name='invenio-dm-tugraz',
+    name='invenio_records_lom',
     version=version,
     description=__doc__,
     long_description=readme,
-    keywords='invenio-dm-tugraz Invenio',
+    keywords='invenio_records_lom Invenio',
     license='MIT',
-    author='CERN',
-    author_email='info@inveniosoftware.org',
-    url='https://github.com/invenio-dm-tugraz/invenio-dm-tugraz',
+    author='Graz University of Technology',
+    author_email='info@tugraz.at',
+    url='https://github.com/tu-graz-library/invenio-records-lom/',
     packages=packages,
     zip_safe=False,
     include_package_data=True,
     platforms='any',
     entry_points={
         'invenio_base.apps': [
-            'invenio_dm_tugraz = invenio_dm_tugraz:inveniodmtugraz',
+            'invenio_records_lom = invenio_records_lom:invenio_records_lom',
         ],
         'invenio_base.api_apps': [
-            'invenio_dm_tugraz = invenio_dm_tugraz:inveniodmtugraz',
+            'invenio_records_lom = invenio_records_lom:invenio_records_lom',
         ],
-        # 'invenio_base.api_blueprints': [
+        # 'invenio_base.api_blueprints':
         #     'dm_api = invenio_app_rdm.theme.views:dm_record_bp',
         # ],
         'invenio_base.blueprints': [
-            'invenio_dm_tugraz = invenio_dm_tugraz.views:blueprint',
+            'invenio_records_lom = invenio_records_lom.views:blueprint',
         ],
         'invenio_jsonschemas.schemas': [
-            'invenio_dm_tugraz = invenio_dm_tugraz.jsonschemas'
+            'invenio_records_lom = invenio_records_lom.jsonschemas'
         ],
         'invenio_search.mappings': [
-            'dmrec = invenio_dm_tugraz.mappings',
+            'dmrec = invenio_records_lom.mappings',
             # 'dmdrafts = invenio_rdm_records.mappings.drafts',
         ],
     },
