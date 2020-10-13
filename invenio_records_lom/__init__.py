@@ -6,7 +6,7 @@
 # under the terms of the MIT License; see LICENSE file for more details.
 
 
-"""invenio data model for Learning object metadata"""
+"""invenio data model for Learning object metadata."""
 
 from __future__ import absolute_import, print_function
 

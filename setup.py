@@ -8,14 +8,18 @@
 """invenio data model for Learning object metadata"""
 
 import os
+
 from setuptools import find_packages, setup
+
 readme = open('README.rst').read()
 history = open('CHANGES.rst').read()
 
 tests_require = [
     'pytest-invenio>=1.4.0',
     'invenio-app>=1.0.1',
-    'redis>=2.10.6'
+    'redis>=2.10.6',
+    'elasticsearch>=7.0.0',
+    'elasticsearch_dsl>=7.2.1',
 ]
 
 invenio_search_version = '1.0.0'
@@ -61,17 +65,15 @@ install_requires = [
     'invenio-communities>=2.0.4',
     'invenio-drafts-resources>=0.1.3',
     'invenio-formatter[badges]>=1.1.0a1',
-    'invenio-jsonschemas>=1.1.0',
     'invenio-pidstore>=1.2.1',
     'invenio-records-rest>=1.7.1',
-    'invenio-records>=1.3.2',
     'invenio-records-files>=1.2.1',
-    'invenio-records-permissions>=0.9.0',
     'invenio-records-resources>=0.3.2',
-    'invenio-records-ui>=1.2.0a1',
+    'nbconvert[execute]>=4.1.0,<6.0.0',
     'invenio-previewer>=1.2.1',
     'marshmallow>=3.3.0'
     'pycountry>=18.12.8',
+    'invenio_search>=1.3.1',
     'six>=1.12.0'  # Needed to pass CI tests
 ]
 
@@ -105,9 +107,6 @@ setup(
         'invenio_base.api_apps': [
             'invenio_records_lom = invenio_records_lom:invenio_records_lom',
         ],
-        # 'invenio_base.api_blueprints':
-        #     'dm_api = invenio_app_rdm.theme.views:dm_record_bp',
-        # ],
         'invenio_base.blueprints': [
             'invenio_records_lom = invenio_records_lom.views:blueprint',
         ],
@@ -115,8 +114,7 @@ setup(
             'invenio_records_lom = invenio_records_lom.jsonschemas'
         ],
         'invenio_search.mappings': [
-            'dmrec = invenio_records_lom.mappings',
-            # 'dmdrafts = invenio_rdm_records.mappings.drafts',
+            'lomrec = invenio_records_lom.mappings',
         ],
     },
     extras_require=extras_require,
@@ -131,10 +129,10 @@ setup(
         'Programming Language :: Python',
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
         'Topic :: Software Development :: Libraries :: Python Modules',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.5',
-        'Development Status :: 3 - Planning',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Development Status :: 3 - Alpha',
     ],
 )
