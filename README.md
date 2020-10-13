@@ -1,1 +1,0 @@
-# invenio-records-lom

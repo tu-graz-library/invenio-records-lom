@@ -1,0 +1,50 @@
+# -*- coding: utf-8 -*-
+#
+# Copyright (C) 2020 Graz University of Technology.
+#
+# invenio-records-lom is free software; you can redistribute it and/or modify it
+# under the terms of the MIT License; see LICENSE file for more details.
+
+# TODO: Generate this manifest file by running the following commands:
+#
+#  git init
+#  git add -A
+#  pip install -e .[all]
+#  check-manifest -u
+
+# Check manifest will not automatically add these two files:
+include .dockerignore
+include .editorconfig
+include .tx/config
+prune docs/_build
+recursive-include invenio_records_lom *.po *.pot *.mo
+
+include *.rst
+include *.sh
+include *.txt
+include LICENSE
+include pytest.ini
+recursive-include docs *.bat
+recursive-include docs *.py
+recursive-include docs *.rst
+recursive-include docs *.txt
+recursive-include docs Makefile
+recursive-include invenio_records_lom *.html
+recursive-include invenio_records_lom *.json
+recursive-include tests *.py
+
+# added by check-manifest
+recursive-include tests *.py
+
+# added by check-manifest
+recursive-include invenio_records_lom *.json
+recursive-include invenio_records_lom *.py
+
+
+# added by check-manifest
+recursive-include invenio_records_lom *.json
+recursive-include invenio_records_lom *.py
+
+# added by check-manifest
+recursive-include invenio_records_lom *.json
+recursive-include invenio_records_lom *.py
