@@ -15,18 +15,22 @@ from invenio_records_rest.serializers.response import (
     search_responsify,
 )
 
-from ..marshmallow import RecordSchemaV1
+from ..marshmallow import LomSchemaV1
 
 # Serializers
 # ===========
 #: JSON serializer definition.
-json_v1 = JSONSerializer(RecordSchemaV1, replace_refs=True)
+
+json_v1 = JSONSerializer(LomSchemaV1, replace_refs=True)
 
 # Records-REST serializers
 # ========================
 #: JSON record serializer for individual records.
+
 json_v1_response = record_responsify(json_v1, 'application/json')
+
 #: JSON record serializer for search results.
+
 json_v1_search = search_responsify(json_v1, 'application/json')
 
 __all__ = (

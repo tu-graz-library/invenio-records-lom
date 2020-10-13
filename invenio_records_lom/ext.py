@@ -12,7 +12,7 @@ from __future__ import absolute_import, print_function
 from . import config
 
 
-class invenio_records_lom(object):
+class LomRecords(object):
     """invenio-records-lom extension."""
 
     def __init__(self, app=None):

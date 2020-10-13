@@ -10,7 +10,7 @@
 from flask import Flask
 from invenio_records_resources import InvenioRecordsResources
 
-from invenio_records_lom import invenio_records_lom
+from invenio_records_lom import LomRecords
 
 
 def test_version():

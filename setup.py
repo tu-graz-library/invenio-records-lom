@@ -71,7 +71,7 @@ install_requires = [
     'invenio-records-resources>=0.3.2',
     'nbconvert[execute]>=4.1.0,<6.0.0',
     'invenio-previewer>=1.2.1',
-    'marshmallow>=3.3.0'
+    'marshmallow-utils>=0.2.1,<0.3.0',
     'pycountry>=18.12.8',
     'invenio_search>=1.3.1',
     'six>=1.12.0'  # Needed to pass CI tests
@@ -105,7 +105,7 @@ setup(
             'invenio_records_lom = invenio_records_lom:invenio_records_lom',
         ],
         'invenio_base.api_apps': [
-            'invenio_records_lom = invenio_records_lom:invenio_records_lom',
+            'invenio_records_lom = invenio_records_lom:LomRecords',
         ],
         'invenio_base.blueprints': [
             'invenio_records_lom = invenio_records_lom.views:blueprint',
@@ -114,7 +114,7 @@ setup(
             'invenio_records_lom = invenio_records_lom.jsonschemas'
         ],
         'invenio_search.mappings': [
-            'lomrec = invenio_records_lom.mappings',
+            'invenio_records_lom = invenio_records_lom.mappings',
         ],
     },
     extras_require=extras_require,

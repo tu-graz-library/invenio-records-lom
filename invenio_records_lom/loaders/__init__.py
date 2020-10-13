@@ -21,10 +21,10 @@ from invenio_records_rest.loaders.marshmallow import (
     marshmallow_loader,
 )
 
-from ..marshmallow import MetadataSchemaV1
+from ..marshmallow import LomMetadataSchemaV1
 
 #: JSON loader using Marshmallow for data validation.
-json_v1 = marshmallow_loader(MetadataSchemaV1)
+json_v1 = marshmallow_loader(LomMetadataSchemaV1)
 
 __all__ = (
     'json_v1',
