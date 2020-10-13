@@ -16,64 +16,71 @@ history = open('CHANGES.rst').read()
 
 tests_require = [
     'pytest-invenio>=1.4.0',
-    'invenio-app>=1.0.1',
-    'redis>=2.10.6',
-    'elasticsearch>=7.0.0',
+    'invenio-app>=1.3.0,<2.0.0',
+    'invenio_search>=1.3.1',
     'elasticsearch_dsl>=7.2.1',
+    'SQLAlchemy-Continuum>=1.3.11',
+    'invenio-jsonschemas>=1.1.0',
 ]
 
-invenio_search_version = '1.0.0'
-invenio_db_version = '1.0.1'
+# Should follow inveniosoftware/invenio versions
+invenio_db_version = '>=1.0.4,<2.0.0'
+invenio_search_version = '>=1.4.0,<2.0.0'
 
 extras_require = {
     'docs': [
-        'Sphinx>=1.5.1',
+        'Sphinx>=3',
     ],
     # Elasticsearch version
+    'elasticsearch6': [
+        'invenio-search[elasticsearch6]{}'.format(invenio_search_version),
+    ],
     'elasticsearch7': [
-        'invenio-search[elasticsearch7]>={}'.format(invenio_search_version),
+        'invenio-search[elasticsearch7]{}'.format(invenio_search_version),
     ],
     # Databases
     'mysql': [
-        'invenio-db[mysql]>={}'.format(invenio_db_version),
+        'invenio-db[mysql,versioning]{}'.format(invenio_db_version),
     ],
     'postgresql': [
-        'invenio-db[postgresql]>={}'.format(invenio_db_version),
+        'invenio-db[postgresql,versioning]{}'.format(invenio_db_version),
+    ],
+    'sqlite': [
+        'invenio-db[versioning]{}'.format(invenio_db_version),
     ],
     'tests': tests_require,
 }
 
 extras_require['all'] = []
 for name, reqs in extras_require.items():
-    if name[0] == ':' or name in ('elasticsearch7', 'mysql', 'postgresql'):
+    if name[0] == ':' or name in ('elasticsearch6', 'elasticsearch7',
+                                  'mysql', 'postgresql', 'sqlite'):
         continue
     extras_require['all'].extend(reqs)
 
 setup_requires = [
     'Babel>=1.3',
-    'pytest-runner>=2.6.2',
+    'pytest-runner>=3.0.0,<5',
 ]
 
 install_requires = [
-    'arrow>=0.13.0',
     'CairoSVG>=1.0.20',
-    'edtf>=4.0.1',
     'Faker>=2.0.3',
-    'Flask-BabelEx>=0.9.4',
+    'ftfy>=4.4.3,<5.0.0',
     'idutils>=1.1.7',
-    'invenio-assets>=1.2.2',
-    'invenio-communities>=2.0.4',
-    'invenio-drafts-resources>=0.1.3',
-    'invenio-formatter[badges]>=1.1.0a1',
-    'invenio-pidstore>=1.2.1',
-    'invenio-records-rest>=1.7.1',
-    'invenio-records-files>=1.2.1',
-    'invenio-records-resources>=0.3.2',
-    'nbconvert[execute]>=4.1.0,<6.0.0',
-    'invenio-previewer>=1.2.1',
+    'invenio-assets>=1.2.2,<1.3.0',
+    'invenio-communities>=2.1.1,<3.0.0',
+    'invenio-drafts-resources>=0.4.3,<0.5.0',
+    'invenio-formatter[badges]>=1.1.0a1,<2.0.0',
+    "invenio-i18n>=1.2.0",
+    'invenio-records>=1.4.0a4,<2.0.0',
+    'invenio-records-files>=1.2.1,<2.0.0',
+    'invenio-records-ui>=1.2.0a1,<2.0.0',
+    'invenio-previewer>=1.2.1,<2.0.0',
     'marshmallow-utils>=0.2.1,<0.3.0',
-    'pycountry>=18.12.8',
-    'invenio_search>=1.3.1',
+    # until fix in invenio-previewer is released
+    'nbconvert[execute]>=4.1.0,<6.0.0',
+    # TODO: Get from invenio-base
     'six>=1.12.0'  # Needed to pass CI tests
 ]
 

@@ -7,26 +7,27 @@
 
 """Module tests."""
 
+from __future__ import absolute_import, print_function
+
 from flask import Flask
-from invenio_records_resources import InvenioRecordsResources
 
 from invenio_records_lom import LomRecords
 
 
 def test_version():
     """Test version import."""
-    from invenio_records_resources import __version__
+    from invenio_records_lom import __version__
     assert __version__
 
 
 def test_init():
     """Test extension initialization."""
-    app = Flask("testapp")
-    ext = InvenioRecordsResources(app)
-    assert "invenio-records-resources" in app.extensions
+    app = Flask('testapp')
+    ext = LomRecords(app)
+    assert 'invenio-records-lom' in app.extensions
 
-    app = Flask("testapp")
-    ext = InvenioRecordsResources()
-    assert "invenio-records-resources" not in app.extensions
+    app = Flask('testapp')
+    ext = LomRecords()
+    assert 'invenio-records-lom' not in app.extensions
     ext.init_app(app)
-    assert "invenio-records-resources" in app.extensions
+    assert 'invenio-records-lom' in app.extensions
