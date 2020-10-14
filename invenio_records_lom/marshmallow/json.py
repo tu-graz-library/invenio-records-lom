@@ -19,7 +19,7 @@ from marshmallow import fields, missing, validate
 
 
 class LomMetadataSchemaV1(StrictKeysMixin):
-    """Lom for the author metadata."""
+    """Lom metadata."""
 
     id = PersistentIdentifier()
     name = SanitizedUnicode(required=True)

@@ -15,10 +15,10 @@ from invenio_records.api import Record
 
 
 class LomRecord(Record):
-    """Author record class."""
+    """Lom record class."""
 
     @classmethod
     def create(cls, data, id_=None, **kwargs):
-        """Create Author record."""
+        """Create Lom record."""
         data["$schema"] = current_jsonschemas.path_to_url('lom/lom-v1.0.0.json')
         return super(LomRecord, cls).create(data, id_=id_, **kwargs)

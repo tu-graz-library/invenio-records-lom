@@ -21,6 +21,7 @@ tests_require = [
     'elasticsearch_dsl>=7.2.1',
     'SQLAlchemy-Continuum>=1.3.11',
     'invenio-jsonschemas>=1.1.0',
+    'SQLAlchemy-Utils<0.36,>=0.33.1',
 ]
 
 # Should follow inveniosoftware/invenio versions
@@ -121,7 +122,7 @@ setup(
             'invenio_records_lom = invenio_records_lom.jsonschemas'
         ],
         'invenio_search.mappings': [
-            'invenio_records_lom = invenio_records_lom.mappings',
+            'lomrecords = invenio_records_lom.mappings',
         ],
     },
     extras_require=extras_require,
