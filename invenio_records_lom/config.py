@@ -13,7 +13,7 @@ from invenio_indexer.api import RecordIndexer
 from invenio_records_rest.utils import allow_all, check_elasticsearch
 from invenio_search import RecordsSearch
 
-from .api import LomRecord
+from .api import LomRecords
 
 RECORDS_REST_ENDPOINTS = {
     'lomid': dict(
@@ -21,10 +21,10 @@ RECORDS_REST_ENDPOINTS = {
         pid_minter='lomid',
         pid_fetcher='lomid',
         default_endpoint_prefix=True,
-        record_class=LomRecord,
+        record_class=LomRecords,
         search_class=RecordsSearch,
         indexer_class=RecordIndexer,
-        search_index='lom',
+        search_index='lomrecords',
         search_type=None,
         record_serializers={
             'application/json': ('invenio_records_lom.serializers'
@@ -38,7 +38,7 @@ RECORDS_REST_ENDPOINTS = {
             'application/json': ('invenio_records_lom.loaders'
                                  ':json_v1'),
         },
-        list_route='/lom/',
+        list_route='/lom',
         item_route='/lom/<pid(lomid):pid_value>',
         default_media_type='application/json',
         max_result_window=10000,

@@ -11,27 +11,47 @@ See https://pytest-invenio.readthedocs.io/ for documentation on which test
 fixtures are available.
 """
 
+import os
+import shutil
+import tempfile
+
 import pytest
+from flask import Flask
 from invenio_app.factory import create_api as _create_api
+from invenio_db import InvenioDB, db
+from invenio_pidstore import InvenioPIDStore
+from sqlalchemy_utils.functions import create_database, database_exists
 
 
-@pytest.fixture(scope="module")
-def extra_entry_points():
-    """Extra entry points to load the mock_module features."""
-    return {
-        'invenio_db.model': [
-            'mock_module = mock_module.models',
-        ],
-        'invenio_jsonschemas.schemas': [
-            'mock_module = mock_module.jsonschemas',
-        ],
-        'invenio_search.mappings': [
-            'records = mock_module.mappings',
-        ]
-    }
+@pytest.fixture()
+def app(request):
+    """Basic Flask application."""
+    instance_path = tempfile.mkdtemp()
+    app = Flask("testapp")
+    DB = os.getenv("SQLALCHEMY_DATABASE_URI", "sqlite://")
+    app.config.update(
+        SQLALCHEMY_DATABASE_URI=DB,
+        SQLALCHEMY_TRACK_MODIFICATIONS=False,
+    )
 
+    InvenioDB(app)
+    InvenioPIDStore(app)
 
-@pytest.fixture(scope="module")
-def create_app(instance_path, entry_points):
-    """Application factory fixture."""
-    return _create_api
+    with app.app_context():
+        db_url = str(db.engine.url)
+        if db_url != "sqlite://" and not database_exists(db_url):
+            create_database(db_url)
+        db.create_all()
+
+    def teardown():
+        with app.app_context():
+            db_url = str(db.engine.url)
+            db.session.close()
+            if db_url != "sqlite://":
+                drop_database(db_url)
+            shutil.rmtree(instance_path)
+
+    request.addfinalizer(teardown)
+    app.test_request_context().push()
+
+    return app

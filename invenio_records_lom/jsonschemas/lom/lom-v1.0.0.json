@@ -4,8 +4,10 @@
   "additionalProperties": false,
   "title": "invenio-records-lom v1.0.0",
   "type": "object",
+
   "properties": {
     "$schema": {
+      "description": "This record's jsonschema.",
       "type": "string"
     },
     "id": {

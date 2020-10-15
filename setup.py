@@ -33,9 +33,6 @@ extras_require = {
         'Sphinx>=3',
     ],
     # Elasticsearch version
-    'elasticsearch6': [
-        'invenio-search[elasticsearch6]{}'.format(invenio_search_version),
-    ],
     'elasticsearch7': [
         'invenio-search[elasticsearch7]{}'.format(invenio_search_version),
     ],
@@ -54,7 +51,7 @@ extras_require = {
 
 extras_require['all'] = []
 for name, reqs in extras_require.items():
-    if name[0] == ':' or name in ('elasticsearch6', 'elasticsearch7',
+    if name[0] == ':' or name in ('elasticsearch7',
                                   'mysql', 'postgresql', 'sqlite'):
         continue
     extras_require['all'].extend(reqs)
@@ -110,7 +107,7 @@ setup(
     platforms='any',
     entry_points={
         'invenio_base.apps': [
-            'invenio_records_lom = invenio_records_lom:invenio_records_lom',
+            'invenio_records_lom = invenio_records_lom:LomRecords',
         ],
         'invenio_base.api_apps': [
             'invenio_records_lom = invenio_records_lom:LomRecords',
@@ -123,6 +120,15 @@ setup(
         ],
         'invenio_search.mappings': [
             'lomrecords = invenio_records_lom.mappings',
+        ],
+        'invenio_config.module': [
+            'invenio_records_lom = invenio_records_lom.config',
+        ],
+        'invenio_pidstore.fetchers': [
+            'lomid = invenio_records_lom.fetchers:lom_pid_fetcher',
+        ],
+        'invenio_pidstore.minters': [
+            'lomid = invenio_records_lom.minters:lom_pid_minter',
         ],
     },
     extras_require=extras_require,
