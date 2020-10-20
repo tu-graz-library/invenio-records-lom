@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "http://localhost/schemas/lom/lom-v1.0.0.json",
+  "id": "http://localhost/schemas/lomrecords/lom-v1.0.0.json",
   "additionalProperties": false,
   "title": "invenio-records-lom v1.0.0",
   "type": "object",
