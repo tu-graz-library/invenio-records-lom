@@ -17,10 +17,9 @@ import tempfile
 
 import pytest
 from flask import Flask
-from invenio_app.factory import create_api as _create_api
 from invenio_db import InvenioDB, db
 from invenio_pidstore import InvenioPIDStore
-from sqlalchemy_utils.functions import create_database, database_exists
+from sqlalchemy_utils.functions import create_database, database_exists, drop_database
 
 
 @pytest.fixture()

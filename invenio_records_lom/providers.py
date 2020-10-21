@@ -14,7 +14,7 @@ from invenio_pidstore.providers.recordid import RecordIdProvider
 class LomIdProvider(RecordIdProvider):
     """Lom identifier provider."""
 
-    pid_type = 'lomid'
+    pid_type = "lomid"
     """Type of persistent identifier."""
 
     pid_provider = None

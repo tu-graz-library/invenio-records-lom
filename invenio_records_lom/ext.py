@@ -23,25 +23,23 @@ class LomRecords(object):
     def init_app(self, app):
         """Flask application initialization."""
         self.init_config(app)
-        app.extensions['invenio-records-lom'] = self
+        app.extensions["invenio-records-lom"] = self
 
     def init_config(self, app):
         """Initialize configuration.
 
         Override configuration variables with the values in this package.
         """
-        with_endpoints = app.config.get(
-            'INVENIO_RECORDS_LOM_ENDPOINTS_ENABLED', True)
+        with_endpoints = app.config.get("INVENIO_RECORDS_LOM_ENDPOINTS_ENABLED", True)
         for k in dir(config):
-            if k.startswith('INVENIO_RECORDS_LOM_'):
+            if k.startswith("INVENIO_RECORDS_LOM_"):
                 app.config.setdefault(k, getattr(config, k))
-            elif k == 'SEARCH_UI_JSTEMPLATE_RESULTS':
-                app.config['SEARCH_UI_JSTEMPLATE_RESULTS'] = getattr(
-                    config, k)
-            elif k == 'PIDSTORE_RECID_FIELD':
-                app.config['PIDSTORE_RECID_FIELD'] = getattr(config, k)
+            elif k == "SEARCH_UI_JSTEMPLATE_RESULTS":
+                app.config["SEARCH_UI_JSTEMPLATE_RESULTS"] = getattr(config, k)
+            elif k == "PIDSTORE_RECID_FIELD":
+                app.config["PIDSTORE_RECID_FIELD"] = getattr(config, k)
             else:
-                for n in ['RECORDS_REST_ENDPOINTS', 'RECORDS_UI_ENDPOINTS']:
+                for n in ["RECORDS_REST_ENDPOINTS", "RECORDS_UI_ENDPOINTS"]:
                     if k == n and with_endpoints:
                         app.config.setdefault(n, {})
                         app.config[n].update(getattr(config, k))
