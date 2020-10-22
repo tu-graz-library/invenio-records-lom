@@ -9,7 +9,6 @@
 
 from __future__ import absolute_import, print_function
 
-from flask import current_app
 from invenio_jsonschemas import current_jsonschemas
 from invenio_records.api import Record
 
@@ -20,5 +19,5 @@ class LomRecords(Record):
     @classmethod
     def create(cls, data, id_=None, **kwargs):
         """Create Lom record."""
-        data["$schema"] = current_jsonschemas.path_to_url('lomrecords/lom-v1.0.0.json')
+        data["$schema"] = current_jsonschemas.path_to_url("lomrecords/lom-v1.0.0.json")
         return super(LomRecords, cls).create(data, id_=id_, **kwargs)

@@ -12,10 +12,10 @@ from __future__ import absolute_import, print_function
 from flask import Blueprint
 
 blueprint = Blueprint(
-    'invenio_records_lom',
+    "invenio_records_lom",
     __name__,
-    template_folder='templates',
-    static_folder='static',
+    template_folder="templates",
+    static_folder="static",
 )
 """Blueprint used for loading templates and static assets
 

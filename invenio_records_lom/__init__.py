@@ -13,4 +13,4 @@ from __future__ import absolute_import, print_function
 from .ext import LomRecords
 from .version import __version__
 
-__all__ = ('__version__', 'LomRecords')
+__all__ = ("__version__", "LomRecords")

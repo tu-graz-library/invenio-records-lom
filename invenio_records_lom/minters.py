@@ -12,10 +12,10 @@ from .providers import LomIdProvider
 
 def lom_pid_minter(record_uuid, data):
     """Mint loan identifiers."""
-    assert 'id' not in data
+    assert "id" not in data
     provider = LomIdProvider.create(
-        object_type='rec',
+        object_type="rec",
         object_uuid=record_uuid,
     )
-    data['id'] = provider.pid.pid_value
+    data["id"] = provider.pid.pid_value
     return provider.pid
