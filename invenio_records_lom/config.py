@@ -15,6 +15,12 @@ from invenio_search import RecordsSearch
 
 from .api import LomRecords
 
+
+def _(x):
+    """Identity function for string extraction."""
+    return x
+
+
 RECORDS_REST_ENDPOINTS = {
     "lomid": dict(
         pid_type="lomid",
@@ -48,19 +54,29 @@ RECORDS_REST_ENDPOINTS = {
 }
 """REST API for invenio-records-lom."""
 
-RECORDS_UI_ENDPOINTS = {
-    "lom": {
-        "pid_type": "lomid",
-        "route": "/lom/<pid_value>",
-        "template": "invenio_records_lom/record.html",
-    },
-}
-"""Records UI for invenio-records-lom."""
+RECORDS_REST_SORT_OPTIONS = dict(
+    lomrecords=dict(
+        bestmatch=dict(
+            title=_('Best match'),
+            fields=['_score'],
+            default_order='desc',
+            order=1,
+        ),
+        mostrecent=dict(
+            title=_('Most recent'),
+            fields=['-_created'],
+            default_order='asc',
+            order=2,
+        ),
+    )
+)
+"""Setup sorting options."""
 
-SEARCH_UI_JSTEMPLATE_RESULTS = "templates/invenio_records_lom/results.html"
-"""Result list template."""
 
-PIDSTORE_RECID_FIELD = "id"
-
-INVENIO_RECORDS_LOM_ENDPOINTS_ENABLED = True
-"""Enable/disable automatic endpoint registration."""
+RECORDS_REST_DEFAULT_SORT = dict(
+    lomrecords=dict(
+        query='bestmatch',
+        noquery='mostrecent',
+    )
+)
+"""Set default sorting options."""

@@ -67,14 +67,13 @@ install_requires = [
     "idutils>=1.1.7",
     "invenio-assets>=1.2.2,<1.3.0",
     "invenio-communities>=2.1.1,<3.0.0",
-    "invenio-drafts-resources>=0.4.3,<0.5.0",
+    "invenio-rdm-records>=0.23.4",
     "invenio-formatter[badges]>=1.1.0a1,<2.0.0",
     "invenio-i18n>=1.2.0",
     "invenio-records>=1.4.0a4,<2.0.0",
     "invenio-records-files>=1.2.1,<2.0.0",
     "invenio-records-ui>=1.2.0a1,<2.0.0",
     "invenio-previewer>=1.2.1,<2.0.0",
-    "marshmallow-utils>=0.2.1,<0.3.0",
     # until fix in invenio-previewer is released
     "nbconvert[execute]>=4.1.0,<6.0.0",
     # TODO: Get from invenio-base
