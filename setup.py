@@ -75,8 +75,6 @@ install_requires = [
     "invenio-previewer>=1.2.1,<2.0.0",
     # until fix in invenio-previewer is released
     "nbconvert[execute]>=4.1.0,<6.0.0",
-    # TODO: Get from invenio-base
-    "six>=1.12.0",  # Needed to pass CI tests
 ]
 
 packages = find_packages()
@@ -93,10 +91,10 @@ setup(
     version=version,
     description=__doc__,
     long_description=readme,
-    keywords="invenio_records_lom Invenio",
+    keywords="invenio_records_lom Invenio lom Learning object metadata records",
     license="MIT",
-    author="Graz University of Technology",
-    author_email="info@tugraz.at",
+    author="Mojib Wali",
+    author_email="mb_wali@hotmail.com",
     url="https://github.com/tu-graz-library/invenio-records-lom/",
     packages=packages,
     zip_safe=False,
