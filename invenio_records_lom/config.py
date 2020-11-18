@@ -13,7 +13,7 @@ from invenio_indexer.api import RecordIndexer
 from invenio_records_rest.utils import allow_all, check_elasticsearch
 from invenio_search import RecordsSearch
 
-from .api import LomRecords
+# from .api import LomRecords
 
 
 def _(x):
@@ -21,15 +21,15 @@ def _(x):
     return x
 
 
-RECORDS_REST_ENDPOINTS = {
+LOM_REST_ENDPOINTS = {
     "lomid": dict(
         pid_type="lomid",
         pid_minter="lomid",
         pid_fetcher="lomid",
         default_endpoint_prefix=True,
-        record_class=LomRecords,
+        record_class="invenio_records_lom:Lom",
         search_class=RecordsSearch,
-        indexer_class=RecordIndexer,
+        indexer_class="invenio_records_lom.indexer:LomRecordIndexer",
         search_index="lomrecords",
         search_type=None,
         record_serializers={
@@ -41,7 +41,7 @@ RECORDS_REST_ENDPOINTS = {
         record_loaders={
             "application/json": ("invenio_records_lom.loaders" ":json_v1"),
         },
-        list_route="/lom",
+        list_route="/lom/",
         item_route="/lom/<pid(lomid):pid_value>",
         default_media_type="application/json",
         max_result_window=10000,
@@ -54,7 +54,7 @@ RECORDS_REST_ENDPOINTS = {
 }
 """REST API for invenio-records-lom."""
 
-RECORDS_REST_SORT_OPTIONS = dict(
+LOM_REST_SORT_OPTIONS = dict(
     lomrecords=dict(
         bestmatch=dict(
             title=_('Best match'),
@@ -73,7 +73,7 @@ RECORDS_REST_SORT_OPTIONS = dict(
 """Setup sorting options."""
 
 
-RECORDS_REST_DEFAULT_SORT = dict(
+LOM_REST_DEFAULT_SORT = dict(
     lomrecords=dict(
         query='bestmatch',
         noquery='mostrecent',

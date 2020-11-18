@@ -66,8 +66,7 @@ install_requires = [
     "ftfy>=4.4.3,<5.0.0",
     "idutils>=1.1.7",
     "invenio-assets>=1.2.2,<1.3.0",
-    "invenio-communities>=2.1.1,<3.0.0",
-    "invenio-rdm-records>=0.23.4",
+    "invenio-db>=1.0.6",
     "invenio-formatter[badges]>=1.1.0a1,<2.0.0",
     "invenio-i18n>=1.2.0",
     "invenio-records>=1.4.0a4,<2.0.0",
@@ -128,6 +127,10 @@ setup(
         "invenio_pidstore.minters": [
             "lomid = invenio_records_lom.minters:lom_pid_minter",
         ],
+        # Uncomment if you wish to create a separate table
+        #'invenio_db.models': [
+        #    'invenio_records_lom = invenio_records_lom.models',
+        #],
     },
     extras_require=extras_require,
     install_requires=install_requires,

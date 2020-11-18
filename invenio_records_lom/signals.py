@@ -5,13 +5,12 @@
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
-
-"""invenio data model for Learning object metadata."""
+"""Proxy definitions."""
 
 from __future__ import absolute_import, print_function
 
-from .ext import LomRecords
-from .proxies import Lom, current_lomrecord
-from .version import __version__
+from blinker import Namespace
 
-__all__ = ("__version__", "LomRecords", "Lom", "current_lomrecord")
+_signals = Namespace()
+
+lomrecord_created = _signals.signal('lomrecord_created')

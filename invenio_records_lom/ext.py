@@ -9,6 +9,8 @@
 
 from __future__ import absolute_import, print_function
 
+from werkzeug.utils import cached_property
+
 from . import config
 
 
@@ -20,6 +22,26 @@ class LomRecords(object):
         if app:
             self.init_app(app)
 
+    @cached_property
+    def lom_cls(self):
+        """Base Lom API class."""
+        # TODO: Refactor
+        # def default_class_factory():
+        #     from .api import LomRecordBase
+        #     return type(
+        #         'LomRecords',
+        #         (LomRecordBase),
+        #         {},
+        #     )
+        # return self.app.config['LOM_CLS'] or default_class_factory()
+
+        from .api import LomRecordBase
+        return type(
+            "Lom",
+            (LomRecordBase,),
+            {},
+        )
+
     def init_app(self, app):
         """Flask application initialization."""
         self.init_config(app)
@@ -30,16 +52,23 @@ class LomRecords(object):
 
         Override configuration variables with the values in this package.
         """
-        with_endpoints = app.config.get("INVENIO_RECORDS_LOM_ENDPOINTS_ENABLED", True)
         for k in dir(config):
-            if k.startswith("INVENIO_RECORDS_LOM_"):
+            if k.startswith('LOM_'):
+                if k == 'LOM_REST_ENDPOINTS':
+                    # Make sure of registration process.
+                    app.config.setdefault('RECORDS_REST_ENDPOINTS', {})
+                    app.config['RECORDS_REST_ENDPOINTS'].update(getattr(
+                        config, k))
                 app.config.setdefault(k, getattr(config, k))
-            elif k == "SEARCH_UI_JSTEMPLATE_RESULTS":
-                app.config["SEARCH_UI_JSTEMPLATE_RESULTS"] = getattr(config, k)
-            elif k == "PIDSTORE_RECID_FIELD":
-                app.config["PIDSTORE_RECID_FIELD"] = getattr(config, k)
-            else:
-                for n in ["RECORDS_REST_ENDPOINTS", "RECORDS_UI_ENDPOINTS"]:
-                    if k == n and with_endpoints:
-                        app.config.setdefault(n, {})
-                        app.config[n].update(getattr(config, k))
+                if k == 'LOM_REST_SORT_OPTIONS':
+                    # TODO Might be overriden depending on which package is
+                    # initialised first
+                    app.config.setdefault('RECORDS_REST_SORT_OPTIONS', {})
+                    app.config['RECORDS_REST_SORT_OPTIONS'].update(
+                        getattr(config, k))
+                if k == 'LOM_REST_DEFAULT_SORT':
+                    # TODO Might be overriden depending on which package is
+                    # initialised first
+                    app.config.setdefault('RECORDS_REST_DEFAULT_SORT', {})
+                    app.config['RECORDS_REST_DEFAULT_SORT'].update(
+                        getattr(config, k))
