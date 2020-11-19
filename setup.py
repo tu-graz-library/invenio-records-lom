@@ -22,6 +22,7 @@ tests_require = [
     "SQLAlchemy-Continuum>=1.3.11",
     "invenio-jsonschemas>=1.1.0",
     "SQLAlchemy-Utils<0.36,>=0.33.1",
+    "invenio-access>=1.4.1",
 ]
 
 # Should follow inveniosoftware/invenio versions
@@ -61,9 +62,6 @@ setup_requires = [
 ]
 
 install_requires = [
-    "CairoSVG>=1.0.20",
-    "Faker>=2.0.3",
-    "ftfy>=4.4.3,<5.0.0",
     "idutils>=1.1.7",
     "invenio-assets>=1.2.2,<1.3.0",
     "invenio-db>=1.0.6",

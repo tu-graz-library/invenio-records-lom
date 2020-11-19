@@ -80,3 +80,6 @@ LOM_REST_DEFAULT_SORT = dict(
     )
 )
 """Set default sorting options."""
+
+# TODO: link with the base records:
+# LOM_RECORD_INDEX = "records"
