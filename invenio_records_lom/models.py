@@ -7,26 +7,26 @@
 
 """Lom database models."""
 
-from __future__ import absolute_import, print_function
+# from __future__ import absolute_import, print_function
 
-from invenio_db import db
-from invenio_records.models import RecordMetadataBase
+# from invenio_db import db
+# from invenio_records.models import RecordMetadataBase
 
 
-class LomMetadata(db.Model, RecordMetadataBase):
-    """Represent a Lom."""
+# class LomMetadata(db.Model, RecordMetadataBase):
+#     """Represent a Lom."""
 
-    __tablename__ = 'lom_metadata'
-    __table_args__ = {'extend_existing': True}
-    __versioned__ = {'versioning': False}
+#     __tablename__ = 'lom_metadata'
+#     __table_args__ = {'extend_existing': True}
+#     __versioned__ = {'versioning': False}
 
-    is_deleted = db.Column(
-        db.Boolean(name="ck_lomrecords_lom_metadata_is_deleted"),
-        nullable=True,
-        default=False
-    )
-    """Was the lom soft-deleted."""
+#     is_deleted = db.Column(
+#         db.Boolean(name="ck_lomrecords_lom_metadata_is_deleted"),
+#         nullable=True,
+#         default=False
+#     )
+#     """Was the lom soft-deleted."""
 
-    def delete(self):
-        """Mark the lom for deletion."""
-        self.is_deleted = True
+#     def delete(self):
+#         """Mark the lom for deletion."""
+#         self.is_deleted = True

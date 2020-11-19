@@ -18,9 +18,9 @@ from invenio_records.api import Record
 from invenio_records.models import RecordMetadata
 from werkzeug.local import LocalProxy
 
-from invenio_records_lom.models import LomMetadata
-
 from .signals import lomrecord_created
+
+# from invenio_records_lom.models import LomMetadata
 
 
 class LomRecordBase(Record):
