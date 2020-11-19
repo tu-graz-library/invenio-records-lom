@@ -73,6 +73,8 @@ install_requires = [
     "invenio-previewer>=1.2.1,<2.0.0",
     # until fix in invenio-previewer is released
     "nbconvert[execute]>=4.1.0,<6.0.0",
+    # TODO: Get from invenio-base
+    "six>=1.12.0",  # Needed to pass CI tests
 ]
 
 packages = find_packages()
