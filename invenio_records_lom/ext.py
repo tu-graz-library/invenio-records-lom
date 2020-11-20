@@ -59,6 +59,12 @@ class LomRecords(object):
                     app.config.setdefault('RECORDS_REST_ENDPOINTS', {})
                     app.config['RECORDS_REST_ENDPOINTS'].update(getattr(
                         config, k))
+
+                if k == 'LOM_REST_FACETS':
+                    app.config.setdefault('RECORDS_REST_FACETS', {})
+                    app.config['RECORDS_REST_FACETS'].update(
+                        getattr(config, k))
+
                 app.config.setdefault(k, getattr(config, k))
                 if k == 'LOM_REST_SORT_OPTIONS':
                     # TODO Might be overriden depending on which package is

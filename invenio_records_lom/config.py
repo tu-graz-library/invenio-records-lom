@@ -13,6 +13,8 @@ from invenio_indexer.api import RecordIndexer
 from invenio_records_rest.utils import allow_all, check_elasticsearch
 from invenio_search import RecordsSearch
 
+from .facets import terms_filter
+
 # from .api import LomRecords
 
 
@@ -83,3 +85,72 @@ LOM_REST_DEFAULT_SORT = dict(
 
 # TODO: link with the base records:
 # LOM_RECORD_INDEX = "records"
+
+# TODO:
+# Overwite to change the default indexer for community records
+# LOM_INDEXER_RECEIVER = None
+
+LOM_REST_FACETS = dict(
+    lomrecords=dict(
+        aggs=dict(
+            type=dict(terms=dict(field='type'))
+        ),
+        post_filters=dict(
+            type=terms_filter('type'),
+        )
+    )
+)
+"""Facets per index for the default facets factory.
+The structure of the dictionary is as follows:
+.. code-block:: python
+    RECORDS_REST_FACETS = {
+        '<index or index alias>': {
+            'aggs': {
+                '<key>': <aggregation definition>,
+                ...
+            }
+            'filters': {
+                '<key>': <filter func>,
+                ...
+            }
+            'post_filters': {
+                '<key>': <filter func>,
+                ...
+            }
+        }
+    }
+"""
+
+# Invenio-records-rest
+# ===========
+# See https://invenio-records-rest.readthedocs.io/en/latest/configuration.html
+
+# RECORDS_REST_DEFAULT_CREATE_PERMISSION_FACTORY = deny_all
+"""Default create permission factory: reject any request."""
+
+# RECORDS_REST_DEFAULT_LIST_PERMISSION_FACTORY = allow_all
+"""Default list permission factory: allow all requests"""
+
+# RECORDS_REST_DEFAULT_READ_PERMISSION_FACTORY = check_elasticsearch
+"""Default read permission factory: check if the record exists."""
+
+# RECORDS_REST_DEFAULT_UPDATE_PERMISSION_FACTORY = deny_all
+"""Default update permission factory: reject any request."""
+
+# RECORDS_REST_DEFAULT_DELETE_PERMISSION_FACTORY = deny_all
+"""Default delete permission factory: reject any request."""
+
+# RECORDS_REST_ELASTICSEARCH_ERROR_HANDLERS = {
+#     'query_parsing_exception': (
+#         'invenio_records_rest.views'
+#         ':elasticsearch_query_parsing_exception_handler'
+#     ),
+#     'query_shard_exception': (
+#         'invenio_records_rest.views'
+#         ':elasticsearch_query_parsing_exception_handler'
+#     ),
+# }
+# """Handlers for ElasticSearch error codes."""
+
+# RECORDS_REST_DEFAULT_RESULTS_SIZE = 10
+# """Default search results size."""
