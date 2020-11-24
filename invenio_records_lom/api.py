@@ -20,6 +20,7 @@ from werkzeug.local import LocalProxy
 
 from .signals import lomrecord_created
 
+# TODO: uncomment to use the model for db manipulation
 # from invenio_records_lom.models import LomMetadata
 
 
@@ -70,6 +71,8 @@ class LomRecordBase(Record, PIDRecordMixin):
 
     # TODO: Lom model doesn't have versioninig, some methods from
     # "invenio_records.api.RecordBase" have to be overridden/removed
+
+    # TODO: uncomment and use the lom model instead of Records model
     # model_cls = LomMetadata
     model_cls = RecordMetadata
 
@@ -108,9 +111,3 @@ class LomRecordBase(Record, PIDRecordMixin):
             else:
                 self.model.delete()
         return self
-
-    # @classmethod
-    # def create(cls, data, id_=None, **kwargs):
-    #     """Create Lom record."""
-    #     data["$schema"] = current_jsonschemas.path_to_url("lomrecords/lom-v1.0.0.json")
-    #     return super(LomRecordBase, cls).create(data, id_=id_, **kwargs)

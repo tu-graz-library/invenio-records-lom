@@ -7,6 +7,7 @@
 
 """Lom database models."""
 
+# TODO: uncomment to create a new table for the lom records.
 # from __future__ import absolute_import, print_function
 
 # from invenio_db import db

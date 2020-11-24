@@ -93,7 +93,7 @@ setup(
     long_description=readme,
     keywords="invenio_records_lom Invenio lom Learning object metadata records",
     license="MIT",
-    author="Mojib Wali",
+    author="Graz University of Technology",
     author_email="mb_wali@hotmail.com",
     url="https://github.com/tu-graz-library/invenio-records-lom/",
     packages=packages,
@@ -125,7 +125,7 @@ setup(
         "invenio_pidstore.minters": [
             "lomid = invenio_records_lom.minters:lom_pid_minter",
         ],
-        # Uncomment if you wish to create a separate table
+        # TODO: Uncomment if you wish to create a separate table
         #'invenio_db.models': [
         #    'invenio_records_lom = invenio_records_lom.models',
         #],
