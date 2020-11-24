@@ -117,7 +117,7 @@ html_theme = "alabaster"
 
 html_theme_options = {
     "description": "invenio data model for Learning object metadata",
-    "github_user": "inveniosoftware",
+    "github_user": "tu-graz-library",
     "github_repo": "invenio-records-lom",
     "github_button": False,
     "github_banner": True,

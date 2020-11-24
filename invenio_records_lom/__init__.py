@@ -11,6 +11,7 @@
 from __future__ import absolute_import, print_function
 
 from .ext import LomRecords
+from .proxies import Lom, current_lomrecord
 from .version import __version__
 
-__all__ = ("__version__", "LomRecords")
+__all__ = ("__version__", "LomRecords", "Lom", "current_lomrecord")

@@ -22,6 +22,7 @@ tests_require = [
     "SQLAlchemy-Continuum>=1.3.11",
     "invenio-jsonschemas>=1.1.0",
     "SQLAlchemy-Utils<0.36,>=0.33.1",
+    "invenio-access>=1.4.1",
 ]
 
 # Should follow inveniosoftware/invenio versions
@@ -61,20 +62,15 @@ setup_requires = [
 ]
 
 install_requires = [
-    "CairoSVG>=1.0.20",
-    "Faker>=2.0.3",
-    "ftfy>=4.4.3,<5.0.0",
     "idutils>=1.1.7",
     "invenio-assets>=1.2.2,<1.3.0",
-    "invenio-communities>=2.1.1,<3.0.0",
-    "invenio-drafts-resources>=0.4.3,<0.5.0",
+    "invenio-db>=1.0.6",
     "invenio-formatter[badges]>=1.1.0a1,<2.0.0",
     "invenio-i18n>=1.2.0",
     "invenio-records>=1.4.0a4,<2.0.0",
     "invenio-records-files>=1.2.1,<2.0.0",
     "invenio-records-ui>=1.2.0a1,<2.0.0",
     "invenio-previewer>=1.2.1,<2.0.0",
-    "marshmallow-utils>=0.2.1,<0.3.0",
     # until fix in invenio-previewer is released
     "nbconvert[execute]>=4.1.0,<6.0.0",
     # TODO: Get from invenio-base
@@ -95,10 +91,10 @@ setup(
     version=version,
     description=__doc__,
     long_description=readme,
-    keywords="invenio_records_lom Invenio",
+    keywords="invenio_records_lom Invenio lom Learning object metadata records",
     license="MIT",
     author="Graz University of Technology",
-    author_email="info@tugraz.at",
+    author_email="mb_wali@hotmail.com",
     url="https://github.com/tu-graz-library/invenio-records-lom/",
     packages=packages,
     zip_safe=False,
@@ -129,6 +125,10 @@ setup(
         "invenio_pidstore.minters": [
             "lomid = invenio_records_lom.minters:lom_pid_minter",
         ],
+        # TODO: Uncomment if you wish to create a separate table
+        #'invenio_db.models': [
+        #    'invenio_records_lom = invenio_records_lom.models',
+        #],
     },
     extras_require=extras_require,
     install_requires=install_requires,

@@ -7,11 +7,11 @@
 
 """Loaders.
 
-This file contains sample loaders that can be used to deserialize input data in
-an application level data structure. The marshmallow_loader() method can be
-parameterized with different schemas for the record metadata. In the provided
-json_v1 instance, it uses the MetadataSchemaV1, defining the
-PersistentIdentifier field.
+Think of loaders as the definition of your input formats for records.
+
+You only need loaders if you plan to allow creation of records via the REST API.
+
+The loaders are responsible for transforming a request payload (external representation) into the internal JSON format.
 """
 
 from __future__ import absolute_import, print_function

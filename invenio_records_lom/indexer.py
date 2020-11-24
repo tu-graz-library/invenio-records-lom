@@ -5,4 +5,14 @@
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
-"""Mappings for Elasticsearch 7.x."""
+"""Indexer for Lomrecords."""
+
+from invenio_indexer.api import RecordIndexer
+
+from invenio_records_lom.proxies import Lom
+
+
+class LomRecordIndexer(RecordIndexer):
+    """Lom indexer."""
+
+    record_cls = Lom
