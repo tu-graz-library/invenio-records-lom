@@ -19,6 +19,12 @@
 
 .. image:: https://img.shields.io/pypi/v/invenio-records-lom.svg
         :target: https://pypi.org/pypi/invenio-records-lom
+        
+.. image:: https://readthedocs.org/projects/invenio-records-lom/badge/?version=latest
+        :target: https://invenio-records-lom.readthedocs.io/en/latest/?badge=latest
+
+.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
+        :target: https://github.com/psf/black
 
 invenio data model for Learning object metadata
 
