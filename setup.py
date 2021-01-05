@@ -23,6 +23,7 @@ tests_require = [
     "invenio-jsonschemas>=1.1.0",
     "SQLAlchemy-Utils<0.36,>=0.33.1",
     "invenio-access>=1.4.1",
+    "psycopg2-binary>=2.8.6",
 ]
 
 # Should follow inveniosoftware/invenio versions
