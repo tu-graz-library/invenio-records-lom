@@ -29,7 +29,7 @@ from invenio_records_rest import InvenioRecordsREST, config
 from invenio_records_rest.utils import PIDConverter
 from invenio_rest import InvenioREST
 from invenio_search import InvenioSearch
-from sqlalchemy_utils.functions import create_database, database_exists
+from sqlalchemy_utils.functions import create_database, database_exists, drop_database
 
 
 @pytest.fixture()

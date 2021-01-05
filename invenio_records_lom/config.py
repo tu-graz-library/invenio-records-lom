@@ -92,26 +92,7 @@ LOM_REST_FACETS = dict(
         )
     )
 )
-"""Facets per index for the default facets factory.
-The structure of the dictionary is as follows:
-.. code-block:: python
-    RECORDS_REST_FACETS = {
-        '<index or index alias>': {
-            'aggs': {
-                '<key>': <aggregation definition>,
-                ...
-            }
-            'filters': {
-                '<key>': <filter func>,
-                ...
-            }
-            'post_filters': {
-                '<key>': <filter func>,
-                ...
-            }
-        }
-    }
-"""
+"""Introduce searching facets."""
 
 # Invenio-records-rest
 # ===========

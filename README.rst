@@ -11,8 +11,8 @@
 .. image:: https://img.shields.io/github/license/tu-graz-library/invenio-records-lom.svg
         :target: https://github.com/tu-graz-library/invenio-records-lom/blob/master/LICENSE
 
-.. image:: https://travis-ci.com/tu-graz-library/invenio-records-lom.svg
-        :target: https://travis-ci.com/github/tu-graz-library/invenio-records-lom
+.. image:: https://github.com/tu-graz-library/invenio-records-lom/workflows/CI/badge.svg
+        :target: https://github.com/tu-graz-library/invenio-records-lom/actions
 
 .. image:: https://img.shields.io/coveralls/tu-graz-library/invenio-records-lom.svg
         :target: https://coveralls.io/r/tu-graz-library/invenio-records-lom
