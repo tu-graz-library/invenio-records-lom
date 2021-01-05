@@ -12,7 +12,7 @@
         :target: https://github.com/tu-graz-library/invenio-records-lom/blob/master/LICENSE
 
 .. image:: https://github.com/tu-graz-library/invenio-records-lom/workflows/CI/badge.svg
-        :target: https://github.com/github/tu-graz-library/invenio-records-lom/actions
+        :target: https://github.com/tu-graz-library/invenio-records-lom/actions
 
 .. image:: https://img.shields.io/coveralls/tu-graz-library/invenio-records-lom.svg
         :target: https://coveralls.io/r/tu-graz-library/invenio-records-lom
