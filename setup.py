@@ -102,6 +102,9 @@ setup(
     include_package_data=True,
     platforms="any",
     entry_points={
+        "flask.commands": [
+            "lom = invenio_records_lom.cli:lom",
+        ],
         "invenio_base.apps": [
             "invenio_records_lom = invenio_records_lom:LomRecords",
         ],
