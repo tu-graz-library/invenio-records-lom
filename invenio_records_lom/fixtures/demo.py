@@ -336,7 +336,7 @@ def create_fake_taxon(fake: Faker) -> dict:
 
 
 # ----- functions for creating LOMv1.0-fakes -----
-def create_fake_lom(fake: Faker) -> dict:
+def create_fake_record(fake: Faker) -> dict:
     """Create a fake json-representation of a "lom"-element, compatible with LOMv1.0-standard."""
     data_to_use = {
         "lom": {
@@ -355,9 +355,9 @@ def create_fake_lom(fake: Faker) -> dict:
     return json.loads(json.dumps(data_to_use))
 
 
-def create_fake_loms(number: int, seed: int = 42) -> list:
+def create_fake_records(number: int, seed: int = 42) -> list:
     """Create `number` jsons adhering to LOMv1.0-standard, using `seed` as RNG-seed."""
     fake = Faker()
     Faker.seed(seed)
 
-    return [create_fake_lom(fake) for __ in range(number)]
+    return [create_fake_record(fake) for __ in range(number)]
