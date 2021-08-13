@@ -23,6 +23,7 @@ from .signals import lomrecord_created
 # TODO: uncomment to use the model for db manipulation
 # from invenio_records_lom.models import LomMetadata
 
+
 # TODO: Move somewhere appropriate (`invenio-records-pidstore`)
 class PIDRecordMixin:
     """Persistent identifier mixin for records."""
