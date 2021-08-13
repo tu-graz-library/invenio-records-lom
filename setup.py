@@ -63,6 +63,7 @@ setup_requires = [
 ]
 
 install_requires = [
+    "Faker>=8.0.0",
     "idutils>=1.1.7",
     "invenio-assets>=1.2.2,<1.3.0",
     "invenio-db>=1.0.6",
@@ -132,7 +133,7 @@ setup(
         # TODO: Uncomment if you wish to create a separate table
         #'invenio_db.models': [
         #    'invenio_records_lom = invenio_records_lom.models',
-        #],
+        # ],
     },
     extras_require=extras_require,
     install_requires=install_requires,

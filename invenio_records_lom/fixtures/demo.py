@@ -5,6 +5,8 @@
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
+"""Fake LOM demo records."""
+
 import json
 
 from faker import Faker
@@ -20,7 +22,7 @@ def langstringify(fake: Faker, string: str) -> dict:
 
 
 def vocabularify(fake: Faker, choices: list) -> dict:
-    """Randomly draw a choice from `choices`, then turn that choice into a Vocabulary-object, as specified by LOMv1.0-standard"""
+    """Randomly draw a choice from `choices`, then turn that choice into a Vocabulary-object, as specified by LOMv1.0-standard."""
     return {
         "source": "LOMv1.0",
         "value": fake.random.choice(choices),
@@ -47,19 +49,16 @@ def create_fake_duration(fake: Faker) -> dict:
     """Create a fake Duration-object, compatible with LOMv1.0-standard."""
     random = fake.random
     pattern = random.choice(["all", "Y", "D", "HM", "S"])
-    if pattern == "all":
-        duration = "P1Y2M4DT10H35M12.5S"
-    elif pattern == "Y":
-        duration = f"P{random.randint(1,5)}Y"
-    elif pattern == "D":
-        duration = f"P{random.randint(1,60)}D"
-    elif pattern == "HM":
-        duration = f"PT{random.randint(1,3)}H{random.randint(1,59)}M"
-    else:
-        duration = f"PT{random.uniform(0.1, 12.5)}S"
+    duration = {
+        "all": "P1Y2M4DT10H35M12.5S",
+        "Y": f"P{random.randint(1,5)}Y",
+        "D": f"P{random.randint(1,60)}D",
+        "HM": f"PT{random.randint(1,3)}H{random.randint(1,59)}M",
+        "S": f"PT{random.uniform(0.1, 12.5)}S",
+    }
 
     return {
-        "duration": duration,
+        "duration": duration[pattern],
         "description": langstringify(fake, fake.sentence()),
     }
 
@@ -71,8 +70,16 @@ def create_fake_vcard(fake: Faker) -> str:
 
 # ----- functions for elements that are part of more than one category -----
 def create_fake_language(fake: Faker) -> str:
-    """ "Create a fake language-code, as required for "language"-keys by LOMv1.0-standard."""
-    return fake.language_code()
+    """Create a fake language-code, as required for "language"-keys by LOMv1.0-standard."""
+    language_codes = [
+        "EN",
+        "en-us",
+        "en-US-philadelphia",
+        "eng",
+        "eng-US",
+        "ENG-us-philadelphia",
+    ]
+    return fake.random.choice(language_codes)
 
 
 def create_fake_identifier(fake: Faker) -> dict:
@@ -102,7 +109,7 @@ def create_fake_contribute(fake: Faker, roles: list) -> dict:
 def create_fake_general(fake: Faker) -> dict:
     """Create a fake "general"-element, compatible with LOMv1.0-standard."""
     structures = ["atomic", "collection", "networked", "hierarchical", "linear"]
-    aggregationLevels = [1, 2, 3, 4]
+    aggregationLevels = ["1", "2", "3", "4"]
 
     return {
         "identifier": [create_fake_identifier(fake) for __ in range(2)],
@@ -339,17 +346,15 @@ def create_fake_taxon(fake: Faker) -> dict:
 def create_fake_record(fake: Faker) -> dict:
     """Create a fake json-representation of a "lom"-element, compatible with LOMv1.0-standard."""
     data_to_use = {
-        "lom": {
-            "general": create_fake_general(fake),
-            "lifeCycle": create_fake_lifecycle(fake),
-            "metaMetadata": create_fake_metametadata(fake),
-            "technical": create_fake_technical(fake),
-            "educational": [create_fake_educational(fake) for __ in range(2)],
-            "rights": create_fake_rights(fake),
-            "relation": [create_fake_relation(fake) for __ in range(2)],
-            "annotation": [create_fake_annotation(fake) for __ in range(2)],
-            "classification": [create_fake_classification(fake) for __ in range(2)],
-        },
+        "general": create_fake_general(fake),
+        "lifeCycle": create_fake_lifecycle(fake),
+        "metaMetadata": create_fake_metametadata(fake),
+        "technical": create_fake_technical(fake),
+        "educational": [create_fake_educational(fake) for __ in range(2)],
+        "rights": create_fake_rights(fake),
+        "relation": [create_fake_relation(fake) for __ in range(2)],
+        "annotation": [create_fake_annotation(fake) for __ in range(2)],
+        "classification": [create_fake_classification(fake) for __ in range(2)],
     }
 
     return json.loads(json.dumps(data_to_use))
