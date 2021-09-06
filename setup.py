@@ -131,10 +131,9 @@ setup(
         "invenio_pidstore.minters": [
             "lomid = invenio_records_lom.minters:lom_pid_minter",
         ],
-        # TODO: Uncomment if you wish to create a separate table
-        #'invenio_db.models': [
-        #    'invenio_records_lom = invenio_records_lom.models',
-        # ],
+        "invenio_db.models": [
+            "invenio_records_lom = invenio_records_lom.records.models",
+        ],
     },
     extras_require=extras_require,
     install_requires=install_requires,

@@ -35,6 +35,7 @@ from invenio_records_resources.records.systemfields import (
 )
 from werkzeug.local import LocalProxy
 
+from . import models
 from .systemfields import (
     LOMDraftRecordIdProvider,
     LOMPIDFieldContext,
@@ -47,6 +48,8 @@ from .systemfields import (
 
 class LOMParent(ParentRecord):
     """For representing entries from the 'lom_parents_metadata'-SQL-table."""
+
+    model_cls = models.LOMParentMetadata
 
     pid = PIDField(
         key="id",
@@ -63,6 +66,7 @@ class LOMParent(ParentRecord):
 class LOMFileDraft(FileRecord):
     """For representing entries from the 'lom_drafts_files'-SQL-table."""
 
+    model_cls = models.LOMFileDraftMetadata
     # LOMFileDraft and LOMDraft depend on each other, delay name-lookup to accomodate
     record_cls = LocalProxy(lambda: LOMDraft)
 
@@ -70,7 +74,9 @@ class LOMFileDraft(FileRecord):
 class LOMDraft(Draft):
     """For representing entries from the 'lom_drafts_metadata'-SQL-table."""
 
+    model_cls = models.LOMDraftMetadata
     parent_record_cls = LOMParent
+    versions_model_cls = models.LOMVersionsState
 
     pid = PIDField(
         key="id",
@@ -95,6 +101,7 @@ class LOMDraft(Draft):
 class LOMFileRecord(FileRecord):
     """For representing entries from the 'lom_records_files_metadata'-SQL-table."""
 
+    model_cls = models.LOMFileRecordMetadata
     # LOMFileRecord and LOMRecord depend on each other, delay name-lookup to accomodate
     record_cls = LocalProxy(lambda: LOMDraft)
 
@@ -102,7 +109,9 @@ class LOMFileRecord(FileRecord):
 class LOMRecord(Record):
     """For representing entries from the 'lom_records_metadata'-SQL-table."""
 
+    model_cls = models.LOMRecordMetadata
     parent_record_cls = LOMParent
+    versions_model_cls = models.LOMVersionsState
 
     pid = PIDField(
         key="id",
