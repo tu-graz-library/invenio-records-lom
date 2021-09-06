@@ -11,7 +11,7 @@ from __future__ import absolute_import, print_function
 
 from flask import Flask
 
-from invenio_records_lom import LomRecords
+from invenio_records_lom import InvenioRecordsLOM
 
 
 def test_version():
@@ -24,11 +24,11 @@ def test_version():
 def test_init():
     """Test extension initialization."""
     app = Flask("testapp")
-    ext = LomRecords(app)
+    ext = InvenioRecordsLOM(app)
     assert "invenio-records-lom" in app.extensions
 
     app = Flask("testapp")
-    ext = LomRecords()
+    ext = InvenioRecordsLOM()
     assert "invenio-records-lom" not in app.extensions
     ext.init_app(app)
     assert "invenio-records-lom" in app.extensions

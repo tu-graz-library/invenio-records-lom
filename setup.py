@@ -107,16 +107,16 @@ setup(
             "lom = invenio_records_lom.cli:lom",
         ],
         "invenio_base.apps": [
-            "invenio_records_lom = invenio_records_lom:LomRecords",
+            "invenio_records_lom = invenio_records_lom:InvenioRecordsLOM",
         ],
         "invenio_base.api_apps": [
-            "invenio_records_lom = invenio_records_lom:LomRecords",
+            "invenio_records_lom = invenio_records_lom:InvenioRecordsLOM",
         ],
         "invenio_base.blueprints": [
             "invenio_records_lom = invenio_records_lom.views:blueprint",
         ],
         "invenio_jsonschemas.schemas": [
-            "invenio_records_lom = invenio_records_lom.jsonschemas"
+            "invenio_records_lom = invenio_records_lom.jsonschemas",
         ],
         "invenio_search.mappings": [
             "lomrecords = invenio_records_lom.mappings",

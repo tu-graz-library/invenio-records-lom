@@ -14,7 +14,7 @@ from werkzeug.utils import cached_property
 from . import config
 
 
-class LomRecords(object):
+class InvenioRecordsLOM(object):
     """invenio-records-lom extension."""
 
     def __init__(self, app=None):
@@ -29,7 +29,7 @@ class LomRecords(object):
         # def default_class_factory():
         #     from .api import LomRecordBase
         #     return type(
-        #         'LomRecords',
+        #         'InvenioRecordsLOM',
         #         (LomRecordBase),
         #         {},
         #     )
