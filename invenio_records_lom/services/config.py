@@ -10,6 +10,7 @@
 from invenio_drafts_resources.services.records.components import PIDComponent
 from invenio_drafts_resources.services.records.config import RecordServiceConfig
 
+from ..records import LOMDraft, LOMRecord
 from .components import AccessComponent, MetadataComponent
 from .permissions import LOMRecordPermissionPolicy
 from .schemas import LOMRecordSchema
@@ -19,6 +20,9 @@ class LOMRecordServiceConfig(RecordServiceConfig):
     """Config for LOM record service."""
 
     schema = LOMRecordSchema
+
+    draft_cls = LOMDraft
+    record_cls = LOMRecord
 
     permission_policy_cls = LOMRecordPermissionPolicy
 
