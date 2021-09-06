@@ -43,8 +43,8 @@ def create_fake_datetime(fake: Faker) -> dict:
     elif pattern == "YMDhms":
         datetime = fake.date_time().isoformat()
     elif pattern == "YMDhmsTZD":
-        tzd = fake.random.choice(["UTC", "CST", "JST"])
-        datetime = fake.date_time().isoformat() + tzd
+        time_zone_designator = fake.pytimezone()
+        datetime = fake.date_time(tzinfo=time_zone_designator).isoformat()
 
     return {"dateTime": datetime, "description": langstringify(fake, fake.sentence())}
 
