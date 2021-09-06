@@ -10,6 +10,10 @@
 import json
 
 from faker import Faker
+from flask_principal import Identity
+from invenio_access import any_user
+
+from ..proxies import current_records_lom
 
 
 # ----- functions for LOM datatypes -----
@@ -343,7 +347,7 @@ def create_fake_taxon(fake: Faker) -> dict:
 
 
 # ----- functions for creating LOMv1.0-fakes -----
-def create_fake_record(fake: Faker) -> dict:
+def create_fake_metadata(fake: Faker) -> dict:
     """Create a fake json-representation of a "lom"-element, compatible with LOMv1.0-standard."""
     data_to_use = {
         "general": create_fake_general(fake),
@@ -358,6 +362,40 @@ def create_fake_record(fake: Faker) -> dict:
     }
 
     return json.loads(json.dumps(data_to_use))
+
+
+def create_fake_record(fake: Faker):
+    """Enter fake records in the SQL-database."""
+    # invenio user identities have integers as `id`s, use a string to avoid collisions
+    fake_identity = Identity(id="lom_demo")
+    fake_identity.provides.add(any_user)
+
+    fake_access_type = fake.random.choice(["public", "embargoed", "restricted"])
+
+    if fake_access_type == "embargoed":
+        fake_embargo = {
+            "until": fake.future_date(end_date="+365d").isoformat(),
+            "reason": "Fake embargo for fake record.",
+            "active": True,
+        }
+    else:
+        fake_embargo = {}
+
+    fake_access = {
+        "files": fake_access_type,
+        "record": fake_access_type,
+        "embargo": fake_embargo,
+    }
+
+    data = {
+        # these values get processed by service.config.components
+        "access": fake_access,
+        "metadata": create_fake_metadata(fake),
+    }
+
+    service = current_records_lom.records_service
+    draft = service.create(data=data, identity=fake_identity)
+    service.publish(id_=draft.id, identity=fake_identity)
 
 
 def create_fake_records(number: int, seed: int = 42) -> list:

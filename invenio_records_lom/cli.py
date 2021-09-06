@@ -7,9 +7,8 @@
 
 """Click command-line interface for LOM module."""
 
-import json
-
 import click
+from flask.cli import with_appcontext
 
 from .fixtures.demo import create_fake_records
 
@@ -21,6 +20,7 @@ def lom():
 
 
 @lom.command()
+@with_appcontext
 @click.option(
     "--number",
     "-n",
@@ -34,5 +34,5 @@ def demo(number, seed):
     """Create `number` fake LOM records for demo purposes."""
     click.secho(f"Creating {number} LOM demo records", fg="green")
     for lom in create_fake_records(number, seed):
-        click.secho(json.dumps(lom, indent=2))
-    click.secho(f"Created LOM records!", fg="green")
+        pass
+    click.secho("Created LOM records!", fg="green")
