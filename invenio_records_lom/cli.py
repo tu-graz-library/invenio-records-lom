@@ -10,7 +10,7 @@
 import click
 from flask.cli import with_appcontext
 
-from .fixtures.demo import create_fake_records
+from .fixtures import create_fake_records
 
 
 @click.group()
