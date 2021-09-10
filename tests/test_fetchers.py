@@ -13,9 +13,9 @@ from invenio_records_lom.fetchers import lom_pid_fetcher
 from invenio_records_lom.minters import lom_pid_minter
 
 
-def test_lom_pid_fetcher(app):
+def test_lom_pid_fetcher(base_app, db):
     """Test legacy lomid fetcher."""
-    with app.app_context():
+    with base_app.app_context():
         rec_uuid = uuid.uuid4()
         data = {}
         minted_pid = lom_pid_minter(rec_uuid, data)
