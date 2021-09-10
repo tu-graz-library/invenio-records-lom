@@ -18,7 +18,7 @@ from ..proxies import current_records_lom
 
 # ----- functions for LOM datatypes -----
 def langstringify(fake: Faker, string: str) -> dict:
-    """Turn `string` into a LangString-object, as specified by LOMv1.0-standard."""
+    """Wraps `string` in a dict, emulating LOMv1.0-standard LangString-objects."""
     return {
         "language": create_fake_language(fake),
         "string": string,
@@ -26,7 +26,7 @@ def langstringify(fake: Faker, string: str) -> dict:
 
 
 def vocabularify(fake: Faker, choices: list) -> dict:
-    """Randomly draw a choice from `choices`, then turn that choice into a Vocabulary-object, as specified by LOMv1.0-standard."""
+    """Randomly draw a choice from `choices`, then wrap that choice in a dict, emulating LOMv1.0-standard Vocabulary-objects."""
     return {
         "source": "LOMv1.0",
         "value": fake.random.choice(choices),
@@ -34,7 +34,7 @@ def vocabularify(fake: Faker, choices: list) -> dict:
 
 
 def create_fake_datetime(fake: Faker) -> dict:
-    """Create a fake DateTime-object, compatible with LOMv1.0-standard."""
+    """Create a fake datetime dict, as per LOMv1.0-standard Datetime-object-specification."""
     pattern = fake.random.choice(["YMDhmsTZD", "YMDhms", "YMD", "Y"])
     if pattern == "Y":
         datetime = fake.year()
@@ -50,7 +50,7 @@ def create_fake_datetime(fake: Faker) -> dict:
 
 
 def create_fake_duration(fake: Faker) -> dict:
-    """Create a fake Duration-object, compatible with LOMv1.0-standard."""
+    """Create a fake duration dict, as per LOMv1.0-standard Duration-object-specification."""
     random = fake.random
     pattern = random.choice(["all", "Y", "D", "HM", "S"])
     duration = {
