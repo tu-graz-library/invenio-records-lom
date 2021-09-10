@@ -17,7 +17,7 @@ class Protection:
         self.set(record=record, files=files)
 
     def _validate_protection_level(self, level):
-        return level in ("public", "restricted")
+        return level in ("public", "embargoed", "restricted")
 
     @property
     def record(self):
