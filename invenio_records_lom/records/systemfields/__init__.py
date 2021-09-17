@@ -11,7 +11,11 @@ System Fields execute actions on creating, editing, publishing, ... the
 API-object they are attributes of.
 """
 
-from .access import ParentRecordAccessField, RecordAccessField
+from invenio_rdm_records.records.systemfields import (
+    ParentRecordAccessField,
+    RecordAccessField,
+)
+
 from .context import LOMPIDFieldContext
 from .providers import LOMDraftRecordIdProvider, LOMRecordIdProvider
 from .resolver import LOMResolver

@@ -9,9 +9,9 @@
 
 from invenio_drafts_resources.services.records.components import PIDComponent
 from invenio_drafts_resources.services.records.config import RecordServiceConfig
+from invenio_rdm_records.services.components import AccessComponent, MetadataComponent
 
 from ..records import LOMDraft, LOMRecord
-from .components import AccessComponent, MetadataComponent
 from .permissions import LOMRecordPermissionPolicy
 from .schemas import LOMRecordSchema
 
