@@ -370,9 +370,10 @@ def create_fake_record(fake: Faker):
     fake_identity = Identity(id="lom_demo")
     fake_identity.provides.add(any_user)
 
-    fake_access_type = fake.random.choice(["public", "embargoed", "restricted"])
+    fake_access_type = fake.random.choice(["public", "restricted"])
 
-    if fake_access_type == "embargoed":
+    has_embargo = fake.boolean()
+    if has_embargo:
         fake_embargo = {
             "until": fake.future_date(end_date="+365d").isoformat(),
             "reason": "Fake embargo for fake record.",

@@ -29,8 +29,17 @@ _ACCESS_CONFIGURATIONS = [
         "embargo": {},
     },
     {
-        "files": "embargoed",
-        "record": "embargoed",
+        "files": "public",
+        "record": "public",
+        "embargo": {
+            "until": "2020-12-31",
+            "reason": "Test embargo for test record.",
+            "active": True,
+        },
+    },
+    {
+        "files": "restricted",
+        "record": "restricted",
         "embargo": {
             "until": "2030-12-31",
             "reason": "Test embargo for test record.",
