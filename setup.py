@@ -15,20 +15,14 @@ readme = open("README.rst").read()
 history = open("CHANGES.rst").read()
 
 tests_require = [
-    "pytest-invenio>=1.4.0",
-    "invenio-app>=1.3.0,<2.0.0",
-    "invenio_search>=1.3.1",
     "elasticsearch_dsl>=7.2.1",
-    "SQLAlchemy-Continuum>=1.3.11",
-    "invenio-jsonschemas>=1.1.0",
-    "SQLAlchemy-Utils<0.36,>=0.33.1",
-    "invenio-access>=1.4.1",
-    "psycopg2-binary>=2.8.6",
+    "invenio-app>=1.3.0,<2.0.0",
+    "pytest-invenio>=1.4.0,<2.0.0",
 ]
 
 # Should follow inveniosoftware/invenio versions
-invenio_db_version = ">=1.0.4,<2.0.0"
-invenio_search_version = ">=1.4.0,<2.0.0"
+invenio_db_version = ">=1.0.9,<2.0.0"
+invenio_search_version = ">=1.4.2,<2.0.0"
 
 extras_require = {
     "docs": [
@@ -38,22 +32,16 @@ extras_require = {
     "elasticsearch7": [
         "invenio-search[elasticsearch7]{}".format(invenio_search_version),
     ],
-    # Databases
-    "mysql": [
-        "invenio-db[mysql,versioning]{}".format(invenio_db_version),
-    ],
+    # Database
     "postgresql": [
         "invenio-db[postgresql,versioning]{}".format(invenio_db_version),
-    ],
-    "sqlite": [
-        "invenio-db[versioning]{}".format(invenio_db_version),
     ],
     "tests": tests_require,
 }
 
 extras_require["all"] = []
 for name, reqs in extras_require.items():
-    if name[0] == ":" or name in ("elasticsearch7", "mysql", "postgresql", "sqlite"):
+    if name[0] == ":" or name in ("elasticsearch7", "postgresql"):
         continue
     extras_require["all"].extend(reqs)
 
@@ -63,7 +51,12 @@ setup_requires = [
 ]
 
 install_requires = [
-    "Faker>=8.0.0",
+    "invenio-jsonschemas>=1.1.3",
+    "invenio-records-rest>=1.8.0",
+    "invenio_rdm_records>=0.32.3,<0.33",
+    # these indirect dependencies are given for faster dependency tree resolution:
+    "faker>=8.12.1",
+    "flask>=1.1.4,<2.0.0",
     "idutils>=1.1.7",
     "invenio-assets>=1.2.2,<1.3.0",
     "invenio-db>=1.0.6",
@@ -141,17 +134,16 @@ setup(
     setup_requires=setup_requires,
     tests_require=tests_require,
     classifiers=[
+        "Development Status :: 3 - Alpha",
         "Environment :: Web Environment",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
         "Programming Language :: Python",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
         "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
         "Topic :: Software Development :: Libraries :: Python Modules",
-        "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.6",
-        "Programming Language :: Python :: 3.7",
-        "Programming Language :: Python :: 3.8",
-        "Development Status :: 3 - Alpha",
     ],
 )
