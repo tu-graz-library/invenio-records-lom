@@ -20,29 +20,10 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-          python-version: [3.6, 3.7, 3.8, 3.9]
-          requirements-level: [min, pypi]
+          python-version: [3.8, 3.9]
+          requirements-level: [pypi]
           db-service: [postgresql12]
           search-service: [elasticsearch7]
-          exclude:
-          - python-version: 3.6
-            requirements-level: pypi
-
-          - python-version: 3.7
-            requirements-level: min
-
-          - python-version: 3.8
-            requirements-level: min
-
-          - python-version: 3.9
-            requirements-level: min
-
-          - db-service: postgresql12
-            requirements-level: min
-
-          - search-service: elasticsearch7
-            requirements-level: min
-
           include:
           - db-service: postgresql12
             DB_EXTRAS: "postgresql"
