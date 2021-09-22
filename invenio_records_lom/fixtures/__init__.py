@@ -6,3 +6,10 @@
 # under the terms of the MIT License; see LICENSE file for more details.
 
 """Submodule for creating demo records."""
+
+from .demo import create_fake_record, create_fake_records
+
+__all__ = (
+    "create_fake_record",
+    "create_fake_records",
+)

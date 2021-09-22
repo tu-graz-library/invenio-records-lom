@@ -10,8 +10,8 @@
 
 from __future__ import absolute_import, print_function
 
-from .ext import LomRecords
-from .proxies import Lom, current_lomrecord
+from .ext import InvenioRecordsLOM
+from .proxies import Lom, current_records_lom
 from .version import __version__
 
-__all__ = ("__version__", "LomRecords", "Lom", "current_lomrecord")
+__all__ = ("__version__", "InvenioRecordsLOM", "Lom", "current_records_lom")

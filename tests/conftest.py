@@ -11,68 +11,54 @@ See https://pytest-invenio.readthedocs.io/ for documentation on which test
 fixtures are available.
 """
 
-import copy
-import os
 import shutil
 import tempfile
 
 import pytest
-from flask import Flask
-from invenio_access import InvenioAccess
-from invenio_accounts import InvenioAccounts
-from invenio_config import InvenioConfigDefault
-from invenio_db import InvenioDB, db
-from invenio_indexer import InvenioIndexer
-from invenio_pidstore import InvenioPIDStore
-from invenio_records import InvenioRecords
-from invenio_records_rest import InvenioRecordsREST, config
-from invenio_records_rest.utils import PIDConverter
-from invenio_rest import InvenioREST
-from invenio_search import InvenioSearch
-from sqlalchemy_utils.functions import create_database, database_exists, drop_database
+from flask_principal import Identity
+from invenio_access import any_user
+from invenio_app.factory import create_app as invenio_create_app
 
 
-@pytest.fixture()
-def app(request):
-    """Basic Flask application."""
-    instance_path = tempfile.mkdtemp()
-    app = Flask("testapp")
-    app.config.update(
-        SQLALCHEMY_DATABASE_URI=os.getenv("SQLALCHEMY_DATABASE_URI", "sqlite://"),
-        SQLALCHEMY_TRACK_MODIFICATIONS=False,
-        TESTING=True,
-        SECRET_KEY="testing",
-        # SERVER_NAME='localhost:5000',
-    )
+@pytest.fixture(scope="module")
+def create_app():
+    """Application factory fixture.
 
-    app.url_map.converters["pid"] = PIDConverter
+    pytest-invenio uses this in creating the `base_app`-fixture.
+    """
+    return invenio_create_app
 
-    InvenioDB(app)
-    InvenioPIDStore(app)
-    InvenioRecords(app)
-    InvenioAccounts(app)
-    InvenioAccess(app)
-    InvenioIndexer(app)
-    InvenioSearch(app)
-    InvenioREST(app)
-    InvenioRecordsREST(app)
-    InvenioConfigDefault(app)
 
-    with app.app_context():
-        db_url = str(db.engine.url)
-        if db_url != "sqlite://" and not database_exists(db_url):
-            create_database(db_url)
-        db.create_all()
+@pytest.fixture
+def cli_location(db):
+    """Fixture for invenio file-location.
 
-    def teardown():
-        with app.app_context():
-            db_url = str(db.engine.url)
-            db.session.close()
-            if db_url != "sqlite://":
-                drop_database(db_url)
-            shutil.rmtree(instance_path)
+    Adapted to work with `<Flask-obj>.test_cli_runner`.
+    """
+    from invenio_files_rest.models import Location
 
-    request.addfinalizer(teardown)
-    app.test_request_context().push()
+    uri = tempfile.mkdtemp()
+    location_obj = Location(name="pytest-location", uri=uri, default=True)
 
-    return app
+    db.session.add(location_obj)
+    db.session.commit()
+
+    yield location_obj
+
+    # can't use location_obj.uri here, as test_cli_runner expunges
+    # database-commits on teardown
+    shutil.rmtree(uri)
+
+
+@pytest.fixture
+def identity_any_user():
+    """Simple identity fixture."""
+    i = Identity("test-identity-any-user")
+    i.provides.add(any_user)
+    return i
+
+
+@pytest.fixture(scope="function")
+def service(base_app, location):
+    """Service fixture."""
+    return base_app.extensions["invenio-records-lom"].records_service

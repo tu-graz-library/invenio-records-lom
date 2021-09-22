@@ -16,9 +16,9 @@ import pytest
 from invenio_records_lom.minters import lom_pid_minter
 
 
-def test_lom_pid_minter(app):
+def test_lom_pid_minter(base_app, db):
     """Test legacy recid minter."""
-    with app.app_context():
+    with base_app.app_context():
         rec_uuid = uuid.uuid4()
         data = {}
 

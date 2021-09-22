@@ -10,11 +10,15 @@
 import json
 
 from faker import Faker
+from flask_principal import Identity
+from invenio_access import any_user
+
+from ..proxies import current_records_lom
 
 
 # ----- functions for LOM datatypes -----
 def langstringify(fake: Faker, string: str) -> dict:
-    """Turn `string` into a LangString-object, as specified by LOMv1.0-standard."""
+    """Wraps `string` in a dict, emulating LOMv1.0-standard LangString-objects."""
     return {
         "language": create_fake_language(fake),
         "string": string,
@@ -22,7 +26,7 @@ def langstringify(fake: Faker, string: str) -> dict:
 
 
 def vocabularify(fake: Faker, choices: list) -> dict:
-    """Randomly draw a choice from `choices`, then turn that choice into a Vocabulary-object, as specified by LOMv1.0-standard."""
+    """Randomly draw a choice from `choices`, then wrap that choice in a dict, emulating LOMv1.0-standard Vocabulary-objects."""
     return {
         "source": "LOMv1.0",
         "value": fake.random.choice(choices),
@@ -30,7 +34,7 @@ def vocabularify(fake: Faker, choices: list) -> dict:
 
 
 def create_fake_datetime(fake: Faker) -> dict:
-    """Create a fake DateTime-object, compatible with LOMv1.0-standard."""
+    """Create a fake datetime dict, as per LOMv1.0-standard Datetime-object-specification."""
     pattern = fake.random.choice(["YMDhmsTZD", "YMDhms", "YMD", "Y"])
     if pattern == "Y":
         datetime = fake.year()
@@ -39,14 +43,14 @@ def create_fake_datetime(fake: Faker) -> dict:
     elif pattern == "YMDhms":
         datetime = fake.date_time().isoformat()
     elif pattern == "YMDhmsTZD":
-        tzd = fake.random.choice(["UTC", "CST", "JST"])
-        datetime = fake.date_time().isoformat() + tzd
+        time_zone_designator = fake.pytimezone()
+        datetime = fake.date_time(tzinfo=time_zone_designator).isoformat()
 
     return {"dateTime": datetime, "description": langstringify(fake, fake.sentence())}
 
 
 def create_fake_duration(fake: Faker) -> dict:
-    """Create a fake Duration-object, compatible with LOMv1.0-standard."""
+    """Create a fake duration dict, as per LOMv1.0-standard Duration-object-specification."""
     random = fake.random
     pattern = random.choice(["all", "Y", "D", "HM", "S"])
     duration = {
@@ -343,7 +347,7 @@ def create_fake_taxon(fake: Faker) -> dict:
 
 
 # ----- functions for creating LOMv1.0-fakes -----
-def create_fake_record(fake: Faker) -> dict:
+def create_fake_metadata(fake: Faker) -> dict:
     """Create a fake json-representation of a "lom"-element, compatible with LOMv1.0-standard."""
     data_to_use = {
         "general": create_fake_general(fake),
@@ -358,6 +362,41 @@ def create_fake_record(fake: Faker) -> dict:
     }
 
     return json.loads(json.dumps(data_to_use))
+
+
+def create_fake_record(fake: Faker):
+    """Enter fake records in the SQL-database."""
+    # invenio user identities have integers as `id`s, use a string to avoid collisions
+    fake_identity = Identity(id="lom_demo")
+    fake_identity.provides.add(any_user)
+
+    fake_access_type = fake.random.choice(["public", "restricted"])
+
+    has_embargo = fake.boolean()
+    if has_embargo:
+        fake_embargo = {
+            "until": fake.future_date(end_date="+365d").isoformat(),
+            "reason": "Fake embargo for fake record.",
+            "active": True,
+        }
+    else:
+        fake_embargo = {}
+
+    fake_access = {
+        "files": fake_access_type,
+        "record": fake_access_type,
+        "embargo": fake_embargo,
+    }
+
+    data = {
+        # these values get processed by service.config.components
+        "access": fake_access,
+        "metadata": create_fake_metadata(fake),
+    }
+
+    service = current_records_lom.records_service
+    draft = service.create(data=data, identity=fake_identity)
+    service.publish(id_=draft.id, identity=fake_identity)
 
 
 def create_fake_records(number: int, seed: int = 42) -> list:
