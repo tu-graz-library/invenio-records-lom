@@ -55,23 +55,20 @@ install_requires = [
     "invenio-records-rest>=1.8.0",
     "invenio_rdm_records>=0.32.3,<0.33",
     # these indirect dependencies are given for faster dependency tree resolution:
+    "celery>=5.0.5",
+    "cffi>=1.14.6",
+    "cryptography>=3.4.7",
+    "dnspython>=2.1.0",
+    "email-validator>=1.1.3",
     "faker>=8.12.1",
     "flask>=1.1.4,<2.0.0",
+    "flask-login>=0.4.1",
+    "flask-menu>=0.7.2",
+    "flask-principal>=0.4.0",
+    "fs>=0.5.5a1",
+    "future>=0.18.2",
+    "idna>=3.2",
     "idutils>=1.1.7",
-    "invenio-assets>=1.2.2,<1.3.0",
-    "invenio-db>=1.0.6",
-    "invenio-drafts-resources>=0.13.0,<0.14.0",
-    "invenio-formatter[badges]>=1.1.0a1,<2.0.0",
-    "invenio-i18n>=1.2.0",
-    "invenio_rdm_records>=0.32.2,<0.33",
-    "invenio-records>=1.4.0a4,<2.0.0",
-    "invenio-records-files>=1.2.1,<2.0.0",
-    "invenio-records-ui>=1.2.0a1,<2.0.0",
-    "invenio-previewer>=1.2.1,<2.0.0",
-    # until fix in invenio-previewer is released
-    "nbconvert[execute]>=4.1.0,<6.0.0",
-    # TODO: Get from invenio-base
-    "six>=1.12.0",  # Needed to pass CI tests
 ]
 
 packages = find_packages()
