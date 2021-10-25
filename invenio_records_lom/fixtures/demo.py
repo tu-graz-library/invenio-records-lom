@@ -11,8 +11,7 @@ import json
 from functools import partial
 
 from faker import Faker
-from flask_principal import Identity
-from invenio_access import any_user
+from invenio_access.permissions import system_identity
 
 from ..proxies import current_records_lom
 
@@ -366,6 +365,7 @@ def create_fake_metadata(fake: Faker) -> dict:
 
 
 def create_fake_access(fake: Faker):
+    """Create a fake json of an "access"-element, compatible with invenio."""
     fake_access_type = fake.random.choice(["public", "restricted"])
 
     has_embargo = fake.boolean()
@@ -386,6 +386,7 @@ def create_fake_access(fake: Faker):
 
 
 def create_fake_data(fake: Faker):
+    """Create a fake json of an invenio-record, "metadata" conforms to LOM-standard."""
     return {
         # these values get processed by service.config.components
         "access": create_fake_access(fake),
@@ -396,15 +397,11 @@ def create_fake_data(fake: Faker):
 
 def publish_fake_record(fake: Faker):
     """Enter fake records in the SQL-database."""
-    # invenio user identities have integers as `id`s, use a string to avoid collisions
-    fake_identity = Identity(id="lom_demo")
-    fake_identity.provides.add(any_user)
-
     service = current_records_lom.records_service
-    create = partial(service.create, identity=fake_identity)
-    edit = partial(service.edit, identity=fake_identity)
-    publish = partial(service.publish, identity=fake_identity)
-    update_draft = partial(service.update_draft, identity=fake_identity)
+    create = partial(service.create, identity=system_identity)
+    edit = partial(service.edit, identity=system_identity)
+    publish = partial(service.publish, identity=system_identity)
+    update_draft = partial(service.update_draft, identity=system_identity)
 
     def create_then_publish(data):
         draft_item = create(data=data)

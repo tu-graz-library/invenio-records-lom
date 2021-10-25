@@ -7,7 +7,7 @@
 
 """Permission-config classes for LOMRecordService-objects."""
 
-from invenio_records_permissions.generators import AnyUser
+from invenio_records_permissions.generators import AnyUser, Disable, SystemProcess
 from invenio_records_permissions.policies.records import RecordPermissionPolicy
 
 
@@ -19,7 +19,20 @@ class LOMRecordPermissionPolicy(RecordPermissionPolicy):
     """
 
     # TODO: settle permissions
-    can_create = [AnyUser()]
-    can_edit = [AnyUser()]
-    can_publish = [AnyUser()]
-    can_update_draft = [AnyUser()]
+    can_all = [AnyUser(), SystemProcess()]
+
+    can_create = can_all
+    can_edit = can_all
+    can_publish = can_all
+    can_update_draft = can_all
+
+    #
+    # Disabled actions (these should not be used or changed)
+    #
+    # - Records/files are updated/deleted via drafts so we don't support
+    #   using below actions.
+    can_update = [Disable()]
+    can_delete = [Disable()]
+    can_create_files = [Disable()]
+    can_update_files = [Disable()]
+    can_delete_files = [Disable()]
