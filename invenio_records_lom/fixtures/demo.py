@@ -411,14 +411,11 @@ def publish_fake_record(fake: Faker):
         updated_draft_item = update_draft(id_=id_, data=data)
         return publish(id_=updated_draft_item.id)
 
-    def create_relation(value, entry):
-        kind = {"source": "LOMv1.0", "value": value}
-        identifier = {"catalog": "repo-pid", "entry": entry}
+    def add_relation(data, kind, pid):
+        kind = {"source": "LOMv1.0", "value": kind}
+        identifier = {"catalog": "repo-pid", "entry": pid}
         resource = {"identifier": [identifier]}
-        return {
-            "kind": kind,
-            "resource": resource,
-        }
+        data["metadata"]["relation"].append({"kind": kind, "resource": resource})
 
     # TODO: add own pid to general.identifier?
     # TODO: add descriptions?
@@ -428,32 +425,24 @@ def publish_fake_record(fake: Faker):
 
     # create unit that references course
     unit_data = create_fake_data(fake)
-    unit_data["metadata"]["relation"].append(
-        create_relation("ispartof", course_service_item.id)
-    )
+    add_relation(unit_data, "ispartof", course_service_item.id)
     unit_service_item = create_then_publish(data=unit_data)
 
     # edit course to reference unit
     course_draft_item = edit(course_service_item.id)
     updated_course_data = course_draft_item.to_dict()
-    updated_course_data["metadata"]["relation"].append(
-        create_relation("haspart", unit_service_item.id)
-    )
+    add_relation(updated_course_data, "haspart", unit_service_item.id)
     update_then_publish(course_draft_item.id, data=updated_course_data)
 
     # create file that references unit
     file_data = create_fake_data(fake)
-    file_data["metadata"]["relation"].append(
-        create_relation("ispartof", unit_service_item.id)
-    )
-    file_service_item = create_then_publish(file_data)
+    add_relation(file_data, "ispartof", unit_service_item.id)
+    file_service_item = create_then_publish(data=file_data)
 
     # edit unit to reference file
     unit_draft_item = edit(unit_service_item.id)
     updated_unit_data = unit_draft_item.to_dict()
-    updated_unit_data["metadata"]["relation"].append(
-        create_relation("haspart", file_service_item.id)
-    )
+    add_relation(updated_unit_data, "haspart", file_service_item.id)
     update_then_publish(unit_draft_item.id, data=updated_unit_data)
 
 
