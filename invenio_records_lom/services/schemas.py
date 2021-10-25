@@ -5,21 +5,36 @@
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
-"""Marshmallow schema for validating LOM JSONs."""
+"""Marshmallow schema for validating and serializing LOM JSONs."""
 
-from marshmallow import Schema
+from invenio_rdm_records.services.schemas import RDMParentSchema, RDMRecordSchema
+from invenio_rdm_records.services.schemas.parent import ParentAccessSchema
+from marshmallow import Schema, fields
+from marshmallow_utils.fields import NestedAttribute
 
 
-class LOMRecordSchema(Schema):
-    """Marshmallow schema for validating LOM JSONs."""
+class LOMAgent(Schema):
+    user = fields.Field(required=True)  # overwrite fields.Int, allow string-identities
 
+
+class LOMParentAccessSchema(ParentAccessSchema):
+    owned_by = fields.List(fields.Nested(LOMAgent))
+
+
+class LOMParentSchema(RDMParentSchema):
+    access = fields.Nested(LOMParentAccessSchema)
+
+
+class LOMRecordSchema(RDMRecordSchema):
+
+    # NOTE: To ensure compatibility with invenio systemfields,
+    # use ``NestedAttribute`` instead of ``fields.Nested()``.
+
+    # overwrite metadata-field: allow any dict
+    metadata = fields.Dict(keys=fields.String(), values=fields.Field())
+    # overwrite parent-field: allow string-users
     # TODO: write schema
+    parent = NestedAttribute(LOMParentSchema, dump_only=True)
 
-    def load(self, data, *, many=None, partial=None, unknown=None):
-        """Overwrite validation: pipe data through unchanged and unvalidated for now."""
-        return data
 
-    # TODO: is: (obj: LOMDraft) -> LOMDraft; should be: (obj: LOMDraft) -> json
-    def dump(self, obj, *, many=None):
-        """Overwrite validation: pipe obj through unchanged and unvalidated for now."""
-        return obj
+__all__ = ("LOMRecordSchema",)

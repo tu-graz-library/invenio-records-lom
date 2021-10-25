@@ -20,4 +20,6 @@ class LOMRecordPermissionPolicy(RecordPermissionPolicy):
 
     # TODO: settle permissions
     can_create = [AnyUser()]
+    can_edit = [AnyUser()]
     can_publish = [AnyUser()]
+    can_update_draft = [AnyUser()]

@@ -8,6 +8,7 @@
 """Fake LOM demo records."""
 
 import json
+from functools import partial
 
 from faker import Faker
 from flask_principal import Identity
@@ -364,12 +365,7 @@ def create_fake_metadata(fake: Faker) -> dict:
     return json.loads(json.dumps(data_to_use))
 
 
-def create_fake_record(fake: Faker):
-    """Enter fake records in the SQL-database."""
-    # invenio user identities have integers as `id`s, use a string to avoid collisions
-    fake_identity = Identity(id="lom_demo")
-    fake_identity.provides.add(any_user)
-
+def create_fake_access(fake: Faker):
     fake_access_type = fake.random.choice(["public", "restricted"])
 
     has_embargo = fake.boolean()
@@ -382,26 +378,91 @@ def create_fake_record(fake: Faker):
     else:
         fake_embargo = {}
 
-    fake_access = {
+    return {
         "files": fake_access_type,
         "record": fake_access_type,
         "embargo": fake_embargo,
     }
 
-    data = {
+
+def create_fake_data(fake: Faker):
+    return {
         # these values get processed by service.config.components
-        "access": fake_access,
+        "access": create_fake_access(fake),
+        "files": {"enabled": False},
         "metadata": create_fake_metadata(fake),
     }
 
+
+def publish_fake_record(fake: Faker):
+    """Enter fake records in the SQL-database."""
+    # invenio user identities have integers as `id`s, use a string to avoid collisions
+    fake_identity = Identity(id="lom_demo")
+    fake_identity.provides.add(any_user)
+
     service = current_records_lom.records_service
-    draft = service.create(data=data, identity=fake_identity)
-    service.publish(id_=draft.id, identity=fake_identity)
+    create = partial(service.create, identity=fake_identity)
+    edit = partial(service.edit, identity=fake_identity)
+    publish = partial(service.publish, identity=fake_identity)
+    update_draft = partial(service.update_draft, identity=fake_identity)
+
+    def create_then_publish(data):
+        draft_item = create(data=data)
+        return publish(id_=draft_item.id)
+
+    def update_then_publish(id_, data):
+        updated_draft_item = update_draft(id_=id_, data=data)
+        return publish(id_=updated_draft_item.id)
+
+    def create_relation(value, entry):
+        kind = {"source": "LOMv1.0", "value": value}
+        identifier = {"catalog": "repo-pid", "entry": entry}
+        resource = {"identifier": [identifier]}
+        return {
+            "kind": kind,
+            "resource": resource,
+        }
+
+    # TODO: add own pid to general.identifier?
+    # TODO: add descriptions?
+    # create course
+    course_data = create_fake_data(fake)
+    course_service_item = create_then_publish(data=course_data)
+
+    # create unit that references course
+    unit_data = create_fake_data(fake)
+    unit_data["metadata"]["relation"].append(
+        create_relation("ispartof", course_service_item.id)
+    )
+    unit_service_item = create_then_publish(data=unit_data)
+
+    # edit course to reference unit
+    course_draft_item = edit(course_service_item.id)
+    updated_course_data = course_draft_item.to_dict()
+    updated_course_data["metadata"]["relation"].append(
+        create_relation("haspart", unit_service_item.id)
+    )
+    update_then_publish(course_draft_item.id, data=updated_course_data)
+
+    # create file that references unit
+    file_data = create_fake_data(fake)
+    file_data["metadata"]["relation"].append(
+        create_relation("ispartof", unit_service_item.id)
+    )
+    file_service_item = create_then_publish(file_data)
+
+    # edit unit to reference file
+    unit_draft_item = edit(unit_service_item.id)
+    updated_unit_data = unit_draft_item.to_dict()
+    updated_unit_data["metadata"]["relation"].append(
+        create_relation("haspart", file_service_item.id)
+    )
+    update_then_publish(unit_draft_item.id, data=updated_unit_data)
 
 
-def create_fake_records(number: int, seed: int = 42) -> list:
+def publish_fake_records(number: int, seed: int = 42) -> list:
     """Create `number` jsons adhering to LOMv1.0-standard, using `seed` as RNG-seed."""
     fake = Faker()
     Faker.seed(seed)
 
-    return [create_fake_record(fake) for __ in range(number)]
+    return [publish_fake_record(fake) for __ in range(number)]

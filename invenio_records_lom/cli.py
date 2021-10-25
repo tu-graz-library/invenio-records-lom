@@ -10,7 +10,7 @@
 import click
 from flask.cli import with_appcontext
 
-from .fixtures import create_fake_records
+from .fixtures import publish_fake_records
 
 
 @click.group()
@@ -31,8 +31,8 @@ def lom():
 )
 @click.option("--seed", "-s", default=42, type=int, help="Seed for RNG.")
 def demo(number, seed):
-    """Create `number` fake LOM records for demo purposes."""
+    """Publish `number` fake LOM records to the database, for demo purposes."""
     click.secho(f"Creating {number} LOM demo records", fg="green")
-    for lom in create_fake_records(number, seed):
+    for lom in publish_fake_records(number, seed):
         pass
-    click.secho("Created LOM records!", fg="green")
+    click.secho("Published fake LOM records to the database!", fg="green")
