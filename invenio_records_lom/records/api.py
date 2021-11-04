@@ -26,14 +26,13 @@ Use flask.current_app['invenio-records-lom'].records_service to interact with.
 
 from invenio_drafts_resources.records import Draft, Record
 from invenio_drafts_resources.records.api import ParentRecord
-from invenio_records.systemfields import ModelField
+from invenio_records.systemfields import DictField, ModelField, RelationsField
 from invenio_records_resources.records.api import FileRecord
 from invenio_records_resources.records.systemfields import (
     FilesField,
     IndexField,
     PIDField,
 )
-from werkzeug.local import LocalProxy
 
 from . import models
 from .systemfields import (
@@ -42,6 +41,7 @@ from .systemfields import (
     LOMRecordIdProvider,
     LOMResolver,
     ParentRecordAccessField,
+    PIDLOMRelation,
     RecordAccessField,
 )
 
@@ -67,8 +67,8 @@ class LOMFileDraft(FileRecord):
     """For representing entries from the 'lom_drafts_files'-SQL-table."""
 
     model_cls = models.LOMFileDraftMetadata
-    # LOMFileDraft and LOMDraft depend on each other, delay name-lookup to accomodate
-    record_cls = LocalProxy(lambda: LOMDraft)
+    # LOMFileDraft and LOMDraft depend on each other, monkey-patch record_cls in later
+    record_cls = None
 
 
 class LOMDraft(Draft):
@@ -96,17 +96,52 @@ class LOMDraft(Draft):
     bucket_id = ModelField(dump=False)
     bucket = ModelField(dump=False)
     index = IndexField("lomrecords-drafts-v1.0.0", search_alias="lomrecords")
+    resource_type = DictField()
+
+
+LOMFileDraft.record_cls = LOMDraft
 
 
 class LOMFileRecord(FileRecord):
     """For representing entries from the 'lom_records_files_metadata'-SQL-table."""
 
     model_cls = models.LOMFileRecordMetadata
-    # LOMFileRecord and LOMRecord depend on each other, delay name-lookup to accomodate
-    record_cls = LocalProxy(lambda: LOMDraft)
+    # LOMFileRecord and LOMRecord depend on each other, monkey-patch this in later
+    record_cls = None
 
 
-class LOMRecord(Record):
+class RelationsMeta(type):
+    """For self-referential `RelationsField`.
+    Delays assigning to `pid_field` until class is already created."""
+
+    def __new__(mcs, name, bases, attrs):
+        cls = super().__new__(mcs, name, bases, attrs)
+        relations = RelationsField(
+            wholes=PIDLOMRelation(
+                source="LOMv1.0",
+                value="ispartof",
+                pid_field=cls.pid,
+                cache_key="lom-wholes",
+            ),
+            parts=PIDLOMRelation(
+                source="LOMv1.0",
+                value="haspart",
+                pid_field=cls.pid,
+                cache_key="lom-parts",
+            ),
+        )
+        relations.__set_name__(cls, "relations")
+        cls.relations = relations
+        return cls
+
+
+class LOMRecordMeta(type(Record), RelationsMeta):
+    """Meta-Class for LOM-Records."""
+
+    pass
+
+
+class LOMRecord(Record, metaclass=LOMRecordMeta):
     """For representing entries from the 'lom_records_metadata'-SQL-table."""
 
     model_cls = models.LOMRecordMetadata
@@ -132,3 +167,7 @@ class LOMRecord(Record):
     bucket_id = ModelField(dump=False)
     bucket = ModelField(dump=False)
     index = IndexField("lomrecords-records-v1.0.0", search_alias="lomrecords")
+    resource_type = DictField()
+
+
+LOMFileRecord.record_cls = LOMDraft

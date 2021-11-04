@@ -54,15 +54,32 @@ def pass_record_or_draft(func):
 def record_detail(pid_value=None, is_preview=None, record=None, files=None):
     files_dict = {} if files is None else files.to_dict()
 
+    # cf. UIJSONSerializer().serialize_object_to_dict(record.to_dict())
+    serializer = LOMUIJSONSerializer()
+    dict_record = record.to_dict()
+    from copy import deepcopy
+
+    ser_obj = deepcopy(dict_record)
+    schema = serializer.object_schema_cls()
+    dump = schema.dump(ser_obj)
+    ser_obj["ui"] = dump
+    ser_obj["pids"] = {}
+
+    return render_template(
+        "invenio_records_lom/record.html",
+        record=ser_obj,
+        pid=pid_value,
+        files=files_dict,
+        permissions=record.has_permissions_to(
+            ["edit", "new_version", "manage", "update_draft", "read_files"]
+        ),
+        is_preview=is_preview,
+        is_draft=record._record.is_draft,
+    )
+
 
 def create_blueprint(app):
     routes = app.config["LOM_ROUTES"]
-
-
-
-
-
-
 
     blueprint = Blueprint(
         "invenio_records_lom",
@@ -75,11 +92,5 @@ def create_blueprint(app):
         routes["record_detail"],
         view_func=record_detail,
     )
-    )
 
     return blueprint
-
-
-
-
-

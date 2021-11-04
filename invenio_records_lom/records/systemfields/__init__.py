@@ -18,6 +18,7 @@ from invenio_rdm_records.records.systemfields import (
 
 from .context import LOMPIDFieldContext
 from .providers import LOMDraftRecordIdProvider, LOMRecordIdProvider
+from .relations import PIDLOMRelation
 from .resolver import LOMResolver
 
 __all__ = (
@@ -26,5 +27,6 @@ __all__ = (
     LOMRecordIdProvider,
     LOMResolver,
     ParentRecordAccessField,
+    PIDLOMRelation,
     RecordAccessField,
 )

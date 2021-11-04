@@ -15,9 +15,11 @@ from invenio_drafts_resources.services.records.config import RecordServiceConfig
 from invenio_rdm_records.services.components import (
     AccessComponent,
     MetadataComponent,
+    RelationsComponent,
 )
 
 from ..records import LOMDraft, LOMRecord
+from .components import ResourceTypeComponent
 from .permissions import LOMRecordPermissionPolicy
 from .schemas import LOMRecordSchema
 
@@ -37,4 +39,6 @@ class LOMRecordServiceConfig(RecordServiceConfig):
         AccessComponent,
         DraftFilesComponent,
         PIDComponent,
+        RelationsComponent,
+        ResourceTypeComponent,
     ]
