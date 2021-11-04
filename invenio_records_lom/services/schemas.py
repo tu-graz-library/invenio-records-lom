@@ -7,22 +7,8 @@
 
 """Marshmallow schema for validating and serializing LOM JSONs."""
 
-from invenio_rdm_records.services.schemas import RDMParentSchema, RDMRecordSchema
-from invenio_rdm_records.services.schemas.parent import ParentAccessSchema
-from marshmallow import Schema, fields
-from marshmallow_utils.fields import NestedAttribute
-
-
-class LOMAgent(Schema):
-    user = fields.Field(required=True)  # overwrite fields.Int, allow string-identities
-
-
-class LOMParentAccessSchema(ParentAccessSchema):
-    owned_by = fields.List(fields.Nested(LOMAgent))
-
-
-class LOMParentSchema(RDMParentSchema):
-    access = fields.Nested(LOMParentAccessSchema)
+from invenio_rdm_records.services.schemas import RDMRecordSchema
+from marshmallow import fields
 
 
 class LOMRecordSchema(RDMRecordSchema):
@@ -32,9 +18,8 @@ class LOMRecordSchema(RDMRecordSchema):
 
     # overwrite metadata-field: allow any dict
     metadata = fields.Dict(keys=fields.String(), values=fields.Field())
-    # overwrite parent-field: allow string-users
-    # TODO: write schema
-    parent = NestedAttribute(LOMParentSchema, dump_only=True)
+
+    resource_type = fields.String()
 
 
 __all__ = ("LOMRecordSchema",)
