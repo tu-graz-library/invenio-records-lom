@@ -94,6 +94,10 @@ LOM_REST_FACETS = dict(
 )
 """Introduce searching facets."""
 
+LOM_ROUTES = {
+    "record_detail": "/lom/<pid_value>",
+}
+
 # Invenio-records-rest
 # ===========
 # See https://invenio-records-rest.readthedocs.io/en/latest/configuration.html

@@ -105,7 +105,7 @@ setup(
             "invenio_records_lom = invenio_records_lom:InvenioRecordsLOM",
         ],
         "invenio_base.blueprints": [
-            "invenio_records_lom = invenio_records_lom.views:blueprint",
+            "invenio_records_lom = invenio_records_lom.views:create_blueprint",
         ],
         "invenio_jsonschemas.schemas": [
             "invenio_records_lom = invenio_records_lom.jsonschemas",
