@@ -22,7 +22,7 @@ class LOMRecordPermissionPolicy(RecordPermissionPolicy):
     can_all = [AnyUser(), SystemProcess()]
 
     can_create = can_all
-    can_edit = can_all
+    can_edit = [SystemProcess()]
     can_publish = can_all
     can_update_draft = can_all
 

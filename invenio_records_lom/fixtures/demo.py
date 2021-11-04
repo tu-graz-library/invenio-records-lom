@@ -385,13 +385,16 @@ def create_fake_access(fake: Faker):
     }
 
 
-def create_fake_data(fake: Faker):
+def create_fake_data(fake: Faker, resource_type=None):
     """Create a fake json of an invenio-record, "metadata" conforms to LOM-standard."""
+    resource_types = ["course", "unit", "file", "link"]
+    resource_type = resource_type or fake.random.choice(resource_types)
     return {
         # these values get processed by service.config.components
         "access": create_fake_access(fake),
         "files": {"enabled": False},
         "metadata": create_fake_metadata(fake),
+        "resource_type": resource_type,
     }
 
 
@@ -411,39 +414,35 @@ def publish_fake_record(fake: Faker):
         updated_draft_item = update_draft(id_=id_, data=data)
         return publish(id_=updated_draft_item.id)
 
-    def add_relation(data, kind, pid):
+    def inject_relation(data, kind, pid):
         kind = {"source": "LOMv1.0", "value": kind}
         identifier = {"catalog": "repo-pid", "entry": pid}
         resource = {"identifier": [identifier]}
         data["metadata"]["relation"].append({"kind": kind, "resource": resource})
 
-    # TODO: add own pid to general.identifier?
-    # TODO: add descriptions?
-    # create course
-    course_data = create_fake_data(fake)
+    def link_up(whole_id, part_id):
+        whole_draft_item = edit(whole_id)
+        whole_data = whole_draft_item.to_dict()
+        inject_relation(whole_data, "haspart", part_id)
+        update_then_publish(whole_id, whole_data)
+
+        part_draft_item = edit(part_id)
+        part_data = part_draft_item.to_dict()
+        inject_relation(part_data, "ispartof", whole_id)
+        update_then_publish(part_id, part_data)
+
+    course_data = create_fake_data(fake, resource_type="course")
     course_service_item = create_then_publish(data=course_data)
 
-    # create unit that references course
-    unit_data = create_fake_data(fake)
-    add_relation(unit_data, "ispartof", course_service_item.id)
-    unit_service_item = create_then_publish(data=unit_data)
+    for __ in range(2):
+        unit_data = create_fake_data(fake, resource_type="unit")
+        unit_service_item = create_then_publish(unit_data)
+        link_up(whole_id=course_service_item.id, part_id=unit_service_item.id)
 
-    # edit course to reference unit
-    course_draft_item = edit(course_service_item.id)
-    updated_course_data = course_draft_item.to_dict()
-    add_relation(updated_course_data, "haspart", unit_service_item.id)
-    update_then_publish(course_draft_item.id, data=updated_course_data)
-
-    # create file that references unit
-    file_data = create_fake_data(fake)
-    add_relation(file_data, "ispartof", unit_service_item.id)
-    file_service_item = create_then_publish(data=file_data)
-
-    # edit unit to reference file
-    unit_draft_item = edit(unit_service_item.id)
-    updated_unit_data = unit_draft_item.to_dict()
-    add_relation(updated_unit_data, "haspart", file_service_item.id)
-    update_then_publish(unit_draft_item.id, data=updated_unit_data)
+        for __ in range(2):
+            file_data = create_fake_data(fake, resource_type="file")
+            file_service_item = create_then_publish(file_data)
+            link_up(whole_id=unit_service_item.id, part_id=file_service_item.id)
 
 
 def publish_fake_records(number: int, seed: int = 42) -> list:
