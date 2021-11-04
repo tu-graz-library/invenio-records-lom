@@ -19,7 +19,7 @@ class PIDLOMRelation(PIDRelation):
         """source, value, catalog as in 7.Relation of LOM-standard."""
         self.source = source
         self.value = value
-        self._catalog = "repo-pid"
+        self._catalog = _catalog
         super().__init__(key=key, _value_key_suffix=_value_key_suffix, **kwargs)
 
     def parse_value(self, value):
