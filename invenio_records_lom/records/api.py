@@ -26,12 +26,14 @@ Use flask.current_app['invenio-records-lom'].records_service to interact with.
 
 from invenio_drafts_resources.records import Draft, Record
 from invenio_drafts_resources.records.api import ParentRecord
+from invenio_pidstore.models import PIDStatus
 from invenio_records.systemfields import DictField, ModelField, RelationsField
 from invenio_records_resources.records.api import FileRecord
 from invenio_records_resources.records.systemfields import (
     FilesField,
     IndexField,
     PIDField,
+    PIDStatusCheckField,
 )
 
 from . import models
@@ -68,7 +70,7 @@ class LOMFileDraft(FileRecord):
 
     model_cls = models.LOMFileDraftMetadata
     # LOMFileDraft and LOMDraft depend on each other, monkey-patch record_cls in later
-    record_cls = None
+    record_cls = None  # defined below
 
 
 class LOMDraft(Draft):
@@ -96,6 +98,7 @@ class LOMDraft(Draft):
     bucket_id = ModelField(dump=False)
     bucket = ModelField(dump=False)
     index = IndexField("lomrecords-drafts-v1.0.0", search_alias="lomrecords")
+    is_published = PIDStatusCheckField(status=PIDStatus.REGISTERED, dump=True)
     resource_type = DictField()
 
 
@@ -107,7 +110,7 @@ class LOMFileRecord(FileRecord):
 
     model_cls = models.LOMFileRecordMetadata
     # LOMFileRecord and LOMRecord depend on each other, monkey-patch this in later
-    record_cls = None
+    record_cls = None  # defined below
 
 
 class RelationsMeta(type):
@@ -167,7 +170,8 @@ class LOMRecord(Record, metaclass=LOMRecordMeta):
     bucket_id = ModelField(dump=False)
     bucket = ModelField(dump=False)
     index = IndexField("lomrecords-records-v1.0.0", search_alias="lomrecords")
+    is_published = PIDStatusCheckField(status=PIDStatus.REGISTERED, dump=True)
     resource_type = DictField()
 
 
-LOMFileRecord.record_cls = LOMDraft
+LOMFileRecord.record_cls = LOMRecord

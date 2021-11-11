@@ -9,6 +9,7 @@
 
 import json
 from functools import partial
+from io import BytesIO
 
 from faker import Faker
 from invenio_access.permissions import system_identity
@@ -385,14 +386,14 @@ def create_fake_access(fake: Faker):
     }
 
 
-def create_fake_data(fake: Faker, resource_type=None):
+def create_fake_data(fake: Faker, resource_type, files_enabled=False):
     """Create a fake json of an invenio-record, "metadata" conforms to LOM-standard."""
     resource_types = ["course", "unit", "file", "link"]
     resource_type = resource_type or fake.random.choice(resource_types)
     return {
         # these values get processed by service.config.components
         "access": create_fake_access(fake),
-        "files": {"enabled": False},
+        "files": {"enabled": files_enabled},
         "metadata": create_fake_metadata(fake),
         "resource_type": resource_type,
     }
@@ -406,8 +407,27 @@ def publish_fake_record(fake: Faker):
     publish = partial(service.publish, identity=system_identity)
     update_draft = partial(service.update_draft, identity=system_identity)
 
-    def create_then_publish(data):
+    df_service = service.draft_files
+    init_files = partial(df_service.init_files, identity=system_identity)
+    set_file_content = partial(df_service.set_file_content, identity=system_identity)
+    commit_file = partial(df_service.commit_file, identity=system_identity)
+
+    def create_then_publish(data, create_fake_files=False):
         draft_item = create(data=data)
+
+        if create_fake_files:
+            fake_files = {fake.file_name(): fake.text() for __ in range(2)}
+
+            init_files(id_=draft_item.id, data=[{"key": name} for name in fake_files])
+            for file_name, file_content in fake_files.items():
+                stream = BytesIO(file_content.encode())
+                set_file_content(id_=draft_item.id, file_key=file_name, stream=stream)
+                commit_file(id_=draft_item.id, file_key=file_name)
+
+            draft_data = draft_item.to_dict()
+            draft_data["files"]["default_preview"] = next(iter(fake_files))
+            draft_item = update_draft(id_=draft_item.id, data=draft_data)
+
         return publish(id_=draft_item.id)
 
     def update_then_publish(id_, data):
@@ -436,12 +456,14 @@ def publish_fake_record(fake: Faker):
 
     for __ in range(2):
         unit_data = create_fake_data(fake, resource_type="unit")
-        unit_service_item = create_then_publish(unit_data)
+        unit_service_item = create_then_publish(data=unit_data)
         link_up(whole_id=course_service_item.id, part_id=unit_service_item.id)
 
         for __ in range(2):
-            file_data = create_fake_data(fake, resource_type="file")
-            file_service_item = create_then_publish(file_data)
+            file_data = create_fake_data(fake, resource_type="file", files_enabled=True)
+            file_service_item = create_then_publish(
+                data=file_data, create_fake_files=True
+            )
             link_up(whole_id=unit_service_item.id, part_id=file_service_item.id)
 
 

@@ -95,6 +95,9 @@ LOM_REST_FACETS = dict(
 
 LOM_ROUTES = {
     "record_detail": "/lom/<pid_value>",
+    "record_export": "/lom/<pid_value>/export/<export_format>",
+    "record_file_preview": "/lom/<pid_value>/preview/<path:filename>",
+    "record_file_download": "/lom/<pid_value>/files/<path:filename>",
 }
 
 # Invenio-records-rest

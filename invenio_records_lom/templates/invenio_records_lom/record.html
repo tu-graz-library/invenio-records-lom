@@ -8,7 +8,7 @@
 
 {%- extends "invenio_app_rdm/records/detail.html" %}
 
-{%- from "invenio_app_rdm/records/macros/files.html" import file_list_box, preview_file_box %}
+{% from "invenio_records_lom/records/macros/files.html" import lom_file_list_box, lom_preview_file_box %}
 
 {% block head_title %}
 <title>{{ record.metadata.general.title.string }}</title>
@@ -76,8 +76,46 @@
 <ul class="ui list">
 {{ make_dep_tree(metadata.relation) }}
 </ul>
-<hr class="thin-line">
 {% endblock record_content %}
+
+
+{% block record_files %}
+  {%- if record.files.enabled -%}
+    {%- if permissions.can_read_files -%}
+      {# record has files AND user can see files #}
+      {%- set files = files|order_entries %}
+      {%- if files|has_previewable_files -%}
+        {%-set preview_file = files|select_preview_file(default_preview=record.files.default_preview) %}
+        {{ lom_preview_file_box(preview_file, pid, is_preview, record) }}
+      {%- endif -%}
+      <p>file_list_box</p>
+      {{ lom_file_list_box(files, pid, is_preview, record) }}
+    {% else %}
+      {# record has files BUT user cannot see files #}
+      <div class="panel-spacing">
+        <div class="ui accordion panel {{ record.ui.access_status.id }}" id="preview" href="#collapsablePreview">
+          <div class="active title panel-heading {{ record.ui.access_status.id }}">
+            {{ _("Files") }}
+            <i class="angle down icon"></i>
+          </div>
+          <div id="collapsablePreview" class="active content">
+            <div class="ui {{ record.ui.access_status.message_class }} message file-box-message">
+              <i class="ui {{ record.ui.access_status.icon }} icon"></i><b>{{ record.ui.access_status.title_l10n }}</b>
+              <p>{{ record.ui.access_status.description_l10n }}</p>
+              {% if record.access.embargo.reason %}
+                <p>{{_("Reason")}}: {{record.access.embargo.reason}}</p>
+              {% endif%}
+            </div>
+          </div>
+        </div>
+      </div>
+    {%- endif %}
+  {%- endif %}
+{% endblock record_files %}
+
+
+{% block record_details %}
+{% endblock record_details %}
 
 
 {% block record_sidebar %}
@@ -103,7 +141,3 @@
 </div>
 {%- endif -%}
 {% endblock record_sidebar %}
-
-
-{% block record_details %}
-{% endblock record_details %}

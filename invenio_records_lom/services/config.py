@@ -17,6 +17,7 @@ from invenio_rdm_records.services.components import (
     MetadataComponent,
     RelationsComponent,
 )
+from invenio_records_resources.services import FileServiceConfig
 
 from ..records import LOMDraft, LOMRecord
 from .components import ResourceTypeComponent
@@ -42,3 +43,20 @@ class LOMRecordServiceConfig(RecordServiceConfig):
         RelationsComponent,
         ResourceTypeComponent,
     ]
+
+
+class LOMDraftFilesServiceConfig(FileServiceConfig):
+    record_cls = LOMDraft
+    permission_action_prefix = "draft_"
+    permission_policy_cls = LOMRecordPermissionPolicy
+
+    file_links_list = {}
+    file_links_item = {}
+
+
+class LOMRecordFilesServiceConfig(FileServiceConfig):
+    record_cls = LOMRecord
+    permission_policy_cls = LOMRecordPermissionPolicy
+
+    file_links_list = {}
+    file_links_item = {}

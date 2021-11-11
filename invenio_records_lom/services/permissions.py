@@ -7,11 +7,11 @@
 
 """Permission-config classes for LOMRecordService-objects."""
 
-from invenio_records_permissions.generators import AnyUser, Disable, SystemProcess
-from invenio_records_permissions.policies.records import RecordPermissionPolicy
+from invenio_rdm_records.services.permissions import RDMRecordPermissionPolicy
+from invenio_records_permissions.generators import AnyUser, SystemProcess
 
 
-class LOMRecordPermissionPolicy(RecordPermissionPolicy):
+class LOMRecordPermissionPolicy(RDMRecordPermissionPolicy):
     """Flask-principal style permissions for LOM record services.
 
     Note that the invenio_access.Permission class always adds ``superuser-access``,
@@ -23,16 +23,9 @@ class LOMRecordPermissionPolicy(RecordPermissionPolicy):
 
     can_create = can_all
     can_edit = [SystemProcess()]
+    can_read_files = can_all
     can_publish = can_all
     can_update_draft = can_all
 
-    #
-    # Disabled actions (these should not be used or changed)
-    #
-    # - Records/files are updated/deleted via drafts so we don't support
-    #   using below actions.
-    can_update = [Disable()]
-    can_delete = [Disable()]
-    can_create_files = [Disable()]
-    can_update_files = [Disable()]
-    can_delete_files = [Disable()]
+    can_draft_read_files = can_all
+    can_draft_create_files = can_all
