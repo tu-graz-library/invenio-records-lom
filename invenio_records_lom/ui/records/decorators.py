@@ -59,3 +59,53 @@ def pass_record_files(func):
         return func(**kwargs, files=files)
 
     return decoed
+
+
+def pass_file_metadata(func):
+    @wraps(func)
+    def decoed(**kwargs):
+        is_preview = kwargs.get("is_preview", False)
+        draft_files_service = current_records_lom.records_service.draft_files
+        files_service = current_records_lom.records_service.files
+        service_kwargs = {
+            "id_": kwargs.get("pid_value"),
+            "file_key": kwargs.get("filename"),
+            "identity": g.identity,
+        }
+
+        if is_preview:
+            try:
+                file_metadata = draft_files_service.read_file_metadata(**service_kwargs)
+            except NoResultFound:
+                file_metadata = files_service.read_file_metadata(**service_kwargs)
+        else:
+            file_metadata = files_service.read_file_metadata(**service_kwargs)
+
+        return func(**kwargs, file_metadata=file_metadata)
+
+    return decoed
+
+
+def pass_file_item(func):
+    @wraps(func)
+    def decoed(**kwargs):
+        is_preview = kwargs.get("is_preview", False)
+        draft_files_service = current_records_lom.records_service.draft_files
+        files_service = current_records_lom.records_service.files
+        service_kwargs = {
+            "id_": kwargs.get("pid_value"),
+            "file_key": kwargs.get("filename"),
+            "identity": g.identity,
+        }
+
+        if is_preview:
+            try:
+                file_item = draft_files_service.get_file_content(**service_kwargs)
+            except NoResultFound:
+                file_item = files_service.get_file_content(**service_kwargs)
+        else:
+            file_item = files_service.get_file_content(**service_kwargs)
+
+        return func(**kwargs, file_item=file_item)
+
+    return decoed

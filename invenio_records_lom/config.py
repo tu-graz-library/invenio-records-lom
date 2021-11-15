@@ -100,6 +100,13 @@ LOM_ROUTES = {
     "record_file_download": "/lom/<pid_value>/files/<path:filename>",
 }
 
+LOM_RECORD_EXPORTERS = {
+    "json": {
+        "name": _("JSON"),
+        "serializer": "flask_resources.serializers:JSONSerializer",
+    },
+}
+
 # Invenio-records-rest
 # ===========
 # See https://invenio-records-rest.readthedocs.io/en/latest/configuration.html

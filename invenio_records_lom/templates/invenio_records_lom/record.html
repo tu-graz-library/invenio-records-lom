@@ -1,6 +1,6 @@
 {# -*- coding: utf-8 -*-
 
-  Copyright (C) 2020 Graz University of Technology.
+  Copyright (C) 2021 Graz University of Technology.
 
   invenio-records-lom is free software; you can redistribute it and/or modify it
   under the terms of the MIT License; see LICENSE file for more details.
@@ -88,7 +88,6 @@
         {%-set preview_file = files|select_preview_file(default_preview=record.files.default_preview) %}
         {{ lom_preview_file_box(preview_file, pid, is_preview, record) }}
       {%- endif -%}
-      <p>file_list_box</p>
       {{ lom_file_list_box(files, pid, is_preview, record) }}
     {% else %}
       {# record has files BUT user cannot see files #}
@@ -119,7 +118,7 @@
 
 
 {% block record_sidebar %}
-{%- if config.get("APP_RDM_RECORD_EXPORTERS") -%}
+{%- if config.get("LOM_RECORD_EXPORTERS") -%}
 {# if no export formats are specified, don't bother showing the box #}
 <div class="ui segment rdm-sidebar exports">
   <dt><b>{{ _('Export')}}</b></dt>
@@ -127,12 +126,12 @@
   <dd class="top-bottom-padded">
     <div class="ui celled horizontal list separated-list">
       {# dynamically create the list of export formats #}
-      {%- for fmt, val in config.get("APP_RDM_RECORD_EXPORTERS", {}).items() -%}
+      {%- for fmt, val in config.get("LOM_RECORD_EXPORTERS", {}).items() -%}
         {%- set name = val.get("name", fmt) -%}
         {% if is_preview %}
-          {%- set export_url = url_for('invenio_app_rdm_records.record_export', pid_value=record.id, export_format=fmt, preview=1) -%}
+          {%- set export_url = url_for('invenio_records_lom.record_export', pid_value=record.id, export_format=fmt, preview=1) -%}
         {% else %}
-          {%- set export_url = url_for('invenio_app_rdm_records.record_export', pid_value=record.id, export_format=fmt) -%}
+          {%- set export_url = url_for('invenio_records_lom.record_export', pid_value=record.id, export_format=fmt) -%}
         {% endif %}
          <div class="item"><a href="{{ export_url }}">{{ name }}</a></div>
       {%- endfor -%}
