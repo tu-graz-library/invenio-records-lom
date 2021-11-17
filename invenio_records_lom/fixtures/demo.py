@@ -416,11 +416,13 @@ def publish_fake_record(fake: Faker):
         draft_item = create(data=data)
 
         if create_fake_files:
-            fake_files = {fake.file_name(): fake.text() for __ in range(2)}
+            fake_files = {
+                fake.file_name(extension="png"): fake.image() for __ in range(2)
+            }
 
             init_files(id_=draft_item.id, data=[{"key": name} for name in fake_files])
             for file_name, file_content in fake_files.items():
-                stream = BytesIO(file_content.encode())
+                stream = BytesIO(file_content)
                 set_file_content(id_=draft_item.id, file_key=file_name, stream=stream)
                 commit_file(id_=draft_item.id, file_key=file_name)
 
