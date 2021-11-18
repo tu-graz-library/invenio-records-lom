@@ -10,6 +10,8 @@
 from invenio_rdm_records.services.schemas import RDMRecordSchema
 from marshmallow import fields
 
+from .fields import ControlledVocabularyField
+
 
 class LOMRecordSchema(RDMRecordSchema):
 
@@ -19,7 +21,9 @@ class LOMRecordSchema(RDMRecordSchema):
     # overwrite metadata-field: allow any dict
     metadata = fields.Dict(keys=fields.String(), values=fields.Field())
 
-    resource_type = fields.String()
+    resource_type = ControlledVocabularyField(
+        vocabulary=["course", "unit", "file", "link"]
+    )
 
 
 __all__ = ("LOMRecordSchema",)
