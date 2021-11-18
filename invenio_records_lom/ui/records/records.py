@@ -71,6 +71,9 @@ def record_detail(pid_value=None, is_preview=None, record=None, files=None):
     record_ui = LOMUIJSONSerializer().serialize_object_to_dict(record.to_dict())
     record_ui["pids"] = {}  # for compatiblity with invenio-templates
 
+    if is_preview and record._record.is_draft:
+        abort(404)
+
     return render_template(
         "invenio_records_lom/record.html",
         record=record_ui,
