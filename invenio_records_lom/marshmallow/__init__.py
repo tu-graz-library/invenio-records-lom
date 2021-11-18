@@ -7,7 +7,7 @@
 
 """Schemas for marshmallow."""
 
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, annotations, print_function
 
 from .json import LomMetadataSchemaV1, LomSchemaV1
 
