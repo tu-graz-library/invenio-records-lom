@@ -5,6 +5,8 @@
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
+"""Decorates for record-view-functions."""
+
 from functools import wraps
 
 from flask import g, request
@@ -15,6 +17,8 @@ from ...proxies import current_records_lom
 
 
 def pass_is_preview(func):
+    """Retrieve `is_preview` from request and pass that into decorated function."""
+
     @wraps(func)
     def decoed(**kwargs):
         is_preview = request.args.get("preview") == "1"
@@ -24,6 +28,8 @@ def pass_is_preview(func):
 
 
 def pass_record_or_draft(func):
+    """Retrieve `record` from database and pass that into decorated function."""
+
     @wraps(func)
     def decoed(**kwargs):
         is_preview = kwargs.get("is_preview", False)
@@ -44,6 +50,8 @@ def pass_record_or_draft(func):
 
 
 def pass_record_files(func):
+    """Retrieve `files` from database and pass that into decorated function."""
+
     @wraps(func)
     def decoed(**kwargs):
         is_preview = kwargs.get("is_preview", False)
@@ -69,6 +77,8 @@ def pass_record_files(func):
 
 
 def pass_file_metadata(func):
+    """Retrieve `file_metadata` from database and pass that into decorated function."""
+
     @wraps(func)
     def decoed(**kwargs):
         is_preview = kwargs.get("is_preview", False)
@@ -94,6 +104,8 @@ def pass_file_metadata(func):
 
 
 def pass_file_item(func):
+    """Retrieve `file_item` from database and pass that into decorated function."""
+
     @wraps(func)
     def decoed(**kwargs):
         is_preview = kwargs.get("is_preview", False)

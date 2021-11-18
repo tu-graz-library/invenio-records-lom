@@ -87,7 +87,7 @@ class InvenioRecordsLOM(object):
                     app.config["RECORDS_REST_DEFAULT_SORT"].update(getattr(config, k))
 
     def init_services(self, app):
-        """Initialize Services."""
+        """Initialize services."""
         service_config = (
             LOMRecordServiceConfig  # config_class as in invenio-RDM and invenio-MARC21
         )
@@ -99,6 +99,7 @@ class InvenioRecordsLOM(object):
         )
 
     def init_resources(self, app):
+        """Initialize resouces."""
         self.records_resource = LOMRecordResource(
             LOMRecordResourceConfig,
             self.records_service,

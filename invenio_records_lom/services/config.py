@@ -46,6 +46,8 @@ class LOMRecordServiceConfig(RecordServiceConfig):
 
 
 class LOMDraftFilesServiceConfig(FileServiceConfig):
+    """Config for LOM draft files service."""
+
     record_cls = LOMDraft
     permission_action_prefix = "draft_"
     permission_policy_cls = LOMRecordPermissionPolicy
@@ -55,6 +57,8 @@ class LOMDraftFilesServiceConfig(FileServiceConfig):
 
 
 class LOMRecordFilesServiceConfig(FileServiceConfig):
+    """Config for LOM files service."""
+
     record_cls = LOMRecord
     permission_policy_cls = LOMRecordPermissionPolicy
 

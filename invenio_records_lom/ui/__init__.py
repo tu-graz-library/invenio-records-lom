@@ -5,12 +5,15 @@
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
+"""User interface utilities."""
+
 from flask import Blueprint
 
 from .records import init_records_views
 
 
 def create_blueprint(app):
+    """Return blueprint with registered routes."""
     blueprint = Blueprint(
         "invenio_records_lom",
         __name__,

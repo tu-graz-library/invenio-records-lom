@@ -5,11 +5,16 @@
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
+"""Results for relations system field."""
+
 from invenio_records.systemfields.relations import RelationResult
 
 
 class RelationLOMResult(RelationResult):
+    """Relation access result."""
+
     def __call__(self, force=True):
+        """Resolve the relation."""
         raise NotImplementedError(
             f"{self.__class__.__qualname__}.__call__ is not implemented yet"
         )
@@ -20,6 +25,7 @@ class RelationLOMResult(RelationResult):
         )
 
     def validate(self):
+        """Validate the field."""
         # this gets called on service.publish()->record.commit()->extension.pre_commit()
         # TODO: raise when json is ill-formed
         pass
@@ -42,19 +48,23 @@ class RelationLOMResult(RelationResult):
                 del data[k]
 
     def dereference(self, attrs=None):
+        """Dereference the relation field object inside the record."""
         return self._apply_items(self._dereference_one, attrs)
 
     def clean(self, attrs=None):
+        """Remove any dereferenced attributes from inside the record."""
         # gets called pre_commit, clears any dereferenced values before committing
         self._apply_items(self._clean_one, attrs)
 
     def append(self, value):
+        """Append a relation to the list."""
         # (2021-10-18): invenio raises here too
         raise NotImplementedError(
             f"{self.__class__.__qualname__}.append is not implemented yet"
         )
 
     def insert(self, index, value):
+        """Insert a relation to the list."""
         # (2021-10-18): invenio raises here too
         raise NotImplementedError(
             f"{self.__class__.__qualname__}.insert is not implemented yet"

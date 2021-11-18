@@ -115,9 +115,12 @@ class LOMFileRecord(FileRecord):
 
 class RelationsMeta(type):
     """For self-referential `RelationsField`.
-    Delays assigning to `pid_field` until class is already created."""
+
+    Delays assigning to `.relations`' `pid_field` until class is already created.
+    """
 
     def __new__(mcs, name, bases, attrs):
+        """Create and return a new class with `.relations`-attribute."""
         cls = super().__new__(mcs, name, bases, attrs)
         relations = RelationsField(
             wholes=PIDLOMRelation(

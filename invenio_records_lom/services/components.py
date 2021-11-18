@@ -5,6 +5,8 @@
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
+"""LOM service components."""
+
 from copy import copy
 
 from invenio_drafts_resources.services.records.components import ServiceComponent
@@ -12,7 +14,9 @@ from invenio_drafts_resources.services.records.components import ServiceComponen
 
 class ResourceTypeComponent(ServiceComponent):
     """Service component for resource_type.
-    Akin to invenio_rdm_records.services.components.MetadataComponent."""
+
+    Akin to invenio_rdm_records.services.components.MetadataComponent.
+    """
 
     new_version_skip_fields = ["publication_date", "version"]
 

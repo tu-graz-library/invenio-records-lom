@@ -5,6 +5,8 @@
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
+"""User interface utilities for records."""
+
 from invenio_app_rdm.records_ui.views import (
     not_found_error,
     pid_url,
@@ -27,6 +29,7 @@ from .records import (
 
 
 def init_records_views(blueprint, app):
+    """Register blueprints for records on passed in `blueprint`."""
     routes = app.config["LOM_ROUTES"]
 
     blueprint.add_url_rule(

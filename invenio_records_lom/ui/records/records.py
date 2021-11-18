@@ -5,6 +5,8 @@
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
+"""View-functions for record-related pages."""
+
 from os.path import splitext
 
 from flask import abort, current_app, render_template, request, url_for
@@ -66,6 +68,7 @@ class PreviewFile:
 @pass_record_or_draft
 @pass_record_files
 def record_detail(pid_value=None, is_preview=None, record=None, files=None):
+    """Record detail page (aka landing page)."""
     files_dict = {} if files is None else files.to_dict()
 
     record_ui = LOMUIJSONSerializer().serialize_object_to_dict(record.to_dict())
@@ -92,6 +95,7 @@ def record_detail(pid_value=None, is_preview=None, record=None, files=None):
 def record_export(
     record=None, export_format=None, pid_value=None, permissions=None, is_preview=False
 ):
+    """Export view for LOM records."""
     exporter = current_app.config.get("LOM_RECORD_EXPORTERS", {}).get(export_format)
     if exporter is None:
         abort(404)
@@ -125,6 +129,7 @@ def record_file_preview(
     is_preview=False,
     **kwargs,
 ):
+    """Render a preview of the specified file."""
     file_previewer = file_metadata.data.get("previewer")
     url = url_for(
         "invenio_records_lom.record_file_download",
@@ -147,5 +152,6 @@ def record_file_preview(
 @pass_is_preview
 @pass_file_item
 def record_file_download(file_item=None, pid_value=None, is_preview=False, **kwargs):
+    """Download a file from a record."""
     download = bool(request.args.get("download"))
     return file_item.send_file(as_attachment=download)

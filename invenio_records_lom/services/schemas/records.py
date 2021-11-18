@@ -14,6 +14,7 @@ from .fields import ControlledVocabularyField
 
 
 class LOMRecordSchema(RDMRecordSchema):
+    """Marshmallow schema for validating LOM records."""
 
     # NOTE: To ensure compatibility with invenio systemfields,
     # use ``NestedAttribute`` instead of ``fields.Nested()``.
