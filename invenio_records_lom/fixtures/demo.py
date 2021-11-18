@@ -415,6 +415,13 @@ def publish_fake_record(fake: Faker):
     def create_then_publish(data, create_fake_files=False):
         draft_item = create(data=data)
 
+        # add repo-pid to the record's identifiers
+        draft_data = draft_item.to_dict()
+        draft_data["metadata"]["general"]["identifier"].append(
+            {"catalog": "repo-pid", "entry": draft_item.id}
+        )
+        draft_item = update_draft(id_=draft_item.id, data=draft_data)
+
         if create_fake_files:
             fake_files = {
                 fake.file_name(extension="png"): fake.image() for __ in range(2)
