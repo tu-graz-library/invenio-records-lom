@@ -52,6 +52,7 @@ setup_requires = [
 
 install_requires = [
     "invenio-jsonschemas>=1.1.3",
+    "invenio-previewer>=1.3.4",
     "invenio-records-rest>=1.8.0",
     "invenio_rdm_records>=0.32.3,<0.33",
     # these indirect dependencies are given for faster dependency tree resolution:
