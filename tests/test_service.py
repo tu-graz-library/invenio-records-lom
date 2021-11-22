@@ -32,7 +32,7 @@ _ACCESS_CONFIGURATIONS = [
         "files": "public",
         "record": "public",
         "embargo": {
-            "until": "2020-12-31",
+            "until": "2030-12-31",
             "reason": "Test embargo for test record.",
             "active": True,
         },
@@ -69,8 +69,10 @@ def _pick_by_cls(iterable, cls, assert_unique=True):
 def test_create_draft(service, db, identity_any_user, access):
     """Test creating a draft, then test database changes."""
     data = {
-        "metadata": {"test": "Test"},
         "access": access,
+        "files": {"enabled": False},
+        "metadata": {"test": "Test"},
+        "resource_type": "course",
     }
 
     db_before = _get_session_commits(db)
@@ -113,8 +115,10 @@ def test_create_draft(service, db, identity_any_user, access):
 def test_publish(service, db, identity_any_user, access):
     """Test publishing a record, then test database changes."""
     data = {
-        "metadata": {"test": "Test"},
         "access": access,
+        "files": {"enabled": False},
+        "metadata": {"test": "Test"},
+        "resource_type": "course",
     }
 
     db_before = _get_session_commits(db)

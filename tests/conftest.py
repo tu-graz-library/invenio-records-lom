@@ -53,7 +53,7 @@ def cli_location(db):
 @pytest.fixture
 def identity_any_user():
     """Simple identity fixture."""
-    i = Identity("test-identity-any-user")
+    i = Identity(1)
     i.provides.add(any_user)
     return i
 

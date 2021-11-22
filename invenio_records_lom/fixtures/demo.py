@@ -386,7 +386,7 @@ def create_fake_access(fake: Faker):
     }
 
 
-def create_fake_data(fake: Faker, resource_type, files_enabled=False):
+def create_fake_data(fake: Faker, resource_type: str, files_enabled: bool = False):
     """Create a fake json of an invenio-record, "metadata" conforms to LOM-standard."""
     resource_types = ["course", "unit", "file", "link"]
     resource_type = resource_type or fake.random.choice(resource_types)
@@ -400,7 +400,7 @@ def create_fake_data(fake: Faker, resource_type, files_enabled=False):
 
 
 def publish_fake_record(fake: Faker):
-    """Enter fake records in the SQL-database."""
+    """Enter fake records into the SQL-database."""
     service = current_records_lom.records_service
     create = partial(service.create, identity=system_identity)
     edit = partial(service.edit, identity=system_identity)
@@ -424,7 +424,8 @@ def publish_fake_record(fake: Faker):
 
         if create_fake_files:
             fake_files = {
-                fake.file_name(extension="png"): fake.image() for __ in range(2)
+                fake.file_name(extension="txt"): fake.sentence().encode()
+                for __ in range(2)
             }
 
             init_files(id_=draft_item.id, data=[{"key": name} for name in fake_files])
