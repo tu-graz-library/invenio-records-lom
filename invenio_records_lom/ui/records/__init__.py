@@ -7,12 +7,6 @@
 
 """User interface utilities for records."""
 
-from invenio_app_rdm.records_ui.views import (
-    not_found_error,
-    pid_url,
-    record_permission_denied_error,
-    record_tombstone_error,
-)
 from invenio_pidstore.errors import (
     PIDDeletedError,
     PIDDoesNotExistError,
@@ -20,6 +14,12 @@ from invenio_pidstore.errors import (
 )
 from invenio_records_resources.services.errors import PermissionDeniedError
 
+from .errors import (
+    not_found_error,
+    record_permission_denied_error,
+    record_tombstone_error,
+)
+from .filters import pid_url
 from .records import (
     record_detail,
     record_export,
