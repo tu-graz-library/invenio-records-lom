@@ -7,8 +7,10 @@
 
 """Marshmallow schema for validating and serializing LOM JSONs."""
 
+from flask import current_app
 from invenio_rdm_records.services.schemas import RDMRecordSchema
 from marshmallow import fields
+from werkzeug.local import LocalProxy
 
 from .fields import ControlledVocabularyField
 
@@ -23,7 +25,7 @@ class LOMRecordSchema(RDMRecordSchema):
     metadata = fields.Dict(keys=fields.String(), values=fields.Field())
 
     resource_type = ControlledVocabularyField(
-        vocabulary=["course", "unit", "file", "link"]
+        vocabulary=LocalProxy(lambda: current_app.config["LOM_RESOURCE_TYPES"]),
     )
 
 

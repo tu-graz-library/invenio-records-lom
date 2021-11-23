@@ -12,6 +12,7 @@ from functools import partial
 from io import BytesIO
 
 from faker import Faker
+from flask import current_app
 from invenio_access.permissions import system_identity
 
 from ..proxies import current_records_lom
@@ -388,7 +389,7 @@ def create_fake_access(fake: Faker):
 
 def create_fake_data(fake: Faker, resource_type: str, files_enabled: bool = False):
     """Create a fake json of an invenio-record, "metadata" conforms to LOM-standard."""
-    resource_types = ["course", "unit", "file", "link"]
+    resource_types = current_app.config["LOM_RESOURCE_TYPES"]
     resource_type = resource_type or fake.random.choice(resource_types)
     return {
         # these values get processed by service.config.components

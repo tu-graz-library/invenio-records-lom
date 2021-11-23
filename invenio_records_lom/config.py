@@ -77,7 +77,7 @@ LOM_REST_DEFAULT_SORT = dict(
 # TODO: link with the base records:
 # LOM_RECORD_INDEX = "records"
 
-# TODO:
+# TODO: custom indexer_receiver
 # Overwite to change the default indexer for lomrecords
 # LOM_INDEXER_RECEIVER = None
 
@@ -106,6 +106,13 @@ LOM_RECORD_EXPORTERS = {
         "serializer": "flask_resources.serializers:JSONSerializer",
     },
 }
+
+LOM_RESOURCE_TYPES = [
+    "course",
+    "unit",
+    "file",
+    "link",
+]
 
 # Invenio-records-rest
 # ===========
