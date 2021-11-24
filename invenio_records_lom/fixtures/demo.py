@@ -71,7 +71,7 @@ def create_fake_duration(fake: Faker) -> dict:
 
 def create_fake_vcard(fake: Faker) -> str:
     """Returns a placeholder-string for a vCard-object."""
-    return "placeholder for vcard"
+    return f"{fake.last_name()}, {fake.first_name()}"
 
 
 # ----- functions for elements that are part of more than one category -----
