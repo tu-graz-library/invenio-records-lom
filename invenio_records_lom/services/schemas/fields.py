@@ -30,7 +30,7 @@ class ControlledVocabularyField(fields.String):
         self,
         value: t.Any,
         attr: t.Optional[str],
-        data: t.Optional[dict[str, t.Any]],
+        data: t.Optional[t.Dict[str, t.Any]],
         **kwargs
     ):
         string = super()._deserialize(value, attr, data, **kwargs)
