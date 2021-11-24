@@ -31,7 +31,7 @@ class PreviewFile:
     `invenio_previewer.api.PreviewFile`.
     """
 
-    def __init__(self, file_item, record_pid_value, url=None):
+    def __init__(self, file_item: FileItem, record_pid_value: str, url: str = None):
         """Create a new PreviewFile."""
         self.file = file_item
         self.data = file_item.data
@@ -67,7 +67,12 @@ class PreviewFile:
 @pass_is_preview
 @pass_record_or_draft
 @pass_record_files
-def record_detail(pid_value=None, is_preview=None, record=None, files=None):
+def record_detail(
+    pid_value: str = None,
+    is_preview: bool = None,
+    record: RecordItem = None,
+    files: t.Optional[FileList] = None,
+):
     """Record detail page (aka landing page)."""
     files_dict = {} if files is None else files.to_dict()
 
@@ -93,7 +98,10 @@ def record_detail(pid_value=None, is_preview=None, record=None, files=None):
 @pass_is_preview
 @pass_record_or_draft
 def record_export(
-    record=None, export_format=None, pid_value=None, permissions=None, is_preview=False
+    record: RecordItem = None,
+    export_format: str = None,
+    pid_value: str = None,
+    is_preview: bool = False,
 ):
     """Export view for LOM records."""
     exporter = current_app.config.get("LOM_RECORD_EXPORTERS", {}).get(export_format)
@@ -122,11 +130,11 @@ def record_export(
 @pass_record_or_draft
 @pass_file_metadata
 def record_file_preview(
-    record=None,
-    pid_value=None,
-    pid_type="recid",
-    file_metadata=None,
-    is_preview=False,
+    record: RecordItem = None,
+    pid_value: str = None,
+    pid_type: str = "recid",
+    file_metadata: FileItem = None,
+    is_preview: bool = False,
     **kwargs,
 ):
     """Render a preview of the specified file."""
@@ -151,7 +159,12 @@ def record_file_preview(
 
 @pass_is_preview
 @pass_file_item
-def record_file_download(file_item=None, pid_value=None, is_preview=False, **kwargs):
+def record_file_download(
+    file_item: FileItem = None,
+    pid_value: str = None,
+    is_preview: bool = False,
+    **kwargs,
+):
     """Download a file from a record."""
     download = bool(request.args.get("download"))
     return file_item.send_file(as_attachment=download)

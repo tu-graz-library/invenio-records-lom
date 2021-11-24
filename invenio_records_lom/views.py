@@ -7,13 +7,14 @@
 
 """Blueprint from resources, for REST-API routes."""
 
-from flask import Blueprint
+from flask import Blueprint, Flask
+from flask.blueprints import BlueprintSetupState
 
 blueprint = Blueprint("invenio_records_lom_ext", __name__)
 
 
 @blueprint.record_once
-def init(state):
+def init(state: BlueprintSetupState):
     """Registers services."""
     app = state.app
     # Register services - cannot be done in extension because
@@ -26,25 +27,25 @@ def init(state):
     registry.register(ext.records_service.draft_files, service_id="lom-draft-files")
 
 
-def create_records_bp(app):
+def create_records_bp(app: Flask):
     """Create records blueprint."""
     ext = app.extensions["invenio-records-lom"]
     return ext.records_resource.as_blueprint()
 
 
-def create_record_files_bp(app):
+def create_record_files_bp(app: Flask):
     """Create records files blueprint."""
     ext = app.extensions["invenio-records-lom"]
     return ext.records_resource.as_blueprint()
 
 
-def create_draft_files_bp(app):
+def create_draft_files_bp(app: Flask):
     """Create draft files blueprint."""
     ext = app.extensions["invenio-records-lom"]
     return ext.records_resource.as_blueprint()
 
 
-def create_parent_record_links_bp(app):
+def create_parent_record_links_bp(app: Flask):
     """Create parent record links blueprint."""
     ext = app.extensions["invenio-records-lom"]
     return ext.records_resource.as_blueprint()

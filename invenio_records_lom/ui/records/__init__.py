@@ -7,6 +7,7 @@
 
 """User interface utilities for records."""
 
+from flask import Blueprint, Flask
 from invenio_pidstore.errors import (
     PIDDeletedError,
     PIDDoesNotExistError,
@@ -28,7 +29,7 @@ from .records import (
 )
 
 
-def init_records_views(blueprint, app):
+def init_records_views(blueprint: Blueprint, app: Flask):
     """Register blueprints for records on passed in `blueprint`."""
     routes = app.config["LOM_ROUTES"]
 

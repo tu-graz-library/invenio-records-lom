@@ -19,15 +19,15 @@ class PIDLOMRelation(PIDRelation):
 
     def __init__(
         self,
-        key="metadata.relation",
+        key: str = "metadata.relation",
         *,
-        _value_key_suffix="entry",
-        source="LOMv1.0",
-        value=None,
-        _catalog="repo-pid",
+        _value_key_suffix: str = "entry",  # overwrite parent-class default
+        source: str = "LOMv1.0",  # matches against {self.key}.kind.source
+        value: str = None,  # matches against {self.key}.kind.value
+        _catalog: str = "repo-pid",  # matches against {self.key}.resource.identifier.catalog
         **kwargs,
     ):
-        """source, value, catalog as in 7.Relation of LOM-standard."""
+        """`source`, `value`, `catalog` as in `7.Relation` of LOM-standard."""
         self.source = source
         self.value = value
         self._catalog = _catalog

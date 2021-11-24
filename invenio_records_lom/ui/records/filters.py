@@ -7,11 +7,13 @@
 
 """Filters for Jinja templates."""
 
+import typing as t
+
 import idutils
 from flask import current_app
 
 
-def pid_url(identifier, scheme=None, url_scheme="https"):
+def pid_url(identifier: str, scheme: t.Optional[str] = None, url_scheme: str = "https"):
     """Convert persistent identifier into a link."""
     if scheme is None:
         try:

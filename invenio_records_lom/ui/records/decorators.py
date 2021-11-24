@@ -16,7 +16,7 @@ from sqlalchemy.orm.exc import NoResultFound
 from ...proxies import current_records_lom
 
 
-def pass_is_preview(func):
+def pass_is_preview(func: callable):
     """Retrieve `is_preview` from request and pass that into decorated function."""
 
     @wraps(func)
@@ -27,7 +27,7 @@ def pass_is_preview(func):
     return decoed
 
 
-def pass_record_or_draft(func):
+def pass_record_or_draft(func: callable):
     """Retrieve `record` from database and pass that into decorated function."""
 
     @wraps(func)
@@ -49,7 +49,7 @@ def pass_record_or_draft(func):
     return decoed
 
 
-def pass_record_files(func):
+def pass_record_files(func: callable):
     """Retrieve `files` from database and pass that into decorated function."""
 
     @wraps(func)
@@ -76,7 +76,7 @@ def pass_record_files(func):
     return decoed
 
 
-def pass_file_metadata(func):
+def pass_file_metadata(func: callable):
     """Retrieve `file_metadata` from database and pass that into decorated function."""
 
     @wraps(func)
@@ -103,7 +103,7 @@ def pass_file_metadata(func):
     return decoed
 
 
-def pass_file_item(func):
+def pass_file_item(func: callable):
     """Retrieve `file_item` from database and pass that into decorated function."""
 
     @wraps(func)

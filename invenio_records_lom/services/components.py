@@ -9,6 +9,8 @@
 
 from copy import copy
 
+from flask_principal import Identity
+from invenio_drafts_resources.records import Record
 from invenio_drafts_resources.services.records.components import ServiceComponent
 
 
@@ -20,23 +22,33 @@ class ResourceTypeComponent(ServiceComponent):
 
     new_version_skip_fields = ["publication_date", "version"]
 
-    def create(self, identity, data=None, record=None, **kwargs):
+    def create(
+        self, identity: Identity, data: dict = None, record: Record = None, **kwargs
+    ):
         """Inject parsed resource_type to the record."""
         record.resource_type = data.get("resource_type", {})
 
-    def update_draft(self, identity, data=None, record=None, **kwargs):
+    def update_draft(
+        self, identity: Identity, data: dict = None, record: Record = None, **kwargs
+    ):
         """Inject parsed resource_type to the record."""
         record.resource_type = data.get("resource_type", {})
 
-    def publish(self, identity, draft=None, record=None, **kwargs):
+    def publish(
+        self, identity: Identity, draft: Record = None, record: Record = None, **kwargs
+    ):
         """Update draft resource_type."""
         record.resource_type = draft.get("resource_type", {})
 
-    def edit(self, identity, draft=None, record=None, **kwargs):
+    def edit(
+        self, identity: Identity, draft: Record = None, record: Record = None, **kwargs
+    ):
         """Update draft resource_type."""
         draft.resource_type = record.get("resource_type", {})
 
-    def new_version(self, identity, draft=None, record=None, **kwargs):
+    def new_version(
+        self, identity: Identity, draft: Record = None, record: Record = None, **kwargs
+    ):
         """Update draft resource_type."""
         draft.resource_type = copy(record.get("resource_type", {}))
         # Remove fields that should not be copied to the new version
