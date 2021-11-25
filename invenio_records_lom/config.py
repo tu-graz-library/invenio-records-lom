@@ -7,8 +7,6 @@
 
 """Default configuration."""
 
-from __future__ import absolute_import, print_function
-
 from flask_babelex import gettext as _
 from invenio_records_rest.facets import terms_filter
 from invenio_records_rest.utils import allow_all, check_elasticsearch

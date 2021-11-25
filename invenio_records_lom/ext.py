@@ -7,8 +7,6 @@
 
 """Flask extension for invenio-records-lom."""
 
-from __future__ import absolute_import, print_function
-
 from invenio_records_resources.services import FileService
 from werkzeug.utils import cached_property
 

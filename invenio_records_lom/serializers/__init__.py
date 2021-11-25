@@ -12,8 +12,6 @@ Think of serializers as the definition of your output formats for records.
 The serializers are responsible for transforming the internal JSON for a record into some external representation (e.g. another JSON format or XML).
 """
 
-from __future__ import absolute_import, print_function
-
 from invenio_records_rest.serializers.json import JSONSerializer
 from invenio_records_rest.serializers.response import (
     record_responsify,
