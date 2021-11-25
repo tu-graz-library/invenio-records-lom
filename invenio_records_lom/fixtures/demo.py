@@ -14,11 +14,14 @@ from io import BytesIO
 from faker import Faker
 from flask import current_app
 from invenio_access.permissions import system_identity
+from invenio_records_resources.services.records.results import RecordItem
 
 from ..proxies import current_records_lom
 
 
-# ----- functions for LOM datatypes -----
+#
+# functions for LOM datatypes
+#
 def langstringify(fake: Faker, string: str) -> dict:
     """Wraps `string` in a dict, emulating LOMv1.0-standard LangString-objects."""
     return {
@@ -74,7 +77,9 @@ def create_fake_vcard(fake: Faker) -> str:
     return f"{fake.last_name()}, {fake.first_name()}"
 
 
-# ----- functions for elements that are part of more than one category -----
+#
+# functions for elements that are part of more than one category
+#
 def create_fake_language(fake: Faker) -> str:
     """Create a fake language-code, as required for "language"-keys by LOMv1.0-standard."""
     language_codes = [
@@ -111,7 +116,9 @@ def create_fake_contribute(fake: Faker, roles: list) -> dict:
     }
 
 
-# ----- functions for categories or used by only one category -----
+#
+# functions for categories or used by only one category
+#
 def create_fake_general(fake: Faker) -> dict:
     """Create a fake "general"-element, compatible with LOMv1.0-standard."""
     structures = ["atomic", "collection", "networked", "hierarchical", "linear"]
@@ -348,7 +355,9 @@ def create_fake_taxon(fake: Faker) -> dict:
     }
 
 
-# ----- functions for creating LOMv1.0-fakes -----
+#
+# functions for creating LOMv1.0-fakes
+#
 def create_fake_metadata(fake: Faker) -> dict:
     """Create a fake json-representation of a "lom"-element, compatible with LOMv1.0-standard."""
     data_to_use = {
@@ -400,33 +409,23 @@ def create_fake_data(fake: Faker, resource_type: str, files_enabled: bool = Fals
     }
 
 
-def publish_fake_record(fake: Faker):
-    """Enter fake records into the SQL-database."""
+#
+# helpers for `publish_fake_record`
+#
+def attach_fake_files(fake: Faker, draft_item: RecordItem):
+    """Attach fake files to the record behind `draft_item`."""
     service = current_records_lom.records_service
-    create = partial(service.create, identity=system_identity)
-    edit = partial(service.edit, identity=system_identity)
-    publish = partial(service.publish, identity=system_identity)
-    update_draft = partial(service.update_draft, identity=system_identity)
-
     df_service = service.draft_files
+
+    # partially apply identity=system_identity
+    update_draft = partial(service.update_draft, identity=system_identity)
+    commit_file = partial(df_service.commit_file, identity=system_identity)
     init_files = partial(df_service.init_files, identity=system_identity)
     set_file_content = partial(df_service.set_file_content, identity=system_identity)
-    commit_file = partial(df_service.commit_file, identity=system_identity)
 
-    def create_then_publish(data, create_fake_files=False):
-        draft_item = create(data=data)
-
-        # add repo-pid to the record's identifiers
-        draft_data = draft_item.to_dict()
-        draft_data["metadata"]["general"]["identifier"].append(
-            {"catalog": "repo-pid", "entry": draft_item.id}
-        )
-        draft_item = update_draft(id_=draft_item.id, data=draft_data)
-
-        if create_fake_files:
+    # create and attach fake files
             fake_files = {
-                fake.file_name(extension="txt"): fake.sentence().encode()
-                for __ in range(2)
+        fake.file_name(extension="txt"): fake.sentence().encode() for __ in range(2)
             }
 
             init_files(id_=draft_item.id, data=[{"key": name} for name in fake_files])
@@ -439,41 +438,94 @@ def publish_fake_record(fake: Faker):
             draft_data["files"]["default_preview"] = next(iter(fake_files))
             draft_item = update_draft(id_=draft_item.id, data=draft_data)
 
+
+def create_then_publish(fake: Faker, data: dict, create_fake_files: bool = False):
+    """Create a fake record, then publish it.
+
+    if `create_fake_files` is True, attach fake files to created fake record.
+    """
+    service = current_records_lom.records_service
+
+    # partially apply identity=system_identity
+    create = partial(service.create, identity=system_identity)
+    update_draft = partial(service.update_draft, identity=system_identity)
+    publish = partial(service.publish, identity=system_identity)
+
+    # create
+    draft_item = create(data=data)
+
+    # add repo-pid to the record's identifiers
+    draft_data = draft_item.to_dict()
+    draft_data["metadata"]["general"]["identifier"].append(
+        {"catalog": "repo-pid", "entry": draft_item.id}
+    )
+    draft_item = update_draft(id_=draft_item.id, data=draft_data)
+
+    if create_fake_files:
+        attach_fake_files(fake, draft_item)
+
         return publish(id_=draft_item.id)
 
-    def update_then_publish(id_, data):
-        updated_draft_item = update_draft(id_=id_, data=data)
-        return publish(id_=updated_draft_item.id)
 
-    def inject_relation(data, kind, pid):
+def inject_relation(data: dict, kind: str, pid: str):
+    """Inject relation of kind `kind` into `data` under entry `pid`.
+
+    `data` is a json-representation of data, compatible with LOMv1.0-standard.
+    `kind` is a kind, as in LOMv1.0's `relation`-group.
+    `pid` is entry, as in LOMv1.0's `relation.resource.identifier` category.
+    """
         kind = {"source": "LOMv1.0", "value": kind}
         identifier = {"catalog": "repo-pid", "entry": pid}
         resource = {"identifier": [identifier]}
         data["metadata"]["relation"].append({"kind": kind, "resource": resource})
 
-    def link_up(whole_id, part_id):
+
+def link_up(whole_id: str, part_id: str):
+    """Links up the records behind `whole_id` and `part_id`.
+
+    `whole_record`'s json gains a new "haspart"-relation to `part_record`.
+    `part_record`'s json gains a new "ispartof"-relation to `whole_record`.
+    Relations are encoded according LOMv1.0's `relation`-category.
+    """
+    service = current_records_lom.records_service
+
+    # partially apply identity=system_identity
+    edit = partial(service.edit, identity=system_identity)
+    publish = partial(service.publish, identity=system_identity)
+    update_draft = partial(service.update_draft, identity=system_identity)
+
+    # add "haspart"-relation to `whole_record`
         whole_draft_item = edit(whole_id)
         whole_data = whole_draft_item.to_dict()
         inject_relation(whole_data, "haspart", part_id)
-        update_then_publish(whole_id, whole_data)
+    updated_whole_draft_item = update_draft(id_=whole_id, data=whole_data)
+    publish(id_=updated_whole_draft_item.id)
 
+    # add "ispartof"-relation to `part_record`
         part_draft_item = edit(part_id)
         part_data = part_draft_item.to_dict()
         inject_relation(part_data, "ispartof", whole_id)
-        update_then_publish(part_id, part_data)
+    updated_part_draft_item = update_draft(id_=part_id, data=part_data)
+    publish(id_=updated_part_draft_item.id)
 
+
+#
+# functions for publishing fake records
+#
+def publish_fake_record(fake: Faker):
+    """Enter fake records into the SQL-database."""
     course_data = create_fake_data(fake, resource_type="course")
-    course_service_item = create_then_publish(data=course_data)
+    course_service_item = create_then_publish(fake=fake, data=course_data)
 
     for __ in range(2):
         unit_data = create_fake_data(fake, resource_type="unit")
-        unit_service_item = create_then_publish(data=unit_data)
+        unit_service_item = create_then_publish(fake=fake, data=unit_data)
         link_up(whole_id=course_service_item.id, part_id=unit_service_item.id)
 
         for __ in range(2):
             file_data = create_fake_data(fake, resource_type="file", files_enabled=True)
             file_service_item = create_then_publish(
-                data=file_data, create_fake_files=True
+                fake=fake, data=file_data, create_fake_files=True
             )
             link_up(whole_id=unit_service_item.id, part_id=file_service_item.id)
 
