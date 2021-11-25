@@ -7,12 +7,12 @@
 
 """User interface utilities."""
 
-from flask import Blueprint
+from flask import Blueprint, Flask
 
 from .records import init_records_views
 
 
-def create_blueprint(app):
+def create_blueprint(app: Flask):
     """Return blueprint with registered routes."""
     blueprint = Blueprint(
         "invenio_records_lom",

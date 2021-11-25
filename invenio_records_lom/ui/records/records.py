@@ -7,12 +7,15 @@
 
 """View-functions for record-related pages."""
 
+import typing as t
 from os.path import splitext
 
 from flask import abort, current_app, render_template, request, url_for
 from invenio_base.utils import obj_or_import_string
 from invenio_previewer.extensions import default
 from invenio_previewer.proxies import current_previewer
+from invenio_records_resources.services.files.results import FileItem, FileList
+from invenio_records_resources.services.records.results import RecordItem
 
 from ...resources.serializers import LOMUIJSONSerializer
 from .decorators import (
