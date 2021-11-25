@@ -424,19 +424,19 @@ def attach_fake_files(fake: Faker, draft_item: RecordItem):
     set_file_content = partial(df_service.set_file_content, identity=system_identity)
 
     # create and attach fake files
-            fake_files = {
+    fake_files = {
         fake.file_name(extension="txt"): fake.sentence().encode() for __ in range(2)
-            }
+    }
 
-            init_files(id_=draft_item.id, data=[{"key": name} for name in fake_files])
-            for file_name, file_content in fake_files.items():
-                stream = BytesIO(file_content)
-                set_file_content(id_=draft_item.id, file_key=file_name, stream=stream)
-                commit_file(id_=draft_item.id, file_key=file_name)
+    init_files(id_=draft_item.id, data=[{"key": name} for name in fake_files])
+    for file_name, file_content in fake_files.items():
+        stream = BytesIO(file_content)
+        set_file_content(id_=draft_item.id, file_key=file_name, stream=stream)
+        commit_file(id_=draft_item.id, file_key=file_name)
 
-            draft_data = draft_item.to_dict()
-            draft_data["files"]["default_preview"] = next(iter(fake_files))
-            draft_item = update_draft(id_=draft_item.id, data=draft_data)
+    draft_data = draft_item.to_dict()
+    draft_data["files"]["default_preview"] = next(iter(fake_files))
+    draft_item = update_draft(id_=draft_item.id, data=draft_data)
 
 
 def create_then_publish(fake: Faker, data: dict, create_fake_files: bool = False):
@@ -464,7 +464,7 @@ def create_then_publish(fake: Faker, data: dict, create_fake_files: bool = False
     if create_fake_files:
         attach_fake_files(fake, draft_item)
 
-        return publish(id_=draft_item.id)
+    return publish(id_=draft_item.id)
 
 
 def inject_relation(data: dict, kind: str, pid: str):
@@ -474,10 +474,10 @@ def inject_relation(data: dict, kind: str, pid: str):
     `kind` is a kind, as in LOMv1.0's `relation`-group.
     `pid` is entry, as in LOMv1.0's `relation.resource.identifier` category.
     """
-        kind = {"source": "LOMv1.0", "value": kind}
-        identifier = {"catalog": "repo-pid", "entry": pid}
-        resource = {"identifier": [identifier]}
-        data["metadata"]["relation"].append({"kind": kind, "resource": resource})
+    kind = {"source": "LOMv1.0", "value": kind}
+    identifier = {"catalog": "repo-pid", "entry": pid}
+    resource = {"identifier": [identifier]}
+    data["metadata"]["relation"].append({"kind": kind, "resource": resource})
 
 
 def link_up(whole_id: str, part_id: str):
@@ -495,16 +495,16 @@ def link_up(whole_id: str, part_id: str):
     update_draft = partial(service.update_draft, identity=system_identity)
 
     # add "haspart"-relation to `whole_record`
-        whole_draft_item = edit(whole_id)
-        whole_data = whole_draft_item.to_dict()
-        inject_relation(whole_data, "haspart", part_id)
+    whole_draft_item = edit(whole_id)
+    whole_data = whole_draft_item.to_dict()
+    inject_relation(whole_data, "haspart", part_id)
     updated_whole_draft_item = update_draft(id_=whole_id, data=whole_data)
     publish(id_=updated_whole_draft_item.id)
 
     # add "ispartof"-relation to `part_record`
-        part_draft_item = edit(part_id)
-        part_data = part_draft_item.to_dict()
-        inject_relation(part_data, "ispartof", whole_id)
+    part_draft_item = edit(part_id)
+    part_data = part_draft_item.to_dict()
+    inject_relation(part_data, "ispartof", whole_id)
     updated_part_draft_item = update_draft(id_=part_id, data=part_data)
     publish(id_=updated_part_draft_item.id)
 
