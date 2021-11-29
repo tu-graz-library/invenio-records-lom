@@ -97,7 +97,7 @@ class LOMDraft(Draft):
     access = RecordAccessField()
     bucket_id = ModelField(dump=False)
     bucket = ModelField(dump=False)
-    index = IndexField("lomrecords-drafts-v1.0.0", search_alias="lomrecords")
+    index = IndexField("lomrecords-drafts-draft-v1.0.0", search_alias="lomrecords")
     is_published = PIDStatusCheckField(status=PIDStatus.REGISTERED, dump=True)
     resource_type = DictField()
 
@@ -172,7 +172,7 @@ class LOMRecord(Record, metaclass=LOMRecordMeta):
     access = RecordAccessField()
     bucket_id = ModelField(dump=False)
     bucket = ModelField(dump=False)
-    index = IndexField("lomrecords-records-v1.0.0", search_alias="lomrecords")
+    index = IndexField("lomrecords-records-record-v1.0.0", search_alias="lomrecords")
     is_published = PIDStatusCheckField(status=PIDStatus.REGISTERED, dump=True)
     resource_type = DictField()
 

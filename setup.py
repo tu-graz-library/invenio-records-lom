@@ -111,15 +111,12 @@ setup(
         ],
         "invenio_base.api_blueprints": [
             "invenio_records_lom_records = invenio_records_lom.views:create_records_bp",
-            # "invenio_records_lom_record_files = invenio_records_lom.views:create_record_files_bp",
-            # "invenio_records_lom_draft_files = invenio_records_lom.views:create_draft_files_bp",
-            # "invenio_records_lom_parent_links = invenio_records_lom.views:create_parent_record_links_bp",
         ],
         "invenio_jsonschemas.schemas": [
             "invenio_records_lom = invenio_records_lom.jsonschemas",
         ],
         "invenio_search.mappings": [
-            "lomrecords = invenio_records_lom.mappings",
+            "lomrecords = invenio_records_lom.records.mappings",
         ],
         "invenio_config.module": [
             "invenio_records_lom = invenio_records_lom.config",

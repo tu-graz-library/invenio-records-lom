@@ -5,7 +5,7 @@
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
-"""Blueprint from resources, for REST-API routes."""
+"""Blueprints from resources, for REST-API routes."""
 
 from flask import Blueprint, Flask
 from flask.blueprints import BlueprintSetupState
@@ -29,23 +29,5 @@ def init(state: BlueprintSetupState):
 
 def create_records_bp(app: Flask):
     """Create records blueprint."""
-    ext = app.extensions["invenio-records-lom"]
-    return ext.records_resource.as_blueprint()
-
-
-def create_record_files_bp(app: Flask):
-    """Create records files blueprint."""
-    ext = app.extensions["invenio-records-lom"]
-    return ext.records_resource.as_blueprint()
-
-
-def create_draft_files_bp(app: Flask):
-    """Create draft files blueprint."""
-    ext = app.extensions["invenio-records-lom"]
-    return ext.records_resource.as_blueprint()
-
-
-def create_parent_record_links_bp(app: Flask):
-    """Create parent record links blueprint."""
     ext = app.extensions["invenio-records-lom"]
     return ext.records_resource.as_blueprint()

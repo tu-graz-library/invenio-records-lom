@@ -19,4 +19,11 @@ class LOMRecordResourceConfig(RecordResourceConfig):
     routes = {
         "item": "/<pid_value>",
     }
-
+    # TODO: fill in the rest of config
+    # request_read_args =
+    # request_view_args =
+    # request_search_args =
+    # request_headers =
+    # request_body_parsers =
+    # response_handlers =
+    # error_handlers =
