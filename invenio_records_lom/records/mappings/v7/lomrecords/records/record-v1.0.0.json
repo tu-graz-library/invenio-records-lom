@@ -10,16 +10,10 @@
       "id": {
         "type": "keyword"
       },
-      "name": {
-        "type": "keyword"
-      },
-      "organization": {
-        "type": "keyword"
-      },
-      "_created": {
+      "created": {
         "type": "date"
       },
-      "_updated": {
+      "updated": {
         "type": "date"
       }
     }
