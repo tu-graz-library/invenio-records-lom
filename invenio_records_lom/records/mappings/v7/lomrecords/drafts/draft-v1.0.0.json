@@ -15,6 +15,664 @@
       },
       "updated": {
         "type": "date"
+      },
+      "has_draft": {
+        "type": "boolean"
+      },
+      "is_published": {
+        "type": "boolean"
+      },
+      "versions": {
+        "properties": {
+          "index": {
+            "type": "integer"
+          },
+          "is_latest": {
+            "type": "boolean"
+          },
+          "is_latest_draft": {
+            "type": "boolean"
+          },
+          "latest_id": {
+            "type": "keyword"
+          },
+          "latest_index": {
+            "type": "integer"
+          },
+          "next_draft_id": {
+            "type": "keyword"
+          }
+        }
+      },
+      "parent": {
+        "properties": {
+          "id": {
+            "type": "keyword"
+          },
+          "access": {
+            "properties": {
+              "owned_by": {
+                "properties": {
+                  "user": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "grants": {
+                "properties": {
+                  "subject": {
+                    "type": "keyword"
+                  },
+                  "id": {
+                    "type": "keyword"
+                  },
+                  "level": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "grant_tokens": {
+                "type": "keyword"
+              },
+              "links": {
+                "properties": {
+                  "id": {
+                    "type": "keyword"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "pids": {
+        "properties": {
+          "identifier": {
+            "type": "keyword"
+          },
+          "scheme": {
+            "type": "keyword"
+          },
+          "client": {
+            "type": "keyword",
+            "index": false
+          },
+          "provider": {
+            "type": "keyword",
+            "index": false
+          }
+        }
+      },
+      "access": {
+        "properties": {
+          "record": {
+            "type": "keyword"
+          },
+          "files": {
+            "type": "keyword"
+          },
+          "embargo": {
+            "properties": {
+              "active": {
+                "type": "boolean"
+              },
+              "until": {
+                "type": "date"
+              },
+              "reason": {
+                "type": "text"
+              }
+            }
+          },
+          "status": {
+            "type": "keyword"
+          }
+        }
+      },
+      "metadata": {
+        "properties": {
+          "annotation": {
+            "properties": {
+              "date": {
+                "properties": {
+                  "dateTime": {
+                    "type": "text"
+                  },
+                  "description": {
+                    "properties": {
+                      "language": {
+                        "type": "text"
+                      },
+                      "string": {
+                        "type": "text"
+                      }
+                    }
+                  }
+                }
+              },
+              "description": {
+                "properties": {
+                  "language": {
+                    "type": "text"
+                  },
+                  "string": {
+                    "type": "text"
+                  }
+                }
+              },
+              "entity": {
+                "type": "text"
+              }
+            }
+          },
+          "classification": {
+            "properties": {
+              "description": {
+                "properties": {
+                  "language": {
+                    "type": "text"
+                  },
+                  "string": {
+                    "type": "text"
+                  }
+                }
+              },
+              "keyword": {
+                "properties": {
+                  "language": {
+                    "type": "text"
+                  },
+                  "string": {
+                    "type": "text"
+                  }
+                }
+              },
+              "purpose": {
+                "properties": {
+                  "source": {
+                    "type": "keyword"
+                  },
+                  "value": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "taxonPath": {
+                "properties": {
+                  "source": {
+                    "properties": {
+                      "language": {
+                        "type": "text"
+                      },
+                      "string": {
+                        "type": "text"
+                      }
+                    }
+                  },
+                  "taxon": {
+                    "properties": {
+                      "entry": {
+                        "properties": {
+                          "language": {
+                            "type": "text"
+                          },
+                          "string": {
+                            "type": "text"
+                          }
+                        }
+                      },
+                      "id": {
+                        "type": "text"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "educational": {
+            "properties": {
+              "context": {
+                "properties": {
+                  "source": {
+                    "type": "keyword"
+                  },
+                  "value": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "description": {
+                "properties": {
+                  "language": {
+                    "type": "text"
+                  },
+                  "string": {
+                    "type": "text"
+                  }
+                }
+              },
+              "difficulty": {
+                "properties": {
+                  "source": {
+                    "type": "keyword"
+                  },
+                  "value": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "intendedEndUserRole": {
+                "properties": {
+                  "source": {
+                    "type": "keyword"
+                  },
+                  "value": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "interactivityLevel": {
+                "properties": {
+                  "source": {
+                    "type": "keyword"
+                  },
+                  "value": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "interactivityType": {
+                "properties": {
+                  "source": {
+                    "type": "keyword"
+                  },
+                  "value": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "language": {
+                "type": "text"
+              },
+              "learningResourceType": {
+                "properties": {
+                  "source": {
+                    "type": "keyword"
+                  },
+                  "value": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "semanticDensity": {
+                "properties": {
+                  "source": {
+                    "type": "keyword"
+                  },
+                  "value": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "typicalAgeRange": {
+                "properties": {
+                  "language": {
+                    "type": "text"
+                  },
+                  "string": {
+                    "type": "text"
+                  }
+                }
+              },
+              "typicalLearningTime": {
+                "properties": {
+                  "description": {
+                    "properties": {
+                      "language": {
+                        "type": "text"
+                      },
+                      "string": {
+                        "type": "text"
+                      }
+                    }
+                  },
+                  "duration": {
+                    "type": "text"
+                  }
+                }
+              }
+            }
+          },
+          "general": {
+            "properties": {
+              "aggregationLevel": {
+                "properties": {
+                  "source": {
+                    "type": "keyword"
+                  },
+                  "value": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "coverage": {
+                "properties": {
+                  "language": {
+                    "type": "text"
+                  },
+                  "string": {
+                    "type": "text"
+                  }
+                }
+              },
+              "description": {
+                "properties": {
+                  "language": {
+                    "type": "text"
+                  },
+                  "string": {
+                    "type": "text"
+                  }
+                }
+              },
+              "identifier": {
+                "properties": {
+                  "catalog": {
+                    "type": "keyword"
+                  },
+                  "entry": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "keyword": {
+                "properties": {
+                  "language": {
+                    "type": "text"
+                  },
+                  "string": {
+                    "type": "text"
+                  }
+                }
+              },
+              "language": {
+                "type": "text"
+              },
+              "structure": {
+                "properties": {
+                  "source": {
+                    "type": "keyword"
+                  },
+                  "value": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "title": {
+                "properties": {
+                  "language": {
+                    "type": "text"
+                  },
+                  "string": {
+                    "type": "text"
+                  }
+                }
+              }
+            }
+          },
+          "lifeCycle": {
+            "properties": {
+              "contribute": {
+                "properties": {
+                  "date": {
+                    "properties": {
+                      "dateTime": {
+                        "type": "text"
+                      },
+                      "description": {
+                        "properties": {
+                          "language": {
+                            "type": "text"
+                          },
+                          "string": {
+                            "type": "text"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "entity": {
+                    "type": "text"
+                  },
+                  "role": {
+                    "properties": {
+                      "source": {
+                        "type": "keyword"
+                      },
+                      "value": {
+                        "type": "keyword"
+                      }
+                    }
+                  }
+                }
+              },
+              "status": {
+                "properties": {
+                  "source": {
+                    "type": "keyword"
+                  },
+                  "value": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "version": {
+                "properties": {
+                  "language": {
+                    "type": "text"
+                  },
+                  "string": {
+                    "type": "text"
+                  }
+                }
+              }
+            }
+          },
+          "metaMetadata": {
+            "properties": {
+              "contribute": {
+                "properties": {
+                  "date": {
+                    "properties": {
+                      "dateTime": {
+                        "type": "text"
+                      },
+                      "description": {
+                        "properties": {
+                          "language": {
+                            "type": "text"
+                          },
+                          "string": {
+                            "type": "text"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "entity": {
+                    "type": "text"
+                  },
+                  "role": {
+                    "properties": {
+                      "source": {
+                        "type": "keyword"
+                      },
+                      "value": {
+                        "type": "keyword"
+                      }
+                    }
+                  }
+                }
+              },
+              "identifier": {
+                "properties": {
+                  "catalog": {
+                    "type": "keyword"
+                  },
+                  "entry": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "language": {
+                "type": "text"
+              },
+              "metadataSchemas": {
+                "type": "text"
+              }
+            }
+          },
+          "relation": {
+            "properties": {
+              "kind": {
+                "properties": {
+                  "source": {
+                    "type": "keyword"
+                  },
+                  "value": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "resource": {
+                "properties": {
+                  "description": {
+                    "properties": {
+                      "language": {
+                        "type": "text"
+                      },
+                      "string": {
+                        "type": "text"
+                      }
+                    }
+                  },
+                  "identifier": {
+                    "properties": {
+                      "catalog": {
+                        "type": "keyword"
+                      },
+                      "entry": {
+                        "type": "keyword"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "rights": {
+            "properties": {
+              "copyrightAndOtherRestrictions": {
+                "properties": {
+                  "source": {
+                    "type": "keyword"
+                  },
+                  "value": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "cost": {
+                "properties": {
+                  "source": {
+                    "type": "keyword"
+                  },
+                  "value": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "description": {
+                "properties": {
+                  "language": {
+                    "type": "text"
+                  },
+                  "string": {
+                    "type": "text"
+                  }
+                }
+              }
+            }
+          },
+          "technical": {
+            "properties": {
+              "format": {
+                "type": "text"
+              },
+              "installationRemarks": {
+                "properties": {
+                  "language": {
+                    "type": "text"
+                  },
+                  "string": {
+                    "type": "text"
+                  }
+                }
+              },
+              "location": {
+                "type": "text"
+              },
+              "otherPlatformRequirements": {
+                "properties": {
+                  "language": {
+                    "type": "text"
+                  },
+                  "string": {
+                    "type": "text"
+                  }
+                }
+              },
+              "requirement": {
+                "properties": {
+                  "orComposite": {
+                    "properties": {
+                      "maximumVersion": {
+                        "type": "text"
+                      },
+                      "minimumVersion": {
+                        "type": "text"
+                      },
+                      "name": {
+                        "properties": {
+                          "source": {
+                            "type": "keyword"
+                          },
+                          "value": {
+                            "type": "keyword"
+                          }
+                        }
+                      },
+                      "type": {
+                        "properties": {
+                          "source": {
+                            "type": "keyword"
+                          },
+                          "value": {
+                            "type": "keyword"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "size": {
+                "type": "text"
+              }
+            }
+          }
+        }
       }
     }
   }

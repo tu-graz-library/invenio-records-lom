@@ -71,7 +71,7 @@ def test_create_draft(service, db, identity, access):
     data = {
         "access": access,
         "files": {"enabled": False},
-        "metadata": {"test": "Test"},
+        "metadata": {"general": {"title": {"string": "Test"}}},
         "resource_type": "course",
     }
 
@@ -117,7 +117,7 @@ def test_publish(service, db, identity, access):
     data = {
         "access": access,
         "files": {"enabled": False},
-        "metadata": {"test": "Test"},
+        "metadata": {"general": {"title": {"string": "Test"}}},
         "resource_type": "course",
     }
 
