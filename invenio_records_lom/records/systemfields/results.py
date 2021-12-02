@@ -37,11 +37,14 @@ class RelationLOMResult(RelationResult):
         queue = list(relations)
         for relation in queue:
             kind = relation.get("kind", {})
-            if kind.get("source") == self.source and kind.get("value") == self.value:
-                for identifier in relation.get("resource", {}).get("identifier", []):
-                    if identifier.get("catalog") == self._catalog:
-                        data = func(identifier, attrs) or {}
-                        queue.extend(data.get("metadata", {}).get("relation", []))
+            if kind.get("source") != self.source or kind.get("value") != self.value:
+                continue
+
+            for identifier in relation.get("resource", {}).get("identifier", []):
+                if identifier.get("catalog") != self._catalog:
+                    continue
+                data = func(identifier, attrs) or {}
+                queue.extend(data.get("metadata", {}).get("relation", []))
 
     def _clean_one(self, data: dict, attrs: t.Optional[dict]):
         """Remove all but "entry" and "catalog" key."""
