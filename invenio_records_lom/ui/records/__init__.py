@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2021 Graz University of Technology.
+# Copyright (C) 2019-2021 CERN.
+# Copyright (C) 2019-2021 Northwestern University.
+# Copyright (C)      2021 TU Wien.
+# Copyright (C)      2021 Graz University of Technology.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -20,7 +23,6 @@ from .errors import (
     record_permission_denied_error,
     record_tombstone_error,
 )
-from .filters import pid_url
 from .records import (
     record_detail,
     record_export,
@@ -58,6 +60,3 @@ def init_records_views(blueprint: Blueprint, app: Flask):
     blueprint.register_error_handler(
         PermissionDeniedError, record_permission_denied_error
     )
-
-    # Register template filters
-    blueprint.add_app_template_filter(pid_url)

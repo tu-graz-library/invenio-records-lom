@@ -1,9 +1,19 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2021 Graz University of Technology.
+# Copyright (C) 2019-2021 CERN.
+# Copyright (C) 2019-2021 Northwestern University.
+# Copyright (C)      2021 TU Wien.
+# Copyright (C)      2021 Graz University of Technology.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
+#
+# For the original code see the NOTE below.
+
+
+# NOTE:
+# copy-pasted code from invenio_app_rdm/records_ui/views/records.py
+# copy-pasted as to avoid invenio_app_rdm as a dependency
 
 """Errors to be registered in flask."""
 
