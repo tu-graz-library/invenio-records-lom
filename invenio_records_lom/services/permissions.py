@@ -7,17 +7,12 @@
 
 """Permission-config classes for LOMRecordService-objects."""
 
-from invenio_records_permissions.generators import AnyUser
-from invenio_records_permissions.policies.records import RecordPermissionPolicy
+from invenio_rdm_records.services.permissions import RDMRecordPermissionPolicy
 
 
-class LOMRecordPermissionPolicy(RecordPermissionPolicy):
+class LOMRecordPermissionPolicy(RDMRecordPermissionPolicy):
     """Flask-principal style permissions for LOM record services.
 
-    Note that the invenio_access.Permission class always adds ``superuser-access``,
-    so admin-Identities are always allowed to take any action.
+    Note that the invenio_access.Permission parent-class always adds
+    ``superuser-access``, so admin-Identities are always allowed to take any action.
     """
-
-    # TODO: settle permissions
-    can_create = [AnyUser()]
-    can_publish = [AnyUser()]

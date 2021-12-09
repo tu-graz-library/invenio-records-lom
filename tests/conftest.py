@@ -15,8 +15,8 @@ import shutil
 import tempfile
 
 import pytest
-from flask_principal import Identity
-from invenio_access import any_user
+from flask_principal import Identity, UserNeed
+from invenio_access.permissions import any_user, system_process
 from invenio_app.factory import create_app as invenio_create_app
 
 
@@ -51,10 +51,12 @@ def cli_location(db):
 
 
 @pytest.fixture
-def identity_any_user():
-    """Simple identity fixture."""
-    i = Identity("test-identity-any-user")
+def identity():
+    """Identity fixture with rights to interact with service."""
+    i = Identity(1)
+    i.provides.add(UserNeed(1))
     i.provides.add(any_user)
+    i.provides.add(system_process)
     return i
 
 

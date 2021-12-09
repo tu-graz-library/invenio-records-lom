@@ -7,12 +7,18 @@
 
 """High-level API for working with LOM records, files, pids and search."""
 
-from .config import LOMRecordServiceConfig
+from .config import (
+    LOMDraftFilesServiceConfig,
+    LOMRecordFilesServiceConfig,
+    LOMRecordServiceConfig,
+)
 from .permissions import LOMRecordPermissionPolicy
 from .services import LOMRecordService
 
 __all__ = (
+    "LOMDraftFilesServiceConfig",
     "LOMRecordPermissionPolicy",
+    "LOMRecordFilesServiceConfig",
     "LOMRecordService",
     "LOMRecordServiceConfig",
 )

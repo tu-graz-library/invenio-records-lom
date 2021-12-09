@@ -7,8 +7,6 @@
 
 """Lom Api."""
 
-from __future__ import absolute_import, print_function
-
 from flask import current_app
 from invenio_db import db
 from invenio_jsonschemas import current_jsonschemas

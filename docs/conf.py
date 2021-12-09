@@ -7,8 +7,6 @@
 
 """Sphinx configuration."""
 
-from __future__ import print_function
-
 import os
 
 # -- General configuration ------------------------------------------------
@@ -111,6 +109,7 @@ pygments_style = "sphinx"
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
 
+nitpick_ignore = [("py:class", "flask.app.Flask")]
 
 # -- Options for HTML output ----------------------------------------------
 html_theme = "alabaster"

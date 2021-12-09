@@ -8,8 +8,6 @@
 
 """invenio data model for Learning object metadata."""
 
-from __future__ import absolute_import, print_function
-
 from .ext import InvenioRecordsLOM
 from .proxies import Lom, current_records_lom
 from .version import __version__

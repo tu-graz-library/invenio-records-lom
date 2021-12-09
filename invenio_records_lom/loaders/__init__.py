@@ -14,8 +14,6 @@ You only need loaders if you plan to allow creation of records via the REST API.
 The loaders are responsible for transforming a request payload (external representation) into the internal JSON format.
 """
 
-from __future__ import absolute_import, print_function
-
 from invenio_records_rest.loaders.marshmallow import marshmallow_loader
 
 from ..marshmallow import LomMetadataSchemaV1

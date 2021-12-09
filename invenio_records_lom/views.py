@@ -1,25 +1,33 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2020 Graz University of Technology.
+# Copyright (C) 2021 Graz University of Technology.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
-"""Blueprint definitions."""
+"""Blueprints from resources, for REST-API routes."""
 
-from __future__ import absolute_import, print_function
+from flask import Blueprint, Flask
+from flask.blueprints import BlueprintSetupState
 
-from flask import Blueprint
+blueprint = Blueprint("invenio_records_lom_ext", __name__)
 
-blueprint = Blueprint(
-    "invenio_records_lom",
-    __name__,
-    template_folder="templates",
-    static_folder="static",
-)
-"""Blueprint used for loading templates and static assets
 
-The sole purpose of this blueprint is to ensure that Invenio can find the
-templates and static files located in the folders of the same names next to
-this file.
-"""
+@blueprint.record_once
+def init(state: BlueprintSetupState):
+    """Registers services."""
+    app = state.app
+    # Register services - cannot be done in extension because
+    # Invenio-Records-Resources might not have been initialized.
+    registry = app.extensions["invenio-records-resources"].registry
+    ext = app.extensions["invenio-records-lom"]
+
+    registry.register(ext.records_service, service_id="lom-records")
+    registry.register(ext.records_service.files, service_id="lom-files")
+    registry.register(ext.records_service.draft_files, service_id="lom-draft-files")
+
+
+def create_records_bp(app: Flask):
+    """Create records blueprint."""
+    ext = app.extensions["invenio-records-lom"]
+    return ext.records_resource.as_blueprint()

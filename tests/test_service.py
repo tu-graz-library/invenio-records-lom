@@ -32,7 +32,7 @@ _ACCESS_CONFIGURATIONS = [
         "files": "public",
         "record": "public",
         "embargo": {
-            "until": "2020-12-31",
+            "until": "2030-12-31",
             "reason": "Test embargo for test record.",
             "active": True,
         },
@@ -66,15 +66,17 @@ def _pick_by_cls(iterable, cls, assert_unique=True):
     "access",
     _ACCESS_CONFIGURATIONS,
 )
-def test_create_draft(service, db, identity_any_user, access):
+def test_create_draft(service, db, identity, access):
     """Test creating a draft, then test database changes."""
     data = {
-        "metadata": {"test": "Test"},
         "access": access,
+        "files": {"enabled": False},
+        "metadata": {"general": {"title": {"string": "Test"}}},
+        "resource_type": "course",
     }
 
     db_before = _get_session_commits(db)
-    service.create(data=data, identity=identity_any_user)
+    service.create(data=data, identity=identity)
     db_after = _get_session_commits(db)
     db_new_values = db_after - db_before  # the `-` is the set-difference operator
 
@@ -110,16 +112,18 @@ def test_create_draft(service, db, identity_any_user, access):
     "access",
     _ACCESS_CONFIGURATIONS,
 )
-def test_publish(service, db, identity_any_user, access):
+def test_publish(service, db, identity, access):
     """Test publishing a record, then test database changes."""
     data = {
-        "metadata": {"test": "Test"},
         "access": access,
+        "files": {"enabled": False},
+        "metadata": {"general": {"title": {"string": "Test"}}},
+        "resource_type": "course",
     }
 
     db_before = _get_session_commits(db)
-    draft = service.create(data=data, identity=identity_any_user)
-    service.publish(id_=draft.id, identity=identity_any_user)
+    draft = service.create(data=data, identity=identity)
+    service.publish(id_=draft.id, identity=identity)
     db_after = _get_session_commits(db)
     db_new_values = db_after - db_before  # the `-` is the set-difference operator
 

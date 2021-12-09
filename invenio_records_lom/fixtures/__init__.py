@@ -7,9 +7,9 @@
 
 """Submodule for creating demo records."""
 
-from .demo import create_fake_record, create_fake_records
+from .demo import publish_fake_record, publish_fake_records
 
 __all__ = (
-    "create_fake_record",
-    "create_fake_records",
+    "publish_fake_record",
+    "publish_fake_records",
 )

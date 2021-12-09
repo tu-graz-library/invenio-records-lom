@@ -52,6 +52,7 @@ setup_requires = [
 
 install_requires = [
     "invenio-jsonschemas>=1.1.3",
+    "invenio-previewer>=1.3.4",
     "invenio-records-rest>=1.8.0",
     "invenio_rdm_records>=0.32.3,<0.33",
     # these indirect dependencies are given for faster dependency tree resolution:
@@ -65,7 +66,7 @@ install_requires = [
     "flask-login>=0.4.1",
     "flask-menu>=0.7.2",
     "flask-principal>=0.4.0",
-    "fs>=0.5.5a1",
+    "fs>=0.5.4",
     "future>=0.18.2",
     "idna>=3.2",
     "idutils>=1.1.7",
@@ -105,13 +106,17 @@ setup(
             "invenio_records_lom = invenio_records_lom:InvenioRecordsLOM",
         ],
         "invenio_base.blueprints": [
-            "invenio_records_lom = invenio_records_lom.views:blueprint",
+            "invenio_records_lom_ui = invenio_records_lom.ui:create_blueprint",
+            "invenio_records_lom_resource_registerer = invenio_records_lom.views:blueprint",
+        ],
+        "invenio_base.api_blueprints": [
+            "invenio_records_lom_records = invenio_records_lom.views:create_records_bp",
         ],
         "invenio_jsonschemas.schemas": [
             "invenio_records_lom = invenio_records_lom.jsonschemas",
         ],
         "invenio_search.mappings": [
-            "lomrecords = invenio_records_lom.mappings",
+            "lomrecords = invenio_records_lom.records.mappings",
         ],
         "invenio_config.module": [
             "invenio_records_lom = invenio_records_lom.config",

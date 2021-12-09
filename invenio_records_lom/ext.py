@@ -7,12 +7,17 @@
 
 """Flask extension for invenio-records-lom."""
 
-from __future__ import absolute_import, print_function
-
+from invenio_records_resources.services import FileService
 from werkzeug.utils import cached_property
 
 from . import config
-from .services import LOMRecordService, LOMRecordServiceConfig
+from .resources import LOMRecordResource, LOMRecordResourceConfig
+from .services import (
+    LOMDraftFilesServiceConfig,
+    LOMRecordFilesServiceConfig,
+    LOMRecordService,
+    LOMRecordServiceConfig,
+)
 
 
 class InvenioRecordsLOM(object):
@@ -48,6 +53,7 @@ class InvenioRecordsLOM(object):
         """Flask application initialization."""
         self.init_config(app)
         self.init_services(app)
+        self.init_resources(app)
         app.extensions["invenio-records-lom"] = self
 
     def init_config(self, app):
@@ -79,11 +85,20 @@ class InvenioRecordsLOM(object):
                     app.config["RECORDS_REST_DEFAULT_SORT"].update(getattr(config, k))
 
     def init_services(self, app):
-        """Initialize Services."""
+        """Initialize services."""
         service_config = (
             LOMRecordServiceConfig  # config_class as in invenio-RDM and invenio-MARC21
         )
 
         self.records_service = LOMRecordService(
             service_config,
+            files_service=FileService(LOMRecordFilesServiceConfig),
+            draft_files_service=FileService(LOMDraftFilesServiceConfig),
+        )
+
+    def init_resources(self, app):
+        """Initialize resouces."""
+        self.records_resource = LOMRecordResource(
+            LOMRecordResourceConfig,
+            self.records_service,
         )

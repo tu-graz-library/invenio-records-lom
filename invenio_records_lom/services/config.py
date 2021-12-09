@@ -7,11 +7,20 @@
 
 """Config classes for LOMRecordService-objects."""
 
-from invenio_drafts_resources.services.records.components import PIDComponent
+from invenio_drafts_resources.services.records.components import (
+    DraftFilesComponent,
+    PIDComponent,
+)
 from invenio_drafts_resources.services.records.config import RecordServiceConfig
-from invenio_rdm_records.services.components import AccessComponent, MetadataComponent
+from invenio_rdm_records.services.components import (
+    AccessComponent,
+    MetadataComponent,
+    RelationsComponent,
+)
+from invenio_records_resources.services import FileServiceConfig
 
 from ..records import LOMDraft, LOMRecord
+from .components import ResourceTypeComponent
 from .permissions import LOMRecordPermissionPolicy
 from .schemas import LOMRecordSchema
 
@@ -29,5 +38,29 @@ class LOMRecordServiceConfig(RecordServiceConfig):
     components = [
         MetadataComponent,
         AccessComponent,
+        DraftFilesComponent,
         PIDComponent,
+        RelationsComponent,
+        ResourceTypeComponent,
     ]
+
+
+class LOMDraftFilesServiceConfig(FileServiceConfig):
+    """Config for LOM draft files service."""
+
+    record_cls = LOMDraft
+    permission_action_prefix = "draft_"
+    permission_policy_cls = LOMRecordPermissionPolicy
+
+    file_links_list = {}
+    file_links_item = {}
+
+
+class LOMRecordFilesServiceConfig(FileServiceConfig):
+    """Config for LOM files service."""
+
+    record_cls = LOMRecord
+    permission_policy_cls = LOMRecordPermissionPolicy
+
+    file_links_list = {}
+    file_links_item = {}
