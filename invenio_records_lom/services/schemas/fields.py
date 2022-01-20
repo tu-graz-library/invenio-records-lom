@@ -22,7 +22,7 @@ class ControlledVocabularyField(fields.String):
 
     def __init__(self, *, vocabulary: Container = None, **kwargs):
         """Initialize self."""
-        assert isinstance(vocabulary, Container)
+        assert isinstance(vocabulary, t.Container)
         self.vocabulary = vocabulary
         super().__init__(**kwargs)
 
