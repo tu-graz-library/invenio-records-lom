@@ -15,18 +15,18 @@ readme = open("README.rst").read()
 history = open("CHANGES.rst").read()
 
 tests_require = [
-    "elasticsearch_dsl>=7.2.1",
-    "invenio-app>=1.3.0,<2.0.0",
-    "pytest-invenio>=1.4.0,<2.0.0",
+    "elasticsearch_dsl>=7.4.0,<8.0.0",
+    "invenio-app>=1.3.3,<2.0.0",
+    "pytest-invenio>=1.4.2,<2.0.0",
 ]
 
 # Should follow inveniosoftware/invenio versions
-invenio_db_version = ">=1.0.9,<2.0.0"
+invenio_db_version = ">=1.0.9,<1.1.0"
 invenio_search_version = ">=1.4.2,<2.0.0"
 
 extras_require = {
     "docs": [
-        "Sphinx>=3",
+        "Sphinx>=4.2.0",
     ],
     # Elasticsearch version
     "elasticsearch7": [
@@ -46,7 +46,7 @@ for name, reqs in extras_require.items():
     extras_require["all"].extend(reqs)
 
 setup_requires = [
-    "Babel>=1.3",
+    "Babel>=2.9, <3",
     "pytest-runner>=3.0.0,<5",
 ]
 
@@ -54,22 +54,7 @@ install_requires = [
     "invenio-jsonschemas>=1.1.3",
     "invenio-previewer>=1.3.4",
     "invenio-records-rest>=1.8.0",
-    "invenio_rdm_records>=0.32.3,<0.33",
-    # these indirect dependencies are given for faster dependency tree resolution:
-    "celery>=5.0.5",
-    "cffi>=1.14.6",
-    "cryptography>=3.4.7",
-    "dnspython>=2.1.0",
-    "email-validator>=1.1.3",
-    "faker>=8.12.1",
-    "flask>=1.1.4,<2.0.0",
-    "flask-login>=0.4.1",
-    "flask-menu>=0.7.2",
-    "flask-principal>=0.4.0",
-    "fs>=0.5.4",
-    "future>=0.18.2",
-    "idna>=3.2",
-    "idutils>=1.1.7",
+    "invenio_rdm_records>=0.33.13,<0.34",
 ]
 
 packages = find_packages()
