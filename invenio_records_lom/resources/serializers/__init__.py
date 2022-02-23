@@ -7,9 +7,10 @@
 
 """Serializers turning records into html-template-insertable dicts."""
 
+from flask_resources.serializers import MarshmallowJSONSerializer
 from invenio_rdm_records.resources.serializers import UIJSONSerializer
 
-from .schemas import LOMUIObjectSchema
+from .schemas import LOMToDataCite44Schema, LOMUIObjectSchema
 
 
 class LOMUIJSONSerializer(UIJSONSerializer):
@@ -18,4 +19,15 @@ class LOMUIJSONSerializer(UIJSONSerializer):
     object_schema_cls = LOMUIObjectSchema
 
 
-__all__ = ("LOMUIJSONSerializer",)
+class LOMToDataCite44Serializer(MarshmallowJSONSerializer):
+    """Marshmallow-based DataCite-serializer for LOM records."""
+
+    def __init__(self, **kwargs):
+        """Constructor."""
+        super().__init__(schema_cls=LOMToDataCite44Schema, **kwargs)
+
+
+__all__ = (
+    "LOMToDataCite44Serializer",
+    "LOMUIJSONSerializer",
+)

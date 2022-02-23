@@ -14,15 +14,15 @@ from setuptools import find_packages, setup
 readme = open("README.rst").read()
 history = open("CHANGES.rst").read()
 
-tests_require = [
-    "elasticsearch_dsl>=7.4.0,<8.0.0",
-    "invenio-app>=1.3.3,<2.0.0",
-    "pytest-invenio>=1.4.2,<2.0.0",
-]
-
 # Should follow inveniosoftware/invenio versions
-invenio_db_version = ">=1.0.9,<1.1.0"
-invenio_search_version = ">=1.4.2,<2.0.0"
+invenio_db_version = ">=1.0.11,<1.1.0"
+invenio_search_version = ">=1.4.2,<1.5.0"
+
+tests_require = [
+    "elasticsearch-dsl>=7.4.0,<8.0.0",
+    "invenio-app>=1.3.3,<2.0.0",
+    "pytest-invenio~=1.4.3",
+]
 
 extras_require = {
     "docs": [
@@ -54,7 +54,7 @@ install_requires = [
     "invenio-jsonschemas>=1.1.3",
     "invenio-previewer>=1.3.4",
     "invenio-records-rest>=1.8.0",
-    "invenio_rdm_records>=0.33.13,<0.34",
+    "invenio-rdm-records>=0.34.4,<0.35",
 ]
 
 packages = find_packages()

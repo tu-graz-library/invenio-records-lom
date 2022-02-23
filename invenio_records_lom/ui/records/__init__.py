@@ -28,12 +28,17 @@ from .records import (
     record_export,
     record_file_download,
     record_file_preview,
+    record_from_pid,
+    record_latest,
 )
 
 
 def init_records_views(blueprint: Blueprint, app: Flask):
     """Register blueprints for records on passed in `blueprint`."""
     routes = app.config["LOM_ROUTES"]
+    app_ext = app.extensions["invenio-records-lom"]
+    with app.app_context():
+        schemes = app_ext.records_service.config.pids_providers
 
     blueprint.add_url_rule(
         routes["record_detail"],
@@ -51,6 +56,15 @@ def init_records_views(blueprint: Blueprint, app: Flask):
         routes["record_file_download"],
         view_func=record_file_download,
     )
+    blueprint.add_url_rule(
+        routes["record_latest"],
+        view_func=record_latest,
+    )
+    if schemes:
+        blueprint.add_url_rule(
+            routes["record_from_pid"].format(schemes=",".join(schemes)),
+            view_func=record_from_pid,
+        )
 
     # Register error handlers
     blueprint.register_error_handler(PIDDeletedError, record_tombstone_error)

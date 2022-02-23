@@ -7,10 +7,10 @@
 
 """Record services configured for LOM-use."""
 
-from invenio_drafts_resources.services.records import RecordService
+from invenio_rdm_records.services import RDMRecordService
 
 
-class LOMRecordService(RecordService):
+class LOMRecordService(RDMRecordService):
     """RecordService configured for LOM-use."""
 
     pass

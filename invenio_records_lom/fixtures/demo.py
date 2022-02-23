@@ -95,8 +95,8 @@ def create_fake_language(fake: Faker) -> str:
 
 def create_fake_identifier(fake: Faker) -> dict:
     """Create a fake "identifier"-element, compatible with LOMv1.0-standard."""
-    catalog = fake.random.choice(["URI", "ISBN"])
-    if catalog == "URI":
+    catalog = fake.random.choice(["URL", "ISBN"])
+    if catalog == "URL":
         entry = fake.uri()
     else:
         entry = fake.isbn13()
@@ -126,7 +126,7 @@ def create_fake_general(fake: Faker) -> dict:
 
     return {
         "identifier": [create_fake_identifier(fake) for __ in range(2)],
-        "title": langstringify(fake, " ".join(fake.words())),
+        "title": langstringify(fake, " ".join(fake.words()).title()),
         "language": [fake.random.choice([create_fake_language(fake), "none"])],
         "description": [langstringify(fake, fake.paragraph()) for __ in range(2)],
         "keyword": [langstringify(fake, fake.word()) for __ in range(2)],
@@ -182,7 +182,7 @@ def create_fake_technical(fake: Faker) -> dict:
     """Create a fake "technical"-element, compatible with LOMv1.0-standard."""
     return {
         "format": [fake.random.choice([fake.mime_type(), "non-digital"])],
-        "size": str(fake.random.randint(1, 2 ** 32)),
+        "size": str(fake.random.randint(1, 2**32)),
         "location": [
             fake.uri(),
         ],
@@ -195,11 +195,11 @@ def create_fake_technical(fake: Faker) -> dict:
 def create_fake_requirement(fake: Faker) -> dict:
     """Create a fake "requirement"-element, compatible with LOMv1.0-standard."""
     return {
-        "orComposite": [create_fake_orcomposite(fake) for __ in range(2)],
+        "orComposite": [create_fake_orComposite(fake) for __ in range(2)],
     }
 
 
-def create_fake_orcomposite(fake: Faker) -> dict:
+def create_fake_orComposite(fake: Faker) -> dict:
     """Create a fake "orComposite"-element, compatible with LOMv1.0-standard."""
     type_ = fake.random.choice(["operating system", "browser"])
     if type_ == "operating system":
@@ -405,6 +405,7 @@ def create_fake_data(fake: Faker, resource_type: str, files_enabled: bool = Fals
         "access": create_fake_access(fake),
         "files": {"enabled": files_enabled},
         "metadata": create_fake_metadata(fake),
+        "pids": {},
         "resource_type": resource_type,
     }
 
@@ -495,14 +496,14 @@ def link_up(whole_id: str, part_id: str):
     update_draft = partial(service.update_draft, identity=system_identity)
 
     # add "haspart"-relation to `whole_record`
-    whole_draft_item = edit(whole_id)
+    whole_draft_item = edit(id_=whole_id)
     whole_data = whole_draft_item.to_dict()
     inject_relation(whole_data, "haspart", part_id)
     updated_whole_draft_item = update_draft(id_=whole_id, data=whole_data)
     publish(id_=updated_whole_draft_item.id)
 
     # add "ispartof"-relation to `part_record`
-    part_draft_item = edit(part_id)
+    part_draft_item = edit(id_=part_id)
     part_data = part_draft_item.to_dict()
     inject_relation(part_data, "ispartof", whole_id)
     updated_part_draft_item = update_draft(id_=part_id, data=part_data)
