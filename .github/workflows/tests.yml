@@ -54,15 +54,16 @@ jobs:
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-${{ hashFiles('.${{ matrix.requirements-level }}-${{ matrix.python-version }}-requirements.txt') }}
-      - name: Downgrade Setuptools
-        # the fs<2.0.0 dependency needs use_2to3, which is deprecated for setuptools>=58.0
-        # remove this step once this is fixed
-        run: |
-          pip install setuptools==57.5.0
       - name: Log pip before install
         run: |
           pip --version
           pip list
+      - name: Install invenio-rdm-records in this separate step
+        # installing invenio-records-lom directly will have `pip install` take forever as of 2022-02-22
+        # installing it step-by-step with its largest dependenc first circumvents this for the mean time...
+        # TODO: remove this once dependency-resolution times are fixed
+        run: |
+          pip install invenio-rdm-records[all,postgresql,elasticsearch7]==0.34.4
       - name: Install dependencies
         run: |
           pip install -r .${{ matrix.requirements-level }}-${{ matrix.python-version }}-requirements.txt

@@ -27,6 +27,37 @@ from sqlalchemy.orm.exc import NoResultFound
 from ...proxies import current_records_lom
 
 
+def pass_record_latest(func: callable):
+    """Retrieve latest version of `record` from db and pass that into decorated function."""
+
+    @wraps(func)
+    def decoed(**kwargs):
+        service = current_records_lom.records_service
+        record_latest = service.read_latest(
+            identity=g.identity,
+            id_=kwargs.get("pid_value"),
+        )
+        return func(**kwargs, record=record_latest)
+
+    return decoed
+
+
+def pass_record_from_pid(func: callable):
+    """Retrieve `record` via passed-in pid-info and pass that into decorated function."""
+
+    @wraps(func)
+    def decoed(**kwargs):
+        service = current_records_lom.records_service
+        record = service.pids.resolve(
+            identity=g.identity,
+            id_=kwargs.get("pid_value"),
+            scheme=kwargs.get("pid_scheme"),
+        )
+        return func(**kwargs, record=record)
+
+    return decoed
+
+
 def pass_is_preview(func: callable):
     """Retrieve `is_preview` from request and pass that into decorated function."""
 
@@ -45,7 +76,7 @@ def pass_record_or_draft(func: callable):
     def decoed(**kwargs):
         is_preview = kwargs.get("is_preview", False)
         service = current_records_lom.records_service
-        service_kwargs = {"id_": kwargs.get("pid_value"), "identity": g.identity}
+        service_kwargs = {"identity": g.identity, "id_": kwargs.get("pid_value")}
 
         if is_preview:
             try:
@@ -68,7 +99,7 @@ def pass_record_files(func: callable):
         is_preview = kwargs.get("is_preview", False)
         draft_files_service = current_records_lom.records_service.draft_files
         files_service = current_records_lom.records_service.files
-        service_kwargs = {"id_": kwargs.get("pid_value"), "identity": g.identity}
+        service_kwargs = {"identity": g.identity, "id_": kwargs.get("pid_value")}
 
         try:
             if is_preview:
@@ -96,9 +127,9 @@ def pass_file_metadata(func: callable):
         draft_files_service = current_records_lom.records_service.draft_files
         files_service = current_records_lom.records_service.files
         service_kwargs = {
+            "identity": g.identity,
             "id_": kwargs.get("pid_value"),
             "file_key": kwargs.get("filename"),
-            "identity": g.identity,
         }
 
         if is_preview:

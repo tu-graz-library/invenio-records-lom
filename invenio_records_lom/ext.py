@@ -6,7 +6,7 @@
 # under the terms of the MIT License; see LICENSE file for more details.
 
 """Flask extension for invenio-records-lom."""
-
+from invenio_rdm_records.services.pids import PIDManager, PIDsService
 from invenio_records_resources.services import FileService
 from werkzeug.utils import cached_property
 
@@ -86,14 +86,11 @@ class InvenioRecordsLOM(object):
 
     def init_services(self, app):
         """Initialize services."""
-        service_config = (
-            LOMRecordServiceConfig  # config_class as in invenio-RDM and invenio-MARC21
-        )
-
         self.records_service = LOMRecordService(
-            service_config,
+            config=LOMRecordServiceConfig,
             files_service=FileService(LOMRecordFilesServiceConfig),
             draft_files_service=FileService(LOMDraftFilesServiceConfig),
+            pids_service=PIDsService(LOMRecordServiceConfig, PIDManager),
         )
 
     def init_resources(self, app):
