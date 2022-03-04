@@ -20,7 +20,7 @@
 import typing as t
 from os.path import splitext
 
-from flask import abort, current_app, render_template, request, url_for
+from flask import abort, current_app, redirect, render_template, request, url_for
 from invenio_base.utils import obj_or_import_string
 from invenio_previewer.extensions import default
 from invenio_previewer.proxies import current_previewer
@@ -33,6 +33,8 @@ from .decorators import (
     pass_file_metadata,
     pass_is_preview,
     pass_record_files,
+    pass_record_from_pid,
+    pass_record_latest,
     pass_record_or_draft,
 )
 
@@ -181,3 +183,15 @@ def record_file_download(
     """Download a file from a record."""
     download = bool(request.args.get("download"))
     return file_item.send_file(as_attachment=download)
+
+
+@pass_record_latest
+def record_latest(record: RecordItem = None, **kwargs):
+    """Redirect to record's landing page."""
+    return redirect(record["links"]["self_html"], code=301)
+
+
+@pass_record_from_pid
+def record_from_pid(record: RecordItem = None, **kwargs):
+    """Redirect to record's landing page."""
+    return redirect(record["links"]["self_html"], code=301)

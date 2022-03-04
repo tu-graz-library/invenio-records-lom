@@ -76,7 +76,7 @@ def test_create_draft(service, db, identity, access):
     }
 
     db_before = _get_session_commits(db)
-    service.create(data=data, identity=identity)
+    service.create(identity=identity, data=data)
     db_after = _get_session_commits(db)
     db_new_values = db_after - db_before  # the `-` is the set-difference operator
 
@@ -122,8 +122,8 @@ def test_publish(service, db, identity, access):
     }
 
     db_before = _get_session_commits(db)
-    draft = service.create(data=data, identity=identity)
-    service.publish(id_=draft.id, identity=identity)
+    draft = service.create(identity=identity, data=data)
+    service.publish(identity=identity, id_=draft.id)
     db_after = _get_session_commits(db)
     db_new_values = db_after - db_before  # the `-` is the set-difference operator
 
