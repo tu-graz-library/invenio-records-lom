@@ -54,7 +54,7 @@ install_requires = [
     "invenio-jsonschemas>=1.1.3",
     "invenio-previewer>=1.3.4",
     "invenio-records-rest>=1.8.0",
-    "invenio-rdm-records>=0.34.4,<0.35",
+    "invenio-rdm-records>=0.34.7,<0.35",
 ]
 
 packages = find_packages()
