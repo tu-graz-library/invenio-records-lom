@@ -13,7 +13,7 @@ from invenio_rdm_records.resources.serializers.datacite.schema import (
     get_scheme_datacite,
 )
 from invenio_rdm_records.resources.serializers.ui.fields import AccessStatusField
-from invenio_rdm_records.resources.serializers.ui.schema import (  # AdditionalDescriptionsSchema,; AdditionalTitlesSchema,; DatesSchema,; FormatEDTF,; L10NString,; RelatedIdentifiersSchema,; RightsSchema,; VocabularyL10Schema,; make_affiliation_index,; StrippedHTML,
+from invenio_rdm_records.resources.serializers.ui.schema import (
     FormatDate,
     record_version,
 )
@@ -22,6 +22,47 @@ from werkzeug.local import LocalProxy
 
 from ...records import LOMRecord
 from ...services.schemas.fields import ControlledVocabularyField
+
+
+class Title(fields.Field):
+    """Title Field."""
+
+    def _serialize(self, value, attr, obj, **kwargs):
+        """Serialize."""
+        # TODO
+        # checkout how to get the actual preferred language and show that string if it exists!
+        return value[0]["langstring"]["#text"]
+
+
+class Contributors(fields.Field):
+    """Contributors Field."""
+
+    def _serialize(self, value, attr, obj, **kwargs):
+        """Serialize."""
+        contributors = []
+        for obj in value:
+            contributors.append(
+                {
+                    "fullname": obj["entity"],
+                    "role": obj["role"]["value"]["langstring"]["#text"],
+                }
+            )
+        return contributors
+
+
+class GeneralDescriptions(fields.Field):
+    """General Descriptions Field."""
+
+    def _serialize(self, value, attr, obj, **kwargs):
+        return [o["langstring"]["#text"] for o in value]
+
+
+class EducationalDescriptions(fields.Field):
+    """Educational Descriptions Field."""
+
+    def _serialize(self, value, attr, obj, **kwargs):
+        """Serialize."""
+        return [o["langstring"]["#text"] for o in value]
 
 
 class LOMUIObjectSchema(Schema):
@@ -39,6 +80,16 @@ class LOMUIObjectSchema(Schema):
     access_status = AccessStatusField(attribute="access")
 
     version = fields.Function(record_version)
+
+    title = Title(attribute="metadata.general.title")
+
+    contributors = Contributors(attribute="metadata.lifeCycle.contribute")
+
+    generalDescriptions = GeneralDescriptions(attribute="metadata.general.description")
+
+    educationalDescriptions = EducationalDescriptions(
+        attribute="metadata.educational.description"
+    )
 
 
 class LOMToDataCite44Schema(Schema):
