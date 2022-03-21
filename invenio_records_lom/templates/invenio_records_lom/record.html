@@ -1,6 +1,6 @@
 {# -*- coding: utf-8 -*-
 
-  Copyright (C) 2021 Graz University of Technology.
+  Copyright (C) 2021-2022 Graz University of Technology.
 
   invenio-records-lom is free software; you can redistribute it and/or modify it
   under the terms of the MIT License; see LICENSE file for more details.
@@ -47,7 +47,7 @@
 <p>
   {%- for o in record.ui.contributors %}
   <span class="ui tooltip-popup text-muted">
-    {{o.fullname}}({{o.role}})
+    {{o.fullname}} ({{o.role}})
   </span>
   {{"; " if not loop.last}}
   {%- endfor %}
@@ -78,6 +78,13 @@
 <ul class="ui list">
 {{ make_dep_tree(metadata.relation, "haspart", "Contains") }}
 </ul>
+
+{% if record.ui.location %}
+<h3>{{_('Link to Resources')}}</h3>
+<p>
+  <a href="{{record.ui.location}}">{{record.ui.title}}</a>
+</p>
+{% endif %}
 {% endblock record_content %}
 
 {% block record_files %}

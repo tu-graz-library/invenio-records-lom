@@ -75,6 +75,14 @@ class EducationalDescriptions(fields.Field):
         return list(map(get_text, value))
 
 
+class Location(fields.Field):
+    """Location Field."""
+
+    def _serialize(self, value, attr, obj, **kwargs):
+        """Serialize."""
+        return value["#text"]
+
+
 class LOMUIObjectSchema(Schema):
     """Schema for dumping additional data helpful for html-template creation."""
 
@@ -100,6 +108,8 @@ class LOMUIObjectSchema(Schema):
     educationalDescriptions = EducationalDescriptions(
         attribute="metadata.educational.description"
     )
+
+    location = Location(attribute="metadata.technical.location")
 
 
 class LOMToDataCite44Schema(Schema):
