@@ -1,0 +1,22 @@
+{# -*- coding: utf-8 -*-
+  Copyright (C) 2022 Graz University of Technology.
+
+  Invenio-Records-LOM is free software; you can redistribute it and/or modify it
+  under the terms of the MIT License; see LICENSE file for more details.
+#}
+{%- macro make_dep_tree(relations, kind, rel_msg) -%}
+{% for relation in relations | selectattr("kind.value", "equalto", kind) -%}
+{% for identifier in relation.resource.identifier | selectattr("catalog", "equalto", "repo-pid") -%}
+{#
+<li>
+  <a class="ui tooltip-popup text-muted" href="{{identifier.entry}}">
+    {{ rel_msg }} {{ identifier.resource_type }}: {{ identifier.ui.general.title | title }}
+  </a>
+</li>
+<ul>
+  {{ make_dep_tree(identifier.metadata.relation, kind, rel_msg) }}
+</ul>
+#}
+{% endfor -%}
+{% endfor -%}
+{%- endmacro %}
