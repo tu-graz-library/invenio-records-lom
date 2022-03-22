@@ -103,9 +103,6 @@ setup(
         "invenio_search.mappings": [
             "lomrecords = invenio_records_lom.records.mappings",
         ],
-        "invenio_config.module": [
-            "invenio_records_lom = invenio_records_lom.config",
-        ],
         "invenio_pidstore.fetchers": [
             "lomid = invenio_records_lom.fetchers:lom_pid_fetcher",
         ],

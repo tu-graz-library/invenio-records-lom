@@ -63,26 +63,7 @@ class InvenioRecordsLOM(object):
         """
         for k in dir(config):
             if k.startswith("LOM_"):
-                if k == "LOM_REST_ENDPOINTS":
-                    # Make sure of registration process.
-                    app.config.setdefault("RECORDS_REST_ENDPOINTS", {})
-                    app.config["RECORDS_REST_ENDPOINTS"].update(getattr(config, k))
-
-                if k == "LOM_REST_FACETS":
-                    app.config.setdefault("RECORDS_REST_FACETS", {})
-                    app.config["RECORDS_REST_FACETS"].update(getattr(config, k))
-
                 app.config.setdefault(k, getattr(config, k))
-                if k == "LOM_REST_SORT_OPTIONS":
-                    # TODO Might be overriden depending on which package is
-                    # initialised first
-                    app.config.setdefault("RECORDS_REST_SORT_OPTIONS", {})
-                    app.config["RECORDS_REST_SORT_OPTIONS"].update(getattr(config, k))
-                if k == "LOM_REST_DEFAULT_SORT":
-                    # TODO Might be overriden depending on which package is
-                    # initialised first
-                    app.config.setdefault("RECORDS_REST_DEFAULT_SORT", {})
-                    app.config["RECORDS_REST_DEFAULT_SORT"].update(getattr(config, k))
 
     def init_services(self, app):
         """Initialize services."""
