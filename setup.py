@@ -21,7 +21,8 @@ invenio_search_version = ">=1.4.2,<1.5.0"
 tests_require = [
     "elasticsearch-dsl>=7.4.0,<8.0.0",
     "invenio-app>=1.3.3,<2.0.0",
-    "pytest-invenio~=1.4.3",
+    "pytest-invenio>=1.4.3",
+    "pytest-mock>=1.6.0",
 ]
 
 extras_require = {
@@ -54,7 +55,7 @@ install_requires = [
     "invenio-jsonschemas>=1.1.3",
     "invenio-previewer>=1.3.4",
     "invenio-records-rest>=1.8.0",
-    "invenio-rdm-records>=0.34.7,<0.35.1",
+    "invenio-rdm-records>=0.34.7,<0.35",
 ]
 
 packages = find_packages()
@@ -87,6 +88,7 @@ setup(
         "invenio_base.apps": [
             "invenio_records_lom = invenio_records_lom:InvenioRecordsLOM",
         ],
+        # TODO: pluck all things API
         "invenio_base.api_apps": [
             "invenio_records_lom = invenio_records_lom:InvenioRecordsLOM",
         ],
