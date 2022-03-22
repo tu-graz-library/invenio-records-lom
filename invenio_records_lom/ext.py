@@ -8,7 +8,6 @@
 """Flask extension for invenio-records-lom."""
 from invenio_rdm_records.services.pids import PIDManager, PIDsService
 from invenio_records_resources.services import FileService
-from werkzeug.utils import cached_property
 
 from . import config
 from .resources import LOMRecordResource, LOMRecordResourceConfig
@@ -27,27 +26,6 @@ class InvenioRecordsLOM(object):
         """Extension initialization."""
         if app:
             self.init_app(app)
-
-    @cached_property
-    def lom_cls(self):
-        """Base Lom API class."""
-        # TODO: Refactor
-        # def default_class_factory():
-        #     from .api import LomRecordBase
-        #     return type(
-        #         'InvenioRecordsLOM',
-        #         (LomRecordBase),
-        #         {},
-        #     )
-        # return self.app.config['LOM_CLS'] or default_class_factory()
-
-        from .api import LomRecordBase
-
-        return type(
-            "Lom",
-            (LomRecordBase,),
-            {},
-        )
 
     def init_app(self, app):
         """Flask application initialization."""

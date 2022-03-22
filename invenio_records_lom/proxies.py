@@ -14,8 +14,3 @@ current_records_lom = LocalProxy(
     lambda: current_app.extensions["invenio-records-lom"],
 )
 """Proxy to the extension."""
-
-Lom = LocalProxy(
-    lambda: current_app.extensions["invenio-records-lom"].lom_cls,
-)
-"""Proxy for current lom class."""

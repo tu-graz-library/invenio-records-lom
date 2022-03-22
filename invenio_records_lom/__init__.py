@@ -9,7 +9,11 @@
 """invenio data model for Learning object metadata."""
 
 from .ext import InvenioRecordsLOM
-from .proxies import Lom, current_records_lom
+from .proxies import current_records_lom
 from .version import __version__
 
-__all__ = ("__version__", "InvenioRecordsLOM", "Lom", "current_records_lom")
+__all__ = (
+    "__version__",
+    "current_records_lom",
+    "InvenioRecordsLOM",
+)
