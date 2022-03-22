@@ -9,14 +9,28 @@
 
 import click
 from flask.cli import with_appcontext
+from invenio_access.permissions import system_identity
 
 from .fixtures import publish_fake_records
+from .proxies import current_records_lom
 
 
 @click.group()
 def lom():
     """CLI-group for "invenio lom" commands."""
     pass
+
+
+@lom.command("rebuild-index")
+@with_appcontext
+def rebuild_index():
+    """Reindex all drafts, records."""
+    click.secho("Reindexing records and drafts...", fg="green")
+
+    rec_service = current_records_lom.records_service
+    rec_service.rebuild_index(identity=system_identity)
+
+    click.secho("Reindexed records!", fg="green")
 
 
 @lom.command()

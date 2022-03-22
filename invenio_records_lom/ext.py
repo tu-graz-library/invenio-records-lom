@@ -86,11 +86,15 @@ class InvenioRecordsLOM(object):
 
     def init_services(self, app):
         """Initialize services."""
+        record_service_config = LOMRecordServiceConfig.build(app)
+        file_service_config = LOMRecordFilesServiceConfig.build(app)
+        draft_files_config = LOMDraftFilesServiceConfig.build(app)
+
         self.records_service = LOMRecordService(
-            config=LOMRecordServiceConfig,
-            files_service=FileService(LOMRecordFilesServiceConfig),
-            draft_files_service=FileService(LOMDraftFilesServiceConfig),
-            pids_service=PIDsService(LOMRecordServiceConfig, PIDManager),
+            config=record_service_config,
+            files_service=FileService(file_service_config),
+            draft_files_service=FileService(draft_files_config),
+            pids_service=PIDsService(record_service_config, PIDManager),
         )
 
     def init_resources(self, app):

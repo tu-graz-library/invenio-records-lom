@@ -141,6 +141,11 @@ LOM_PERSISTENT_IDENTIFIER_PROVIDERS = [
         validators=[providers.BlockedPrefixes(config_names=["DATACITE_PREFIX"])],
         label=_("DOI"),
     ),
+    # OAI provider
+    providers.OAIPIDProvider(
+        "oai",
+        label=_("OAI ID"),
+    ),
 ]
 """A list of configured persistent identifier providers.
 
@@ -161,6 +166,11 @@ LOM_PERSISTENT_IDENTIFIERS = {
         "label": _("DOI"),
         "validator": idutils.is_doi,
         "normalizer": idutils.normalize_doi,
+    },
+    "oai": {
+        "providers": ["oai"],
+        "required": True,
+        "label": _("OAI"),
     },
 }
 """The configured persistent identifiers for records.
