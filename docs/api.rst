@@ -7,24 +7,6 @@
 API Docs
 ========
 
-Serializers
------------
-
-.. automodule:: invenio_records_lom.serializers
-   :members:
-
-Loaders
--------
-
-.. automodule:: invenio_records_lom.loaders
-   :members:
-
-Validation
-----------
-
-.. automodule:: invenio_records_lom.marshmallow
-   :members:
-
 Extension
 ---------
 
