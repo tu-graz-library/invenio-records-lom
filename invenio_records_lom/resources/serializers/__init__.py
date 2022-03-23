@@ -43,13 +43,16 @@ class LOMToLOMXMLSerializer:
     }
 
     def __init__(self, **options):
+        """Constructor."""
         self._schema_cls = None
 
         self.E = ElementMaker(namespace=self.NSMAP["lom"], nsmap=self.NSMAP)
 
     def build_langstring(self, jsn, parent_tag):
         """Append XML corresponding to `jsn` to `parent_tag`.
-        `jsn` has to be of form `{"lang": "lang-name", "#text": "any_text"}`."""
+
+        `jsn` has to be of form `{"lang": "lang-name", "#text": "any_text"}`.
+        """
         if "lang" in jsn:
             tag = self.E.langstring(
                 jsn["#text"],

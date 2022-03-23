@@ -24,9 +24,11 @@ from ..proxies import current_records_lom
 #
 def langstringify(fake: Faker, text: str, lang: str = "") -> dict:
     """Wraps `text` in a dict, emulating LOMv1.0-standard LangString-objects.
+
     If `lang` is given and None, no "lang"-key is added to the returned dict.
     If `lang` is given and truthy, its value is used for the "lang"-key.
-    If `lang` is not given or is falsy but not None, a fake-value is used for "lang"."""
+    If `lang` is not given or is falsy but not None, a fake-value is used for "lang".
+    """
     langstring = {}
     if lang is not None:
         langstring["lang"] = lang or create_fake_language(fake)
@@ -80,10 +82,8 @@ def create_fake_language(fake: Faker) -> str:
     language_codes = [
         "EN",
         "en-us",
-        "en-US-philadelphia",
         "eng",
         "eng-US",
-        "ENG-us-philadelphia",
     ]
     return fake.random.choice(language_codes)
 
@@ -108,7 +108,7 @@ def create_fake_contribute(fake: Faker, roles: list) -> dict:
     """Create a fake "contribute"-element, compatible with LOMv1.0-standard."""
     return {
         "role": vocabularify(fake, roles),
-        "entity": [create_fake_vcard(fake) for __ in range(2)],
+        "entity": create_fake_vcard(fake),
         "date": create_fake_datetime(fake),
     }
 

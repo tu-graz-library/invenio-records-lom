@@ -185,7 +185,7 @@ class LOMToDataCite44Schema(Schema):
 
     def get_publicationYear(self, obj: LOMRecord):
         """Get publication year."""
-        contributes = obj["metadata"].get("general", {}).get("contribute", [])
+        contributes = obj["metadata"].get("lifeCycle", {}).get("contribute", [])
         publish_dates = []
         for contribute in contributes:
             role = contribute.get("role", {}).get("value")
@@ -229,7 +229,7 @@ class LOMToDataCite44Schema(Schema):
         if first_date == last_date:
             date = str(first_date.date())
         else:
-            date = f"{first_date.date}/{last_date.date}"
+            date = f"{first_date.date()}/{last_date.date()}"
         return [{"date": date, "dateType": "Created"}]
 
     def get_language(self, obj: LOMRecord):
@@ -262,8 +262,8 @@ class LOMToDataCite44Schema(Schema):
         relationdicts = []
         for relation in relations:
             identifiers = relation.get("resource", {}).get("identifier", [])
-            kind = relation.get("kind", {}).get("value")
-            if not kind:
+            kind_langstring = relation.get("kind", {}).get("value")
+            if not kind_langstring:
                 continue
             for identifier in identifiers:
                 scheme = identifier.get("catalog", "").lower()
@@ -273,9 +273,9 @@ class LOMToDataCite44Schema(Schema):
                     continue
                 relationdicts.append(
                     {
-                        "relatedIdentifier": identifier["entry"],
+                        "relatedIdentifier": get_text(identifier["entry"]),
                         "relatedIdentifierType": id_type,
-                        "relationType": kind_to_relationType[kind],
+                        "relationType": kind_to_relationType[get_text(kind_langstring)],
                     }
                 )
         return relationdicts or missing
@@ -283,7 +283,7 @@ class LOMToDataCite44Schema(Schema):
     def get_sizes(self, obj: LOMRecord):
         """Get list of sizes."""
         if size := obj["metadata"].get("technical", {}).get("size"):
-            return [f"{size} Bytes"]
+            return [str(size)]
         else:
             return missing
 
@@ -294,12 +294,12 @@ class LOMToDataCite44Schema(Schema):
     def get_version(self, obj: LOMRecord):
         """Get version."""
         version_langstring = obj["metadata"].get("lifeCycle", {}).get("version", {})
-        return version_langstring.get("string", missing)
+        return version_langstring.get("langstring", {}).get("#text", missing)
 
     def get_rightsList(self, obj: LOMRecord):
         """Get list of rights-dicts."""
         rights = obj["metadata"].get("rights", {})
-        if description := rights.get("description", {}).get("string"):
-            return [{"rights": description}]
+        if description_langstring := rights.get("description"):
+            return [{"rights": get_text(description_langstring)}]
         else:
             return missing
