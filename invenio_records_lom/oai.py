@@ -13,7 +13,7 @@ from invenio_pidstore.models import PersistentIdentifier
 from invenio_records_resources.services.errors import PermissionDeniedError
 
 from .proxies import current_records_lom
-from .resources.serializers import LOMToDublinCoreXMLSerializer, LOMToLOMXMLSerializer
+from .resources.serializers import LOMToLOMXMLSerializer
 
 
 def lom_etree(pid, record):
