@@ -7,7 +7,6 @@
 
 """Config classes for LOMRecordService-objects."""
 
-from flask import current_app
 from invenio_drafts_resources.services.records.components import (
     DraftFilesComponent,
     PIDComponent,
@@ -23,6 +22,7 @@ from invenio_rdm_records.services.components import (
     RelationsComponent,
 )
 from invenio_rdm_records.services.config import has_doi, is_record_and_has_doi
+from invenio_rdm_records.services.customizations import ConfiguratorMixin
 from invenio_records_resources.services import (
     ConditionalLink,
     FileServiceConfig,
@@ -41,9 +41,9 @@ class FromConfigLOMPIDsProviders:
 
     def __get__(self, obj, objtype=None):
         """Return dictionary keyed by scheme, with {"name1": provider1, ...} as values."""
-        configs_by_scheme = current_app.config.get("LOM_PERSISTENT_IDENTIFIERS", {})
-        providers = current_app.config.get("LOM_PERSISTENT_IDENTIFIER_PROVIDERS", [])
-        doi_enabled = current_app.config.get("DATACITE_ENABLED", False)
+        configs_by_scheme = obj._app.config.get("LOM_PERSISTENT_IDENTIFIERS", {})
+        providers = obj._app.config.get("LOM_PERSISTENT_IDENTIFIER_PROVIDERS", [])
+        doi_enabled = obj._app.config.get("DATACITE_ENABLED", False)
 
         providers_by_name = {p.name: p for p in providers}
 
@@ -67,8 +67,8 @@ class FromConfigLOMRequiredPIDs:
 
     def __get__(self, obj, objtype=None):
         """Return list of enabled required schemes."""
-        configs_by_scheme = current_app.config.get("LOM_PERSISTENT_IDENTIFIERS", {})
-        doi_enabled = current_app.config.get("DATACITE_ENABLED", False)
+        configs_by_scheme = obj._app.config.get("LOM_PERSISTENT_IDENTIFIERS", {})
+        doi_enabled = obj._app.config.get("DATACITE_ENABLED", False)
 
         enabled_schemes = (
             scheme for scheme in configs_by_scheme if scheme != "doi" or doi_enabled
@@ -81,7 +81,7 @@ class FromConfigLOMRequiredPIDs:
         ]
 
 
-class LOMRecordServiceConfig(RecordServiceConfig):
+class LOMRecordServiceConfig(RecordServiceConfig, ConfiguratorMixin):
     """Config for LOM record service."""
 
     # Record and draft class
@@ -139,7 +139,7 @@ class LOMRecordServiceConfig(RecordServiceConfig):
     ]
 
 
-class LOMDraftFilesServiceConfig(FileServiceConfig):
+class LOMDraftFilesServiceConfig(FileServiceConfig, ConfiguratorMixin):
     """Config for LOM draft files service."""
 
     record_cls = LOMDraft
@@ -150,7 +150,7 @@ class LOMDraftFilesServiceConfig(FileServiceConfig):
     file_links_item = {}
 
 
-class LOMRecordFilesServiceConfig(FileServiceConfig):
+class LOMRecordFilesServiceConfig(FileServiceConfig, ConfiguratorMixin):
     """Config for LOM files service."""
 
     record_cls = LOMRecord

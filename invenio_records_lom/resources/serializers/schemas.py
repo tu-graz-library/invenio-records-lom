@@ -1,19 +1,18 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2021 Graz University of Technology.
+# Copyright (C) 2021-2022 Graz University of Technology.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
 """Schemas which get wrapped by serializers."""
-
 import arrow
 from flask import current_app
 from invenio_rdm_records.resources.serializers.datacite.schema import (
     get_scheme_datacite,
 )
 from invenio_rdm_records.resources.serializers.ui.fields import AccessStatusField
-from invenio_rdm_records.resources.serializers.ui.schema import (  # AdditionalDescriptionsSchema,; AdditionalTitlesSchema,; DatesSchema,; FormatEDTF,; L10NString,; RelatedIdentifiersSchema,; RightsSchema,; VocabularyL10Schema,; make_affiliation_index,; StrippedHTML,
+from invenio_rdm_records.resources.serializers.ui.schema import (
     FormatDate,
     record_version,
 )
@@ -22,6 +21,66 @@ from werkzeug.local import LocalProxy
 
 from ...records import LOMRecord
 from ...services.schemas.fields import ControlledVocabularyField
+
+
+def get_text(value):
+    """Get text from langstring object."""
+    return value["langstring"]["#text"]
+
+
+def get_lang(value):
+    """Get lang from langstring object."""
+    return value["langstring"]["lang"]
+
+
+class Title(fields.Field):
+    """Title Field."""
+
+    def _serialize(self, value, attr, obj, **kwargs):
+        """Serialize."""
+        # TODO
+        # checkout how to get the actual preferred language and show that string if it exists!
+        return get_text(value)
+
+
+class Contributors(fields.Field):
+    """Contributors Field."""
+
+    def _serialize(self, value, attr, obj, **kwargs):
+        """Serialize."""
+        contributors = []
+        for obj in value:
+            contributors.append(
+                {
+                    "fullname": obj["entity"],
+                    "role": get_text(obj["role"]["value"]),
+                }
+            )
+        return contributors
+
+
+class GeneralDescriptions(fields.Field):
+    """General Descriptions Field."""
+
+    def _serialize(self, value, attr, obj, **kwargs):
+        """Serialize."""
+        return list(map(get_text, value))
+
+
+class EducationalDescriptions(fields.Field):
+    """Educational Descriptions Field."""
+
+    def _serialize(self, value, attr, obj, **kwargs):
+        """Serialize."""
+        return list(map(get_text, value))
+
+
+class Location(fields.Field):
+    """Location Field."""
+
+    def _serialize(self, value, attr, obj, **kwargs):
+        """Serialize."""
+        return value["#text"]
 
 
 class LOMUIObjectSchema(Schema):
@@ -39,6 +98,18 @@ class LOMUIObjectSchema(Schema):
     access_status = AccessStatusField(attribute="access")
 
     version = fields.Function(record_version)
+
+    title = Title(attribute="metadata.general.title")
+
+    contributors = Contributors(attribute="metadata.lifeCycle.contribute")
+
+    generalDescriptions = GeneralDescriptions(attribute="metadata.general.description")
+
+    educationalDescriptions = EducationalDescriptions(
+        attribute="metadata.educational.description"
+    )
+
+    location = Location(attribute="metadata.technical.location")
 
 
 class LOMToDataCite44Schema(Schema):
@@ -65,7 +136,7 @@ class LOMToDataCite44Schema(Schema):
     version = fields.Method("get_version")
     rightsList = fields.Method("get_rightsList")
 
-    schemaVersion = fields.Constant("https://schema.datacite.org/meta/kernel-4.4")
+    schemaVersion = fields.Constant("http://datacite.org/schema/kernel-4")
 
     def get_identifiers(self, obj: LOMRecord):
         """Get list of (main and alternate) identifiers."""
@@ -85,7 +156,7 @@ class LOMToDataCite44Schema(Schema):
             identifier = lom_identifier.get("entry")
             identifier_type = lom_identifier.get("catalog")
             serialized_identifier = {
-                "identifier": identifier,
+                "identifier": get_text(identifier),
                 "identifierType": identifier_type.upper(),
             }
             if serialized_identifier not in serialized_identifiers:
@@ -95,27 +166,18 @@ class LOMToDataCite44Schema(Schema):
 
     def get_creators(self, obj: LOMRecord):
         """Get list of creator-dicts."""
-        creator_roles = {
-            "author",
-            "graphical designer",
-            "technical implementer",
-            "script writer",
-        }
         contributes = obj["metadata"].get("lifeCycle", {}).get("contribute", [])
         entities = []
         for contribute in contributes:
-            role = contribute.get("role", {}).get("value")
-            if role not in creator_roles:
-                continue
-            for entity in contribute.get("entity", []):
-                if entity not in entities:
-                    entities.append(entity)
+            entities.append(contribute.get("entity"))
         return [{"name": entity} for entity in entities]
 
     def get_titles(self, obj: LOMRecord):
         """Get list of title-dicts."""
         title = obj["metadata"].get("general", {}).get("title", "")
-        return [{"title": title["string"], "lang": title["language"]}]
+        if not title:
+            return []
+        return [{"title": get_text(title), "lang": get_lang(title)}]
 
     def get_publisher(self, obj: LOMRecord):
         """Get publisher."""
@@ -123,7 +185,7 @@ class LOMToDataCite44Schema(Schema):
 
     def get_publicationYear(self, obj: LOMRecord):
         """Get publication year."""
-        contributes = obj["metadata"].get("general", {}).get("contribute", [])
+        contributes = obj["metadata"].get("lifeCycle", {}).get("contribute", [])
         publish_dates = []
         for contribute in contributes:
             role = contribute.get("role", {}).get("value")
@@ -131,44 +193,34 @@ class LOMToDataCite44Schema(Schema):
                 publish_dates.append(contribute.get("date", {}).get("dateTime"))
 
         if publish_dates:
-            return min(arrow.get(publish_date).year for publish_date in publish_dates)
+            year = min(arrow.get(publish_date).year for publish_date in publish_dates)
         else:
             # from datacite specification: "For resources that do not have a standard publication year value, DataCite recommends that PublicationYear should include the date that is preferred for use in a citation."
-            return arrow.now().year
+            year = arrow.now().year
+
+        return str(year)
 
     def get_contributors(self, obj: LOMRecord):
         """Get list of contributor-dicts."""
-        role_to_contributorType = {
-            "editor": "Editor",
-        }
         contributes = obj["metadata"].get("lifeCycle", {}).get("contribute", [])
         contributordicts = []
         for contribute in contributes:
-            lom_role = contribute.get("role", {}).get("value", "Other")
-            for entity in contribute.get("entity", []):
-                contributordict = {
-                    "contributorType": role_to_contributorType.get(lom_role, "Other"),
-                    "name": entity,
-                }
-                contributordicts.append(contributordict)
+            contributordict = {
+                "contributorType": "Other",
+                "name": contribute.get("entity"),
+            }
+            contributordicts.append(contributordict)
         return contributordicts or missing
 
     def get_dates(self, obj: LOMRecord):
         """Get list of date-dicts."""
-        creator_roles = {
-            "author",
-            "graphical designer",
-            "technical implementer",
-            "script writer",
-        }
         contributes = obj["metadata"].get("lifeCycle", {}).get("contribute", [])
         creator_dates = []
+
         for contribute in contributes:
-            role = contribute.get("role", {}).get("value")
-            if role not in creator_roles:
-                continue
             if date := contribute.get("date", {}).get("dateTime"):
                 creator_dates.append(arrow.get(date))
+
         if not creator_dates:
             return missing
 
@@ -177,7 +229,7 @@ class LOMToDataCite44Schema(Schema):
         if first_date == last_date:
             date = str(first_date.date())
         else:
-            date = f"{first_date.date}/{last_date.date}"
+            date = f"{first_date.date()}/{last_date.date()}"
         return [{"date": date, "dateType": "Created"}]
 
     def get_language(self, obj: LOMRecord):
@@ -210,8 +262,8 @@ class LOMToDataCite44Schema(Schema):
         relationdicts = []
         for relation in relations:
             identifiers = relation.get("resource", {}).get("identifier", [])
-            kind = relation.get("kind", {}).get("value")
-            if not kind:
+            kind_langstring = relation.get("kind", {}).get("value")
+            if not kind_langstring:
                 continue
             for identifier in identifiers:
                 scheme = identifier.get("catalog", "").lower()
@@ -221,9 +273,9 @@ class LOMToDataCite44Schema(Schema):
                     continue
                 relationdicts.append(
                     {
-                        "relatedIdentifier": identifier["entry"],
+                        "relatedIdentifier": get_text(identifier["entry"]),
                         "relatedIdentifierType": id_type,
-                        "relationType": kind_to_relationType[kind],
+                        "relationType": kind_to_relationType[get_text(kind_langstring)],
                     }
                 )
         return relationdicts or missing
@@ -231,7 +283,7 @@ class LOMToDataCite44Schema(Schema):
     def get_sizes(self, obj: LOMRecord):
         """Get list of sizes."""
         if size := obj["metadata"].get("technical", {}).get("size"):
-            return [f"{size} Bytes"]
+            return [str(size)]
         else:
             return missing
 
@@ -242,12 +294,12 @@ class LOMToDataCite44Schema(Schema):
     def get_version(self, obj: LOMRecord):
         """Get version."""
         version_langstring = obj["metadata"].get("lifeCycle", {}).get("version", {})
-        return version_langstring.get("string", missing)
+        return version_langstring.get("langstring", {}).get("#text", missing)
 
     def get_rightsList(self, obj: LOMRecord):
         """Get list of rights-dicts."""
         rights = obj["metadata"].get("rights", {})
-        if description := rights.get("description", {}).get("string"):
-            return [{"rights": description}]
+        if description_langstring := rights.get("description"):
+            return [{"rights": get_text(description_langstring)}]
         else:
             return missing

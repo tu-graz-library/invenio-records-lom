@@ -8,7 +8,6 @@
 """Flask extension for invenio-records-lom."""
 from invenio_rdm_records.services.pids import PIDManager, PIDsService
 from invenio_records_resources.services import FileService
-from werkzeug.utils import cached_property
 
 from . import config
 from .resources import LOMRecordResource, LOMRecordResourceConfig
@@ -28,27 +27,6 @@ class InvenioRecordsLOM(object):
         if app:
             self.init_app(app)
 
-    @cached_property
-    def lom_cls(self):
-        """Base Lom API class."""
-        # TODO: Refactor
-        # def default_class_factory():
-        #     from .api import LomRecordBase
-        #     return type(
-        #         'InvenioRecordsLOM',
-        #         (LomRecordBase),
-        #         {},
-        #     )
-        # return self.app.config['LOM_CLS'] or default_class_factory()
-
-        from .api import LomRecordBase
-
-        return type(
-            "Lom",
-            (LomRecordBase,),
-            {},
-        )
-
     def init_app(self, app):
         """Flask application initialization."""
         self.init_config(app)
@@ -63,34 +41,19 @@ class InvenioRecordsLOM(object):
         """
         for k in dir(config):
             if k.startswith("LOM_"):
-                if k == "LOM_REST_ENDPOINTS":
-                    # Make sure of registration process.
-                    app.config.setdefault("RECORDS_REST_ENDPOINTS", {})
-                    app.config["RECORDS_REST_ENDPOINTS"].update(getattr(config, k))
-
-                if k == "LOM_REST_FACETS":
-                    app.config.setdefault("RECORDS_REST_FACETS", {})
-                    app.config["RECORDS_REST_FACETS"].update(getattr(config, k))
-
                 app.config.setdefault(k, getattr(config, k))
-                if k == "LOM_REST_SORT_OPTIONS":
-                    # TODO Might be overriden depending on which package is
-                    # initialised first
-                    app.config.setdefault("RECORDS_REST_SORT_OPTIONS", {})
-                    app.config["RECORDS_REST_SORT_OPTIONS"].update(getattr(config, k))
-                if k == "LOM_REST_DEFAULT_SORT":
-                    # TODO Might be overriden depending on which package is
-                    # initialised first
-                    app.config.setdefault("RECORDS_REST_DEFAULT_SORT", {})
-                    app.config["RECORDS_REST_DEFAULT_SORT"].update(getattr(config, k))
 
     def init_services(self, app):
         """Initialize services."""
+        record_service_config = LOMRecordServiceConfig.build(app)
+        file_service_config = LOMRecordFilesServiceConfig.build(app)
+        draft_files_config = LOMDraftFilesServiceConfig.build(app)
+
         self.records_service = LOMRecordService(
-            config=LOMRecordServiceConfig,
-            files_service=FileService(LOMRecordFilesServiceConfig),
-            draft_files_service=FileService(LOMDraftFilesServiceConfig),
-            pids_service=PIDsService(LOMRecordServiceConfig, PIDManager),
+            config=record_service_config,
+            files_service=FileService(file_service_config),
+            draft_files_service=FileService(draft_files_config),
+            pids_service=PIDsService(record_service_config, PIDManager),
         )
 
     def init_resources(self, app):

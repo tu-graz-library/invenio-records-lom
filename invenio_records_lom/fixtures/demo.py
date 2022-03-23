@@ -22,19 +22,25 @@ from ..proxies import current_records_lom
 #
 # functions for LOM datatypes
 #
-def langstringify(fake: Faker, string: str) -> dict:
-    """Wraps `string` in a dict, emulating LOMv1.0-standard LangString-objects."""
-    return {
-        "language": create_fake_language(fake),
-        "string": string,
-    }
+def langstringify(fake: Faker, text: str, lang: str = "") -> dict:
+    """Wraps `text` in a dict, emulating LOMv1.0-standard LangString-objects.
+
+    If `lang` is given and None, no "lang"-key is added to the returned dict.
+    If `lang` is given and truthy, its value is used for the "lang"-key.
+    If `lang` is not given or is falsy but not None, a fake-value is used for "lang".
+    """
+    langstring = {}
+    if lang is not None:
+        langstring["lang"] = lang or create_fake_language(fake)
+    langstring["#text"] = text
+    return {"langstring": langstring}
 
 
 def vocabularify(fake: Faker, choices: list) -> dict:
     """Randomly draw a choice from `choices`, then wrap that choice in a dict, emulating LOMv1.0-standard Vocabulary-objects."""
     return {
-        "source": "LOMv1.0",
-        "value": fake.random.choice(choices),
+        "source": langstringify(fake, "LOMv1.0", lang="x-none"),
+        "value": langstringify(fake, fake.random.choice(choices), lang="x-none"),
     }
 
 
@@ -55,19 +61,10 @@ def create_fake_datetime(fake: Faker) -> dict:
 
 
 def create_fake_duration(fake: Faker) -> dict:
-    """Create a fake duration dict, as per LOMv1.0-standard Duration-object-specification."""
-    random = fake.random
-    pattern = random.choice(["all", "Y", "D", "HM", "S"])
-    duration = {
-        "all": "P1Y2M4DT10H35M12.5S",
-        "Y": f"P{random.randint(1,5)}Y",
-        "D": f"P{random.randint(1,60)}D",
-        "HM": f"PT{random.randint(1,3)}H{random.randint(1,59)}M",
-        "S": f"PT{random.uniform(0.1, 12.5)}S",
-    }
-
+    """Create a fake duration dict, as per LOM-UIBK specification."""
+    randint = fake.random.randint
     return {
-        "duration": duration[pattern],
+        "datetime": f"{randint(0,23):02}:{randint(0,59):02}:{randint(0,59):02}",
         "description": langstringify(fake, fake.sentence()),
     }
 
@@ -85,10 +82,8 @@ def create_fake_language(fake: Faker) -> str:
     language_codes = [
         "EN",
         "en-us",
-        "en-US-philadelphia",
         "eng",
         "eng-US",
-        "ENG-us-philadelphia",
     ]
     return fake.random.choice(language_codes)
 
@@ -101,9 +96,11 @@ def create_fake_identifier(fake: Faker) -> dict:
     else:
         entry = fake.isbn13()
 
+    lang = fake.random.choice([None, create_fake_language(fake)])
+
     return {
         "catalog": catalog,
-        "entry": entry,
+        "entry": langstringify(fake, entry, lang=lang),
     }
 
 
@@ -111,7 +108,7 @@ def create_fake_contribute(fake: Faker, roles: list) -> dict:
     """Create a fake "contribute"-element, compatible with LOMv1.0-standard."""
     return {
         "role": vocabularify(fake, roles),
-        "entity": [create_fake_vcard(fake) for __ in range(2)],
+        "entity": create_fake_vcard(fake),
         "date": create_fake_datetime(fake),
     }
 
@@ -158,10 +155,10 @@ def create_fake_lifecycle(fake: Faker) -> dict:
 
     statuses = ["draft", "final", "revised", "unavailable"]
 
-    random_int = fake.random.randint
+    randint = fake.random.randint
 
     return {
-        "version": langstringify(fake, f"{random_int(0,9)}.{random_int(0,9)}"),
+        "version": langstringify(fake, f"{randint(0,9)}.{randint(0,9)}"),
         "status": vocabularify(fake, statuses),
         "contribute": [create_fake_contribute(fake, roles) for __ in range(2)],
     }
@@ -179,27 +176,27 @@ def create_fake_metametadata(fake: Faker) -> dict:
 
 
 def create_fake_technical(fake: Faker) -> dict:
-    """Create a fake "technical"-element, compatible with LOMv1.0-standard."""
+    """Create a fake "technical"-element, with fields from LOMv1.0 and LOM-UIBK."""
     return {
         "format": [fake.random.choice([fake.mime_type(), "non-digital"])],
         "size": str(fake.random.randint(1, 2**32)),
-        "location": [
-            fake.uri(),
-        ],
+        "location": [fake.uri() for __ in range(2)],
+        "thumbnail": {"url": fake.uri()},
         "requirement": [create_fake_requirement(fake) for __ in range(2)],
         "installationRemarks": langstringify(fake, fake.paragraph()),
         "otherPlatformRequirements": langstringify(fake, fake.paragraph()),
+        "duration": create_fake_duration(fake),
     }
 
 
 def create_fake_requirement(fake: Faker) -> dict:
     """Create a fake "requirement"-element, compatible with LOMv1.0-standard."""
     return {
-        "orComposite": [create_fake_orComposite(fake) for __ in range(2)],
+        "orComposite": [create_fake_orcomposite(fake) for __ in range(2)],
     }
 
 
-def create_fake_orComposite(fake: Faker) -> dict:
+def create_fake_orcomposite(fake: Faker) -> dict:
     """Create a fake "orComposite"-element, compatible with LOMv1.0-standard."""
     type_ = fake.random.choice(["operating system", "browser"])
     if type_ == "operating system":
@@ -231,23 +228,6 @@ def create_fake_orComposite(fake: Faker) -> dict:
 def create_fake_educational(fake: Faker) -> dict:
     """Create a fake "educational"-element, compatible with LOMv1.0-standard."""
     interactivity_types = ["active", "expositive", "mixed"]
-    learning_resource_types = [
-        "exercise",
-        "simulation",
-        "questionnaire",
-        "diagram",
-        "figure",
-        "graph",
-        "index",
-        "slide",
-        "table",
-        "narrative text",
-        "exam",
-        "experiment",
-        "problem statement",
-        "self assessment",
-        "lecture",
-    ]
     levels = ["very low", "low", "medium", "high", "very high"]
     difficulties = ["very easy", "easy", "medium", "difficult", "very difficult"]
     end_user_roles = ["teacher", "author", "learner", "manager"]
@@ -257,7 +237,7 @@ def create_fake_educational(fake: Faker) -> dict:
 
     return {
         "interactivityType": vocabularify(fake, interactivity_types),
-        "learningResourceType": vocabularify(fake, learning_resource_types),
+        "learningResourceType": create_fake_learningresourcetype(fake),
         "interactivityLevel": vocabularify(fake, levels),
         "semanticDensity": vocabularify(fake, levels),
         "intendedEndUserRole": vocabularify(fake, end_user_roles),
@@ -267,6 +247,45 @@ def create_fake_educational(fake: Faker) -> dict:
         "typicalLearningTime": create_fake_duration(fake),
         "description": langstringify(fake, fake.paragraph()),
         "language": [create_fake_language(fake) for __ in range(2)],
+    }
+
+
+def create_fake_learningresourcetype(fake: Faker) -> dict:
+    """Create a fake "learningResourceType"-element, compatible with LOM-UIBK-standard."""
+    url_endings = [
+        "application",
+        "assessment",
+        "audio",
+        "case_study",
+        "course",
+        "data",
+        "diagram",
+        "drill_and_practice",
+        "educational_game",
+        "experiment",
+        "image",
+        "index",
+        "lesson_plan",
+        "map",
+        "portal",
+        "questionnaire",
+        "script",
+        "sheet_music",
+        "simulation",
+        "slide",
+        "text",
+        "textbook",
+        "video",
+        "web_page",
+        "worksheet",
+        "other",
+    ]
+    urls = [f"https://w3id.org/kim/hcrt/{end}" for end in url_endings]
+    source_url = "https://w3id.org/kim/hcrt/scheme"
+    return {
+        "source": langstringify(fake, source_url, lang="x-none"),
+        "id": fake.random.choice(urls),
+        "entry": langstringify(fake, fake.word()),
     }
 
 
@@ -339,19 +358,20 @@ def create_fake_classification(fake: Faker) -> dict:
 def create_fake_taxonpath(fake: Faker) -> dict:
     """Create a fake "taxonPath"-element, compatible with LOMv1.0-standard."""
     return {
-        "source": langstringify(fake, fake.word()),
+        "source": langstringify(fake, fake.word(), lang="x-none"),
         "taxon": [create_fake_taxon(fake) for __ in range(2)],
     }
 
 
 def create_fake_taxon(fake: Faker) -> dict:
     """Create a fake "taxon"-element, compatible with LOMv1.0-standard."""
+    lang = fake.random.choice([None, create_fake_language(fake)])
     return {
         "id": fake.lexify(
             "?????",
             letters="ABCDEFGHIJKLMNOPQRSTUVWXYZ.0123456789",
         ),
-        "entry": langstringify(fake, fake.word()),
+        "entry": langstringify(fake, fake.word(), lang=lang),
     }
 
 
@@ -458,7 +478,7 @@ def create_then_publish(fake: Faker, data: dict, create_fake_files: bool = False
     # add repo-pid to the record's identifiers
     draft_data = draft_item.to_dict()
     draft_data["metadata"]["general"]["identifier"].append(
-        {"catalog": "repo-pid", "entry": draft_item.id}
+        {"catalog": "repo-pid", "entry": langstringify(fake, draft_item.id)}
     )
     draft_item = update_draft(id_=draft_item.id, data=draft_data)
 
@@ -475,8 +495,11 @@ def inject_relation(data: dict, kind: str, pid: str):
     `kind` is a kind, as in LOMv1.0's `relation`-group.
     `pid` is entry, as in LOMv1.0's `relation.resource.identifier` category.
     """
-    kind = {"source": "LOMv1.0", "value": kind}
-    identifier = {"catalog": "repo-pid", "entry": pid}
+    kind = {
+        "source": langstringify(None, "LOMv1.0", lang="x-none"),
+        "value": langstringify(None, kind, lang="x-none"),
+    }
+    identifier = {"catalog": "repo-pid", "entry": langstringify(None, pid, lang=None)}
     resource = {"identifier": [identifier]}
     data["metadata"]["relation"].append({"kind": kind, "resource": resource})
 
