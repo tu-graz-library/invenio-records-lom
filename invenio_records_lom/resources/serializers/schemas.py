@@ -6,6 +6,8 @@
 # under the terms of the MIT License; see LICENSE file for more details.
 
 """Schemas which get wrapped by serializers."""
+import re
+
 import arrow
 from flask import current_app
 from invenio_rdm_records.resources.serializers.datacite.schema import (
@@ -83,6 +85,28 @@ class Location(fields.Field):
         return value["#text"]
 
 
+class Rights(fields.Field):
+    """Rights Field."""
+
+    def _serialize(self, value, attr, obj, **kwargs):
+        """Serialize."""
+        right = {}
+
+        if "creativecommons" in value["url"]:
+            result = re.search("licenses/([a-z-]+)/.*", value["url"])
+            id_ = f"CC {result.group(1).upper()}"
+            icon = f"{id_.lower().replace(' ', '-')}-icon"
+            right = {
+                "id": id_,
+                "title_l10n": id_,
+                "description_l10n": id_,
+                "link": value["url"],
+                "icon": icon,
+            }
+
+        return [right]
+
+
 class LOMUIObjectSchema(Schema):
     """Schema for dumping additional data helpful for html-template creation."""
 
@@ -110,6 +134,8 @@ class LOMUIObjectSchema(Schema):
     )
 
     location = Location(attribute="metadata.technical.location")
+
+    rights = Rights(attribute="metadata.rights")
 
 
 class LOMToDataCite44Schema(Schema):

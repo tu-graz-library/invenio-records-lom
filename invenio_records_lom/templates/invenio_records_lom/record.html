@@ -79,12 +79,6 @@
 {{ make_dep_tree(metadata.relation, "haspart", "Contains") }}
 </ul>
 
-{% if record.ui.location %}
-<h3>{{_('Link to Resources')}}</h3>
-<p>
-  <a href="{{record.ui.location}}">{{record.ui.title}}</a>
-</p>
-{% endif %}
 {% endblock record_content %}
 
 {% block record_files %}
@@ -95,6 +89,17 @@
 {% endblock record_details %}
 
 {% block record_sidebar %}
+{% include "invenio_app_rdm/records/details/side_bar/licenses.html" %}
+
+{% if record.ui.location %}
+<section id="original-content" aria-label="" class="ui segment rdm-sidebar">
+  <h2 class="ui small header">{{_("Original Content")}}</h2>
+  <p>
+    <a href="{{record.ui.location}}">{{record.ui.title}}</a>
+  </p>
+</section>
+{% endif %}
+
 {%- if config.get("LOM_RECORD_EXPORTERS") -%}
 {# if no export formats are specified, don't bother showing the box #}
 <div class="ui segment rdm-sidebar exports">
