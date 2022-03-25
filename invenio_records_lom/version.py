@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2020 Graz University of Technology.
+# Copyright (C) 2020-2022 Graz University of Technology.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -11,4 +11,4 @@ This file is imported by ``invenio_records_lom.__init__``,
 and parsed by ``setup.py``.
 """
 
-__version__ = "1.0.0"
+__version__ = "0.1.0"
