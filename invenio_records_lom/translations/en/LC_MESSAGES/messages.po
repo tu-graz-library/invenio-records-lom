@@ -1,0 +1,95 @@
+# Translations template for invenio_records_lom.
+# Copyright (C) 2022 Graz University of Technology
+# This file is distributed under the same license as the invenio_records_lom
+# project.
+#  <christoph.ladurner@tugraz.at>, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: invenio_records_lom 0.1.0\n"
+"Report-Msgid-Bugs-To: info@tugraz.at\n"
+"POT-Creation-Date: 2022-03-25 13:22+0100\n"
+"PO-Revision-Date: 2022-03-25 13:31+0100\n"
+"Last-Translator:  <christoph.ladurner@tugraz.at>\n"
+"Language-Team: English\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.1\n"
+"Language: en_US\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: invenio_records_lom/config.py:27
+msgid "JSON"
+msgstr "JSON"
+
+#: invenio_records_lom/config.py:53 invenio_records_lom/config.py:60
+#: invenio_records_lom/config.py:84
+msgid "DOI"
+msgstr "DOI"
+
+#: invenio_records_lom/config.py:65
+msgid "OAI ID"
+msgstr "OAI ID"
+
+#: invenio_records_lom/config.py:91
+msgid "OAI"
+msgstr "OAI"
+
+#: invenio_records_lom/services/schemas/records.py:23
+msgid "Persistent identifier scheme unknown to LOM."
+msgstr "Persistent identifier scheme unknown to LOM."
+
+#: invenio_records_lom/templates/invenio_records_lom/record.html:56
+msgid "General Informations"
+msgstr "General Informations"
+
+#: invenio_records_lom/templates/invenio_records_lom/record.html:65
+msgid "Educational Informations"
+msgstr "Educational Informations"
+
+#: invenio_records_lom/templates/invenio_records_lom/record.html:96
+msgid "Original Content"
+msgstr "Original Content"
+
+#: invenio_records_lom/templates/invenio_records_lom/record.html:106
+msgid "Export"
+msgstr "Export"
+
+#: invenio_records_lom/templates/invenio_records_lom/records/export.html:26
+msgid "Back to details"
+msgstr "Back to details"
+
+#: invenio_records_lom/templates/invenio_records_lom/records/files.html:35
+#: invenio_records_lom/templates/invenio_records_lom/records/macros/files.html:108
+msgid "Files"
+msgstr "Files"
+
+#: invenio_records_lom/templates/invenio_records_lom/records/files.html:43
+#: invenio_records_lom/templates/invenio_records_lom/records/macros/files.html:118
+msgid "Reason"
+msgstr "Reason"
+
+#: invenio_records_lom/templates/invenio_records_lom/records/macros/files.html:57
+msgid "Name"
+msgstr "Name"
+
+#: invenio_records_lom/templates/invenio_records_lom/records/macros/files.html:58
+msgid "Size"
+msgstr "Size"
+
+#: invenio_records_lom/templates/invenio_records_lom/records/macros/files.html:78
+msgid ""
+"This is the file fingerprint (checksum), which can be used to verify the "
+"file integrity."
+msgstr ""
+"This is the file fingerprint (checksum), which can be used to verify the "
+"file integrity."
+
+#: invenio_records_lom/templates/invenio_records_lom/records/macros/files.html:88
+msgid "Preview"
+msgstr "Preview"
+
+#: invenio_records_lom/templates/invenio_records_lom/records/macros/files.html:93
+msgid "Download"
+msgstr "Download"
