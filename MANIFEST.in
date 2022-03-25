@@ -16,6 +16,7 @@
 include .dockerignore
 include .editorconfig
 include .tx/config
+include babel.ini
 prune docs/_build
 recursive-include invenio_records_lom *.po *.pot *.mo
 

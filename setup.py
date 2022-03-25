@@ -108,6 +108,9 @@ setup(
         "invenio_db.models": [
             "invenio_records_lom = invenio_records_lom.records.models",
         ],
+        "invenio_i18n.translations": [
+            "messages = invenio_records_lom",
+        ],
     },
     extras_require=extras_require,
     install_requires=install_requires,
