@@ -56,6 +56,11 @@ install_requires = [
     "invenio-previewer>=1.3.4",
     "invenio-records-rest>=1.8.0",
     "invenio-rdm-records>=0.34.7,<0.35",
+    # TODO: Prevent build fail remove after it is fixed in base module
+    "jinja2<3.1",
+    "click<=8.0.4",
+    "Flask<2.1.0",
+    "Werkzeug<=2.0.3",
 ]
 
 packages = find_packages()
