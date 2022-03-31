@@ -62,12 +62,23 @@ class LOMToLOMXMLSerializer:
             tag = self.E.langstring(jsn["#text"])
         parent_tag.append(tag)
 
+    def build_location(self, jsn, parent_tag):
+        """Append location to parent_tag."""
+        tag = self.E.location(
+            jsn["#text"],
+            **{"{http://www.w3.org/XML/1998/namespace}lang": jsn["type"]},
+        )
+        parent_tag.append(tag)
+
     def build(self, jsn, parent_tag):
         """Walk through `jsn`, append its corresponding XML to `parent_tag`."""
         if isinstance(jsn, dict):
             for k, v in jsn.items():
                 if k == "langstring":
                     self.build_langstring(v, parent_tag)
+                    continue
+                if k == "location":
+                    self.build_location(v, parent_tag)
                     continue
                 lst = v if isinstance(v, list) else [v]
                 for item in lst:
@@ -76,6 +87,8 @@ class LOMToLOMXMLSerializer:
                     parent_tag.append(inner_tag)
         elif isinstance(jsn, str):
             parent_tag.text = jsn
+        elif isinstance(jsn, int):
+            parent_tag.text = str(jsn)
         else:
             raise ValueError(f"Unexpected value of type {type(jsn)} when building XML.")
         return parent_tag
