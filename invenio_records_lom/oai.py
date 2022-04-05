@@ -18,7 +18,9 @@ from .resources.serializers import LOMToLOMXMLSerializer
 
 def lom_etree(pid, record):
     """Get LOM XML for OAI-PMH."""
-    return LOMToLOMXMLSerializer().serialize_object_xml(record["_source"])
+    return LOMToLOMXMLSerializer(
+        metadata=record["_source"]["metadata"],
+    ).serialize_object_xml()
 
 
 def getrecord_fetcher(record_id):

@@ -35,18 +35,17 @@ class LOMToLOMXMLSerializer:
         "lom": "https://oer-repo.uibk.ac.at/lom",
         "xsi": "http://www.w3.org/2001/XMLSchema-instance",
     }
-    E_attribs = {
+    ELEMENT_ATTRIBS = {
         f"{{{NSMAP['xsi']}}}schemaLocation": (
             "https://w3id.org/oerbase/profiles/lomuibk/latest/ "
             "https://w3id.org/oerbase/profiles/lomuibk/latest/lom-uibk.xsd"
         )
     }
 
-    def __init__(self, **options):
+    def __init__(self, metadata):
         """Constructor."""
-        self._schema_cls = None
-
-        self.E = ElementMaker(namespace=self.NSMAP["lom"], nsmap=self.NSMAP)
+        self.metadata = metadata
+        self.element_maker = ElementMaker(namespace=self.NSMAP["lom"], nsmap=self.NSMAP)
 
     def build_langstring(self, jsn, parent_tag):
         """Append XML corresponding to `jsn` to `parent_tag`.
@@ -54,37 +53,37 @@ class LOMToLOMXMLSerializer:
         `jsn` has to be of form `{"lang": "lang-name", "#text": "any_text"}`.
         """
         if "lang" in jsn:
-            tag = self.E.langstring(
+            tag = self.element_maker.langstring(
                 jsn["#text"],
                 **{"{http://www.w3.org/XML/1998/namespace}lang": jsn["lang"]},
             )
         else:
-            tag = self.E.langstring(jsn["#text"])
+            tag = self.element_maker.langstring(jsn["#text"])
         parent_tag.append(tag)
 
     def build_location(self, jsn, parent_tag):
         """Append location to parent_tag."""
-        tag = self.E.location(
+        tag = self.element_maker.location(
             jsn["#text"],
             **{"{http://www.w3.org/XML/1998/namespace}lang": jsn["type"]},
         )
         parent_tag.append(tag)
 
-    def build(self, jsn, parent_tag):
+    def build(self, jsn, parent_tag, inner_tag=None):
         """Walk through `jsn`, append its corresponding XML to `parent_tag`."""
         if isinstance(jsn, dict):
-            for k, v in jsn.items():
-                if k == "langstring":
-                    self.build_langstring(v, parent_tag)
-                    continue
-                if k == "location":
-                    self.build_location(v, parent_tag)
-                    continue
-                lst = v if isinstance(v, list) else [v]
-                for item in lst:
-                    inner_tag = self.E(k.lower())
-                    self.build(item, inner_tag)
-                    parent_tag.append(inner_tag)
+            for key, value in jsn.items():
+                if key == "langstring":
+                    self.build_langstring(value, parent_tag)
+                elif key == "location":
+                    self.build_location(value, parent_tag)
+                else:
+                    lst = value if isinstance(value, list) else [value]
+                    self.build(lst, parent_tag, self.element_maker(key.lower()))
+        elif isinstance(jsn, list):
+            for item in jsn:
+                self.build(item, inner_tag)
+                parent_tag.append(inner_tag)
         elif isinstance(jsn, str):
             parent_tag.text = jsn
         elif isinstance(jsn, int):
@@ -93,9 +92,9 @@ class LOMToLOMXMLSerializer:
             raise ValueError(f"Unexpected value of type {type(jsn)} when building XML.")
         return parent_tag
 
-    def serialize_object_xml(self, obj):
+    def serialize_object_xml(self):
         """Serialize a single record."""
-        return self.build(obj["metadata"], self.E.lom(**self.E_attribs))
+        return self.build(self.metadata, self.element_maker.lom(**self.ELEMENT_ATTRIBS))
 
 
 __all__ = (
