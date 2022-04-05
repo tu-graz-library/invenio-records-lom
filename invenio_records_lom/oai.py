@@ -7,7 +7,7 @@
 
 """OAI-PMH serializers for LOM-records."""
 
-from flask import g
+from flask import current_app, g
 from invenio_pidstore.errors import PIDDoesNotExistError
 from invenio_pidstore.models import PersistentIdentifier
 from invenio_records_resources.services.errors import PermissionDeniedError
@@ -20,6 +20,8 @@ def lom_etree(pid, record):
     """Get LOM XML for OAI-PMH."""
     return LOMToLOMXMLSerializer(
         metadata=record["_source"]["metadata"],
+        lom_id=record["_source"]["id"],
+        oaiserver_id_prefix=current_app.config.get("OAISERVER_ID_PREFIX"),
     ).serialize_object_xml()
 
 
