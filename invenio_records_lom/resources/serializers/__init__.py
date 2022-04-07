@@ -6,6 +6,7 @@
 # under the terms of the MIT License; see LICENSE file for more details.
 
 """Serializers turning records into html-template-insertable dicts."""
+from copy import deepcopy
 
 from flask_resources.serializers import MarshmallowJSONSerializer
 from invenio_rdm_records.resources.serializers import UIJSONSerializer
@@ -103,8 +104,9 @@ class LOMToLOMXMLSerializer:
                     self.build(lst, parent_tag, self.element_maker(key.lower()))
         elif isinstance(jsn, list):
             for item in jsn:
-                self.build(item, inner_tag)
-                parent_tag.append(inner_tag)
+                local_tag = deepcopy(inner_tag)
+                self.build(item, local_tag)
+                parent_tag.append(local_tag)
         elif isinstance(jsn, str):
             parent_tag.text = jsn
         elif isinstance(jsn, int):
