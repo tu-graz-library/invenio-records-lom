@@ -22,6 +22,7 @@ def lom_etree(pid, record):
         metadata=record["_source"]["metadata"],
         lom_id=record["_source"]["id"],
         oaiserver_id_prefix=current_app.config.get("OAISERVER_ID_PREFIX"),
+        doi=record["_source"]["pids"]["doi"]["identifier"],
     ).serialize_object_xml()
 
 

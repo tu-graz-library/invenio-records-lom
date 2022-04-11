@@ -43,11 +43,12 @@ class LOMToLOMXMLSerializer:
         )
     }
 
-    def __init__(self, metadata, lom_id, oaiserver_id_prefix):
+    def __init__(self, metadata, lom_id, oaiserver_id_prefix, doi):
         """Constructor."""
         self.metadata = metadata
         self.lom_id = lom_id
         self.oaiserver_id_prefix = oaiserver_id_prefix
+        self.doi = doi
         self.element_maker = ElementMaker(namespace=self.NSMAP["lom"], nsmap=self.NSMAP)
 
     @property
@@ -59,6 +60,21 @@ class LOMToLOMXMLSerializer:
                 "langstring": {
                     "lang": "x-none",
                     "#text": self.lom_id,
+                }
+            },
+        }
+
+        return [jsn]
+
+    @property
+    def repository_doi_identifier(self):
+        """Create the repository doi identifier."""
+        jsn = {
+            "catalog": "DOI",
+            "entry": {
+                "langstring": {
+                    "lang": "x-none",
+                    "#text": self.doi,
                 }
             },
         }
@@ -92,8 +108,11 @@ class LOMToLOMXMLSerializer:
         if isinstance(jsn, dict):
             for key, value in jsn.items():
                 if key == "identifier":
-                    lst = self.repository_identifier
-                    self.build(lst, parent_tag, self.element_maker("identifier"))
+                    for lst in [
+                        self.repository_identifier,
+                        self.repository_doi_identifier,
+                    ]:
+                        self.build(lst, parent_tag, self.element_maker("identifier"))
 
                 if key == "langstring":
                     self.build_langstring(value, parent_tag)
