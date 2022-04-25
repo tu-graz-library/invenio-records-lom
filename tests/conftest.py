@@ -19,12 +19,13 @@ from faker import Faker
 from flask_principal import Identity, UserNeed
 from invenio_access.permissions import any_user, system_process
 from invenio_app.factory import create_app as invenio_create_app
+from invenio_files_rest.models import Location
 
 from invenio_records_lom.fixtures import create_fake_data
 
 
 @pytest.fixture(scope="module")
-def app_config(app_config):
+def app_config(app_config):  # pylint: disable=redefined-outer-name
     """Override pytest-invenio app_config-fixture."""
     # Enable DOI minting...
     app_config["DATACITE_ENABLED"] = True
@@ -51,8 +52,6 @@ def cli_location(db):
 
     Adapted to work with `<Flask-obj>.test_cli_runner`.
     """
-    from invenio_files_rest.models import Location
-
     uri = tempfile.mkdtemp()
     location_obj = Location(name="pytest-location", uri=uri, default=True)
 
@@ -77,7 +76,7 @@ def identity():
 
 
 @pytest.fixture(scope="function")
-def service(base_app, location):
+def service(base_app, location):  # pylint: disable=unused-argument
     """Service fixture."""
     return base_app.extensions["invenio-records-lom"].records_service
 

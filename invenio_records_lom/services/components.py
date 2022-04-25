@@ -26,30 +26,35 @@ class ResourceTypeComponent(ServiceComponent):
 
     new_version_skip_fields = ["publication_date", "version"]
 
+    # pylint: disable-next=unused-argument
     def create(
         self, identity: Identity, data: dict = None, record: Record = None, **kwargs
     ):
         """Inject parsed resource_type to the record."""
         record.resource_type = data.get("resource_type", {})
 
+    # pylint: disable-next=unused-argument, arguments-differ
     def update_draft(
         self, identity: Identity, data: dict = None, record: Record = None, **kwargs
     ):
         """Inject parsed resource_type to the record."""
         record.resource_type = data.get("resource_type", {})
 
+    # pylint: disable-next=unused-argument
     def publish(
         self, identity: Identity, draft: Record = None, record: Record = None, **kwargs
     ):
         """Update draft resource_type."""
         record.resource_type = draft.get("resource_type", {})
 
+    # pylint: disable-next=unused-argument
     def edit(
         self, identity: Identity, draft: Record = None, record: Record = None, **kwargs
     ):
         """Update draft resource_type."""
         draft.resource_type = record.get("resource_type", {})
 
+    # pylint: disable-next=unused-argument
     def new_version(
         self, identity: Identity, draft: Record = None, record: Record = None, **kwargs
     ):

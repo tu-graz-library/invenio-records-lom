@@ -14,9 +14,9 @@ which - in turn - is based on the DataCite data model.
 from .api import LOMDraft, LOMFileDraft, LOMFileRecord, LOMParent, LOMRecord
 
 __all__ = (
-    LOMDraft,
-    LOMFileDraft,
-    LOMFileRecord,
-    LOMParent,
-    LOMRecord,
+    "LOMDraft",
+    "LOMFileDraft",
+    "LOMFileRecord",
+    "LOMParent",
+    "LOMRecord",
 )

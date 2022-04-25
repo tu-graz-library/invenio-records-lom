@@ -21,7 +21,7 @@ class RelationLOMResult(RelationResult):
             f"{self.__class__.__qualname__}.__call__ is not implemented yet"
         )
 
-    def _lookup_id(self, data):
+    def _lookup_id(self):
         raise NotImplementedError(
             f"{self.__class__.__qualname__}._lookup_id is not implemented yet"
         )
@@ -30,7 +30,6 @@ class RelationLOMResult(RelationResult):
         """Validate the field."""
         # this gets called on service.publish()->record.commit()->extension.pre_commit()
         # TODO: raise when json is ill-formed
-        pass
 
     def _apply_items(self, func: callable, attrs: dict = None):
         relations = self.record.get("metadata", {}).get("relation", [])

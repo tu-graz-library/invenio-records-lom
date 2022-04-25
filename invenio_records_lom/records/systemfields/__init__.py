@@ -22,11 +22,11 @@ from .relations import PIDLOMRelation
 from .resolver import LOMResolver
 
 __all__ = (
-    LOMDraftRecordIdProvider,
-    LOMPIDFieldContext,
-    LOMRecordIdProvider,
-    LOMResolver,
-    ParentRecordAccessField,
-    PIDLOMRelation,
-    RecordAccessField,
+    "LOMDraftRecordIdProvider",
+    "LOMPIDFieldContext",
+    "LOMRecordIdProvider",
+    "LOMResolver",
+    "ParentRecordAccessField",
+    "PIDLOMRelation",
+    "RecordAccessField",
 )

@@ -11,13 +11,17 @@ from invenio_records_lom.cli import lom
 
 
 def test_discover_lom_cli_command(base_app):
+    """Test whether `invenio lom`-CLI-command-group can be found."""
     runner = base_app.test_cli_runner()
     result = runner.invoke(lom)
     assert result.exit_code == 0
 
 
-def test_create_demo_metadata(base_app, cli_location):
-    """Test "invenio lom demo"."""
+def test_create_demo_metadata(
+    base_app,
+    cli_location,  # pylint: disable=unused-argument
+):
+    """Test `invenio lom demo`."""
     runner = base_app.test_cli_runner()
     result = runner.invoke(
         lom,

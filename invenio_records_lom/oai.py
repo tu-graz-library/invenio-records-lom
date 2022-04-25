@@ -16,7 +16,7 @@ from .proxies import current_records_lom
 from .resources.serializers import LOMToLOMXMLSerializer
 
 
-def lom_etree(pid, record):
+def lom_etree(pid, record):  # pylint: disable=unused-argument
     """Get LOM XML for OAI-PMH."""
     return LOMToLOMXMLSerializer(
         metadata=record["_source"]["metadata"],
@@ -34,8 +34,8 @@ def getrecord_fetcher(record_id):
 
     try:
         result = current_records_lom.records_service.read(g.identity, lomid.pid_value)
-    except PermissionDeniedError:
+    except PermissionDeniedError as error:
         # if it is a restricted record.
-        raise PIDDoesNotExistError("lomid", None)
+        raise PIDDoesNotExistError("lomid", None) from error
 
     return result.to_dict()

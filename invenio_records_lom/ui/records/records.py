@@ -73,7 +73,7 @@ class PreviewFile:
 
     def open(self):
         """Open the file."""
-        return self.file._file.file.storage().open()
+        return self.file._file.file.storage().open()  # pylint: disable=protected-access
 
 
 #
@@ -92,7 +92,7 @@ def record_detail(
     files_dict = {} if files is None else files.to_dict()
     record_ui = LOMUIJSONSerializer().serialize_object_to_dict(record.to_dict())
 
-    if is_preview and record._record.is_draft:
+    if is_preview and record_ui["is_draft"]:
         abort(404)
 
     return render_template(
@@ -104,7 +104,7 @@ def record_detail(
             ["edit", "new_version", "manage", "update_draft", "read_files"]
         ),
         is_preview=is_preview,
-        is_draft=record._record.is_draft,
+        is_draft=record_ui["is_draft"],
     )
 
 
@@ -113,7 +113,7 @@ def record_detail(
 def record_export(
     record: RecordItem = None,
     export_format: str = None,
-    pid_value: str = None,
+    pid_value: str = None,  # pylint: disable=unused-argument
     is_preview: bool = False,
 ):
     """Export view for LOM records."""
@@ -135,7 +135,7 @@ def record_export(
         record=LOMUIJSONSerializer().serialize_object_to_dict(record.to_dict()),
         permissions=record.has_permissions_to(["update_draft"]),
         is_preview=is_preview,
-        is_draft=record._record.is_draft,
+        is_draft=record._record.is_draft,  # pylint: disable=protected-access
     )
 
 
@@ -143,9 +143,9 @@ def record_export(
 @pass_record_or_draft
 @pass_file_metadata
 def record_file_preview(
-    record: RecordItem = None,
+    record: RecordItem = None,  # pylint: disable=unused-argument
     pid_value: str = None,
-    pid_type: str = "recid",
+    pid_type: str = "recid",  # pylint: disable=unused-argument
     file_metadata: FileItem = None,
     is_preview: bool = False,
     **kwargs,
@@ -174,9 +174,9 @@ def record_file_preview(
 @pass_file_item
 def record_file_download(
     file_item: FileItem = None,
-    pid_value: str = None,
-    is_preview: bool = False,
-    **kwargs,
+    pid_value: str = None,  # pylint: disable=unused-argument
+    is_preview: bool = False,  # pylint: disable=unused-argument
+    **kwargs,  # pylint: disable=unused-argument
 ):
     """Download a file from a record."""
     download = bool(request.args.get("download"))
@@ -184,12 +184,18 @@ def record_file_download(
 
 
 @pass_record_latest
-def record_latest(record: RecordItem = None, **kwargs):
+def record_latest(
+    record: RecordItem = None,
+    **kwargs,  # pylint: disable=unused-argument
+):
     """Redirect to record's landing page."""
     return redirect(record["links"]["self_html"], code=301)
 
 
 @pass_record_from_pid
-def record_from_pid(record: RecordItem = None, **kwargs):
+def record_from_pid(
+    record: RecordItem = None,
+    **kwargs,  # pylint: disable=unused-argument
+):
     """Redirect to record's landing page."""
     return redirect(record["links"]["self_html"], code=301)

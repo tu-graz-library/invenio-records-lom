@@ -15,6 +15,7 @@ from invenio_records_lom.resources.serializers import LOMToDataCite44Serializer
 from invenio_records_lom.services.tasks import register_or_update_pid
 
 
+# pylint: disable-next=unused-argument
 def test_resolve_pid(service, db, identity, full_lom_metadata):
     """Resolve a PID."""
     draft = service.create(identity=identity, data=full_lom_metadata)
@@ -29,24 +30,27 @@ def test_resolve_pid(service, db, identity, full_lom_metadata):
 
 def test_resolve_nonexisting_pid(service, identity):
     """Attempt to resolve a non-existing pid."""
-    fake_doi = "10,4321/client.12345-invalid"
+    fake_doi = "10.4321/client.12345-invalid"
 
     with pytest.raises(PIDDoesNotExistError):
         service.pids.resolve(identity=identity, id_=fake_doi, scheme="doi")
 
 
+# pylint: disable-next=unused-argument
 def test_reserve_pid(service, db, identity, full_lom_metadata):
     """Reserve a new pid."""
     draft = service.create(identity=identity, data=full_lom_metadata)
     draft = service.pids.create(identity=identity, id_=draft.id, scheme="doi")
     doi = draft["pids"]["doi"]["identifier"]
 
+    # pylint: disable-next=protected-access
     provider = service.pids.pid_manager._get_provider("doi", "datacite")
     pid = provider.get(pid_value=doi)
 
     assert pid.status == PIDStatus.NEW
 
 
+# pylint: disable-next=unused-argument
 def test_datacite_schema(service, db, full_lom_metadata):
     """Dump a LOM-object with LOMSerializer."""
     datacite_data = LOMToDataCite44Serializer().dump_one(full_lom_metadata)
@@ -61,12 +65,12 @@ def test_datacite_schema(service, db, full_lom_metadata):
     assert all(key in datacite_data for key in mandatory_keys)
 
 
+# pylint: disable-next=unused-argument
 def test_register_pid(service, db, identity, full_lom_metadata, mocker):
     """Register a pid."""
 
-    def public_doi(self, metadata, url, doi):
+    def public_doi(self, metadata, url, doi):  # pylint: disable=unused-argument
         """Mock doi publication."""
-        pass
 
     mocker.patch(
         "invenio_rdm_records.services.pids.providers.datacite.DataCiteRESTClient.public_doi",
@@ -77,9 +81,11 @@ def test_register_pid(service, db, identity, full_lom_metadata, mocker):
     draft = service.pids.create(identity=identity, id_=draft.id, scheme="doi")
     doi = draft["pids"]["doi"]["identifier"]
 
+    # pylint: disable-next=protected-access
     provider = service.pids.pid_manager._get_provider("doi", "datacite")
     pid = provider.get(pid_value=doi)
 
+    # pylint: disable-next=protected-access
     record = service.record_cls.publish(draft._record)
     record.pids = {
         pid.pid_type: {

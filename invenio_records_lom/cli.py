@@ -18,7 +18,6 @@ from .proxies import current_records_lom
 @click.group()
 def lom():
     """CLI-group for "invenio lom" commands."""
-    pass
 
 
 @lom.command("rebuild-index")
@@ -47,6 +46,6 @@ def rebuild_index():
 def demo(number, seed):
     """Publish `number` fake LOM records to the database, for demo purposes."""
     click.secho(f"Creating {number} LOM demo records", fg="green")
-    for lom in publish_fake_records(number, seed):
+    for __ in publish_fake_records(number, seed):
         pass
     click.secho("Published fake LOM records to the database!", fg="green")

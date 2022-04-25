@@ -17,11 +17,11 @@ class LOMRecordResource(RecordResource):
     def create_url_rules(self):
         """Create the URL rules for the record resource."""
 
-        def p(route):
+        def prefix(route_str):
             """Prefix a route with `self.config.prefix`."""
-            return f"{self.config.url_prefix}{route}"
+            return f"{self.config.url_prefix}{route_str}"
 
         routes = self.config.routes
         return [
-            route("GET", p(routes["item"]), self.read),
+            route("GET", prefix(routes["item"]), self.read),
         ]

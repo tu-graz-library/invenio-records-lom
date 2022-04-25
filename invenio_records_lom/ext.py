@@ -19,7 +19,7 @@ from .services import (
 )
 
 
-class InvenioRecordsLOM(object):
+class InvenioRecordsLOM:
     """invenio-records-lom extension."""
 
     def __init__(self, app=None):
@@ -48,7 +48,7 @@ class InvenioRecordsLOM(object):
         record_service_config = LOMRecordServiceConfig.build(app)
         file_service_config = LOMRecordFilesServiceConfig.build(app)
         draft_files_config = LOMDraftFilesServiceConfig.build(app)
-
+        # pylint: disable-next=attribute-defined-outside-init
         self.records_service = LOMRecordService(
             config=record_service_config,
             files_service=FileService(file_service_config),
@@ -56,8 +56,9 @@ class InvenioRecordsLOM(object):
             pids_service=PIDsService(record_service_config, PIDManager),
         )
 
-    def init_resources(self, app):
+    def init_resources(self, app):  # pylint: disable=unused-argument
         """Initialize resouces."""
+        # pylint: disable-next=attribute-defined-outside-init
         self.records_resource = LOMRecordResource(
             LOMRecordResourceConfig,
             self.records_service,
