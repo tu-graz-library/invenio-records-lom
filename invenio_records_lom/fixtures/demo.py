@@ -23,7 +23,7 @@ from ..proxies import current_records_lom
 # functions for LOM datatypes
 #
 def langstringify(fake: Faker, text: str, lang: str = "") -> dict:
-    """Wraps `text` in a dict, emulating LOMv1.0-standard LangString-objects.
+    """Wraps `text` in a dict, emulating LOMv1.0 LangString-objects.
 
     If `lang` is given and None, no "lang"-key is added to the returned dict.
     If `lang` is given and truthy, its value is used for the "lang"-key.
@@ -37,7 +37,7 @@ def langstringify(fake: Faker, text: str, lang: str = "") -> dict:
 
 
 def vocabularify(fake: Faker, choices: list) -> dict:
-    """Randomly draw a choice from `choices`, then wrap that choice in a dict, emulating LOMv1.0-standard Vocabulary-objects."""
+    """Randomly draw a choice from `choices`, then wrap it in a dict, emulating LOMv1.0 Vocabulary-objects."""
     return {
         "source": langstringify(fake, "LOMv1.0", lang="x-none"),
         "value": langstringify(fake, fake.random.choice(choices), lang="x-none"),
@@ -45,7 +45,7 @@ def vocabularify(fake: Faker, choices: list) -> dict:
 
 
 def create_fake_datetime(fake: Faker) -> dict:
-    """Create a fake datetime dict, as per LOMv1.0-standard Datetime-object-specification."""
+    """Create a fake datetime dict, as per LOMv1.0 Datetime-object-specification."""
     pattern = fake.random.choice(["YMDhmsTZD", "YMDhms", "YMD", "Y"])
     if pattern == "Y":
         datetime = fake.year()
@@ -78,7 +78,7 @@ def create_fake_vcard(fake: Faker) -> str:
 # functions for elements that are part of more than one category
 #
 def create_fake_language(fake: Faker) -> str:
-    """Create a fake language-code, as required for "language"-keys by LOMv1.0-standard."""
+    """Create a fake language-code, as required for "language"-keys by LOMv1.0."""
     language_codes = [
         "EN",
         "en-us",
@@ -89,7 +89,7 @@ def create_fake_language(fake: Faker) -> str:
 
 
 def create_fake_identifier(fake: Faker) -> dict:
-    """Create a fake "identifier"-element, compatible with LOMv1.0-standard."""
+    """Create a fake "identifier"-element, compatible with LOMv1.0."""
     catalog = fake.random.choice(["URL", "ISBN"])
     if catalog == "URL":
         entry = fake.uri()
@@ -105,7 +105,7 @@ def create_fake_identifier(fake: Faker) -> dict:
 
 
 def create_fake_contribute(fake: Faker, roles: list) -> dict:
-    """Create a fake "contribute"-element, compatible with LOMv1.0-standard."""
+    """Create a fake "contribute"-element, compatible with LOMv1.0."""
     return {
         "role": vocabularify(fake, roles),
         "entity": create_fake_vcard(fake),
@@ -117,7 +117,7 @@ def create_fake_contribute(fake: Faker, roles: list) -> dict:
 # functions for categories or used by only one category
 #
 def create_fake_general(fake: Faker) -> dict:
-    """Create a fake "general"-element, compatible with LOMv1.0-standard."""
+    """Create a fake "general"-element, compatible with LOMv1.0."""
     structures = ["atomic", "collection", "networked", "hierarchical", "linear"]
     aggregationLevels = ["1", "2", "3", "4"]
 
@@ -134,7 +134,7 @@ def create_fake_general(fake: Faker) -> dict:
 
 
 def create_fake_lifecycle(fake: Faker) -> dict:
-    """Create a fake "lifeCycle"-element, compatible with LOMv1.0-standard."""
+    """Create a fake "lifeCycle"-element, compatible with LOMv1.0."""
     roles = [
         "author",
         "publisher",
@@ -165,7 +165,7 @@ def create_fake_lifecycle(fake: Faker) -> dict:
 
 
 def create_fake_metametadata(fake: Faker) -> dict:
-    """Create a fake "metaMetadata"-element, compatible with LOMv1.0-standard."""
+    """Create a fake "metaMetadata"-element, compatible with LOMv1.0."""
     roles = ["creator", "validator"]
     return {
         "identifier": [create_fake_identifier(fake) for __ in range(2)],
@@ -190,14 +190,14 @@ def create_fake_technical(fake: Faker) -> dict:
 
 
 def create_fake_requirement(fake: Faker) -> dict:
-    """Create a fake "requirement"-element, compatible with LOMv1.0-standard."""
+    """Create a fake "requirement"-element, compatible with LOMv1.0."""
     return {
         "orComposite": [create_fake_orcomposite(fake) for __ in range(2)],
     }
 
 
 def create_fake_orcomposite(fake: Faker) -> dict:
-    """Create a fake "orComposite"-element, compatible with LOMv1.0-standard."""
+    """Create a fake "orComposite"-element, compatible with LOMv1.0."""
     type_ = fake.random.choice(["operating system", "browser"])
     if type_ == "operating system":
         requirement_names = [
@@ -226,7 +226,7 @@ def create_fake_orcomposite(fake: Faker) -> dict:
 
 
 def create_fake_educational(fake: Faker) -> dict:
-    """Create a fake "educational"-element, compatible with LOMv1.0-standard."""
+    """Create a fake "educational"-element, compatible with LOMv1.0."""
     interactivity_types = ["active", "expositive", "mixed"]
     levels = ["very low", "low", "medium", "high", "very high"]
     difficulties = ["very easy", "easy", "medium", "difficult", "very difficult"]
@@ -251,7 +251,7 @@ def create_fake_educational(fake: Faker) -> dict:
 
 
 def create_fake_learningresourcetype(fake: Faker) -> dict:
-    """Create a fake "learningResourceType"-element, compatible with LOM-UIBK-standard."""
+    """Create a fake "learningResourceType"-element, compatible with LOM-UIBK."""
     url_endings = [
         "application",
         "assessment",
@@ -290,7 +290,7 @@ def create_fake_learningresourcetype(fake: Faker) -> dict:
 
 
 def create_fake_rights(fake: Faker) -> dict:
-    """Create a fake "rights"-element, compatible with LOMv1.0-standard."""
+    """Create a fake "rights"-element, compatible with LOMv1.0."""
     return {
         "cost": vocabularify(fake, ["yes", "no"]),
         "copyrightAndOtherRestrictions": vocabularify(fake, ["yes", "no"]),
@@ -299,7 +299,7 @@ def create_fake_rights(fake: Faker) -> dict:
 
 
 def create_fake_relation(fake: Faker) -> dict:
-    """Create a fake "relation"-element, compatible with LOMv1.0-standard."""
+    """Create a fake "relation"-element, compatible with LOMv1.0."""
     kinds = [
         "ispartof",
         "haspart",
@@ -325,7 +325,7 @@ def create_fake_relation(fake: Faker) -> dict:
 
 
 def create_fake_annotation(fake: Faker) -> dict:
-    """Create a fake "annotation"-element, compatible with LOMv1.0-standard."""
+    """Create a fake "annotation"-element, compatible with LOMv1.0."""
     return {
         "entity": create_fake_vcard(fake),
         "date": create_fake_datetime(fake),
@@ -334,7 +334,7 @@ def create_fake_annotation(fake: Faker) -> dict:
 
 
 def create_fake_classification(fake: Faker) -> dict:
-    """Create a fake "classification"-element, compatible with LOMv1.0-standard."""
+    """Create a fake "classification"-element, compatible with LOMv1.0."""
     purposes = [
         "discipline",
         "idea",
@@ -356,7 +356,7 @@ def create_fake_classification(fake: Faker) -> dict:
 
 
 def create_fake_taxonpath(fake: Faker) -> dict:
-    """Create a fake "taxonPath"-element, compatible with LOMv1.0-standard."""
+    """Create a fake "taxonPath"-element, compatible with LOMv1.0."""
     return {
         "source": langstringify(fake, fake.word(), lang="x-none"),
         "taxon": [create_fake_taxon(fake) for __ in range(2)],
@@ -364,7 +364,7 @@ def create_fake_taxonpath(fake: Faker) -> dict:
 
 
 def create_fake_taxon(fake: Faker) -> dict:
-    """Create a fake "taxon"-element, compatible with LOMv1.0-standard."""
+    """Create a fake "taxon"-element, compatible with LOMv1.0."""
     lang = fake.random.choice([None, create_fake_language(fake)])
     return {
         "id": fake.lexify(
@@ -379,7 +379,7 @@ def create_fake_taxon(fake: Faker) -> dict:
 # functions for creating LOMv1.0-fakes
 #
 def create_fake_metadata(fake: Faker) -> dict:
-    """Create a fake json-representation of a "lom"-element, compatible with LOMv1.0-standard."""
+    """Create a fake json-representation of a "lom"-element, compatible with LOMv1.0."""
     data_to_use = {
         "general": create_fake_general(fake),
         "lifeCycle": create_fake_lifecycle(fake),
@@ -491,7 +491,7 @@ def create_then_publish(fake: Faker, data: dict, create_fake_files: bool = False
 def inject_relation(data: dict, kind: str, pid: str):
     """Inject relation of kind `kind` into `data` under entry `pid`.
 
-    `data` is a json-representation of data, compatible with LOMv1.0-standard.
+    `data` is a json-representation of data, compatible with LOMv1.0.
     `kind` is a kind, as in LOMv1.0's `relation`-group.
     `pid` is entry, as in LOMv1.0's `relation.resource.identifier` category.
     """
@@ -539,23 +539,23 @@ def link_up(whole_id: str, part_id: str):
 def publish_fake_record(fake: Faker):
     """Enter fake records into the SQL-database."""
     course_data = create_fake_data(fake, resource_type="course")
-    course_service_item = create_then_publish(fake=fake, data=course_data)
+    course_item = create_then_publish(fake=fake, data=course_data)
 
     for __ in range(2):
         unit_data = create_fake_data(fake, resource_type="unit")
-        unit_service_item = create_then_publish(fake=fake, data=unit_data)
-        link_up(whole_id=course_service_item.id, part_id=unit_service_item.id)
+        unit_item = create_then_publish(fake=fake, data=unit_data)
+        link_up(whole_id=course_item.id, part_id=unit_item.id)
 
         for __ in range(2):
             file_data = create_fake_data(fake, resource_type="file", files_enabled=True)
-            file_service_item = create_then_publish(
+            file_item = create_then_publish(
                 fake=fake, data=file_data, create_fake_files=True
             )
-            link_up(whole_id=unit_service_item.id, part_id=file_service_item.id)
+            link_up(whole_id=unit_item.id, part_id=file_item.id)
 
 
 def publish_fake_records(number: int, seed: int = 42) -> list:
-    """Create `number` jsons adhering to LOMv1.0-standard, using `seed` as RNG-seed."""
+    """Create `number` jsons adhering to LOM-standard, using `seed` as RNG-seed."""
     fake = Faker()
     Faker.seed(seed)
 

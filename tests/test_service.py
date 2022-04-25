@@ -112,7 +112,7 @@ def test_create_draft(service, db, identity, access):
     "access",
     _ACCESS_CONFIGURATIONS,
 )
-def test_publish(service, db, identity, access):
+def test_publish(service, db, identity, access):  # pylint: disable=too-many-locals
     """Test publishing a record, then test database changes."""
     data = {
         "access": access,

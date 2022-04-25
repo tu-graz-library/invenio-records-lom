@@ -43,9 +43,9 @@ source_suffix = ".rst"
 master_doc = "index"
 
 # General information about the project.
-project = u"invenio-records-lom"
-copyright = u"2020, Graz University of Technology"
-author = u"Graz University of Technology"
+project = "invenio-records-lom"
+copyright = "2020, Graz University of Technology"
+author = "Graz University of Technology"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -106,7 +106,7 @@ nitpick_ignore = [("py:class", "flask.app.Flask")]
 html_theme = "alabaster"
 
 html_theme_options = {
-    "description": "invenio data model for Learning object metadata",
+    "description": "Invenio data model for Learning Object Metadata.",
     "github_user": "tu-graz-library",
     "github_repo": "invenio-records-lom",
     "github_button": False,
@@ -241,8 +241,8 @@ latex_documents = [
     (
         master_doc,
         "invenio-records-lom.tex",
-        u"invenio-records-lom Documentation",
-        u"Graz University of Technology",
+        "invenio-records-lom Documentation",
+        "Graz University of Technology",
         "manual",
     ),
 ]
@@ -276,7 +276,7 @@ man_pages = [
     (
         master_doc,
         "invenio-records-lom",
-        u"invenio-records-lom Documentation",
+        "invenio-records-lom Documentation",
         [author],
         1,
     )
@@ -295,7 +295,7 @@ texinfo_documents = [
     (
         master_doc,
         "invenio-records-lom",
-        u"invenio-records-lom Documentation",
+        "invenio-records-lom Documentation",
         author,
         "invenio-records-lom",
         "invenio data model for Learning object metadata",

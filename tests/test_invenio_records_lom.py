@@ -9,13 +9,11 @@
 
 from flask import Flask
 
-from invenio_records_lom import InvenioRecordsLOM
+from invenio_records_lom import InvenioRecordsLOM, __version__
 
 
 def test_version():
     """Test version import."""
-    from invenio_records_lom import __version__
-
     assert __version__
 
 

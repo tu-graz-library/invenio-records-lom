@@ -51,11 +51,11 @@ class Contributors(fields.Field):
     def _serialize(self, value, attr, obj, **kwargs):
         """Serialize."""
         contributors = []
-        for obj in value:
+        for sub_obj in value:
             contributors.append(
                 {
-                    "fullname": obj["entity"],
-                    "role": get_text(obj["role"]["value"]),
+                    "fullname": sub_obj["entity"],
+                    "role": get_text(sub_obj["role"]["value"]),
                 }
             )
         return contributors
@@ -137,6 +137,8 @@ class LOMUIObjectSchema(Schema):
 
     rights = Rights(attribute="metadata.rights")
 
+    is_draft = fields.Boolean(attribute="is_draft")
+
 
 class LOMToDataCite44Schema(Schema):
     """Schema for conversion from LOM to DataCite-REST JSON 4.4."""
@@ -205,7 +207,7 @@ class LOMToDataCite44Schema(Schema):
             return []
         return [{"title": get_text(title), "lang": get_lang(title)}]
 
-    def get_publisher(self, obj: LOMRecord):
+    def get_publisher(self, obj: LOMRecord):  # pylint: disable=unused-argument
         """Get publisher."""
         return current_app.config["LOM_PUBLISHER"]
 
@@ -265,8 +267,7 @@ class LOMToDataCite44Schema(Schema):
         languages = [lang for lang in languages if lang != "none"]
         if languages:
             return languages[0]
-        else:
-            return missing
+        return missing
 
     def get_relatedIdentifiers(self, obj: LOMRecord):
         """Get list of relatedIdentifier-dicts."""
@@ -310,8 +311,7 @@ class LOMToDataCite44Schema(Schema):
         """Get list of sizes."""
         if size := obj["metadata"].get("technical", {}).get("size"):
             return [str(size)]
-        else:
-            return missing
+        return missing
 
     def get_formats(self, obj: LOMRecord):
         """Get list of formats."""
@@ -327,5 +327,4 @@ class LOMToDataCite44Schema(Schema):
         rights = obj["metadata"].get("rights", {})
         if description_langstring := rights.get("description"):
             return [{"rights": get_text(description_langstring)}]
-        else:
-            return missing
+        return missing

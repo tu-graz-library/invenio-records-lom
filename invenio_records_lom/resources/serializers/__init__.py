@@ -10,7 +10,7 @@ from copy import deepcopy
 
 from flask_resources.serializers import MarshmallowJSONSerializer
 from invenio_rdm_records.resources.serializers import UIJSONSerializer
-from lxml.builder import ElementMaker
+from lxml.builder import ElementMaker  # pylint: disable=no-name-in-module
 
 from .schemas import LOMToDataCite44Schema, LOMUIObjectSchema
 
