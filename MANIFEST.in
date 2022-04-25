@@ -17,7 +17,6 @@ include *.rst
 include *.sh
 include *.txt
 include LICENSE
-include pytest.ini
 recursive-include docs *.bat
 recursive-include docs *.py
 recursive-include docs *.rst
@@ -28,17 +27,4 @@ recursive-include invenio_records_lom *.json
 recursive-include tests *.py
 
 # added by check-manifest
-recursive-include tests *.py
-
-# added by check-manifest
-recursive-include invenio_records_lom *.json
-recursive-include invenio_records_lom *.py
-
-
-# added by check-manifest
-recursive-include invenio_records_lom *.json
-recursive-include invenio_records_lom *.py
-
-# added by check-manifest
-recursive-include invenio_records_lom *.json
 recursive-include invenio_records_lom *.py
