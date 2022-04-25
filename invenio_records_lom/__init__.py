@@ -10,7 +10,8 @@
 
 from .ext import InvenioRecordsLOM
 from .proxies import current_records_lom
-from .version import __version__
+
+__version__ = "0.2.4"
 
 __all__ = (
     "__version__",
