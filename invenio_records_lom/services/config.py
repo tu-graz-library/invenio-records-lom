@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2021 Graz University of Technology.
+# Copyright (C) 2021-2022 Graz University of Technology.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -10,17 +10,14 @@
 from invenio_drafts_resources.services.records.components import (
     DraftFilesComponent,
     PIDComponent,
+    RelationsComponent,
 )
 from invenio_drafts_resources.services.records.config import (
     RecordServiceConfig,
     is_draft,
     is_record,
 )
-from invenio_rdm_records.services.components import (
-    AccessComponent,
-    MetadataComponent,
-    RelationsComponent,
-)
+from invenio_rdm_records.services.components import AccessComponent, MetadataComponent
 from invenio_rdm_records.services.config import has_doi, is_record_and_has_doi
 from invenio_rdm_records.services.customizations import ConfiguratorMixin
 from invenio_records_resources.services import (
