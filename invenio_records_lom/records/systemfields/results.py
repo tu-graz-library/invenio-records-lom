@@ -31,7 +31,12 @@ class RelationLOMResult(RelationResult):
         # this gets called on service.publish()->record.commit()->extension.pre_commit()
         # TODO: raise when json is ill-formed
 
-    def _apply_items(self, func: callable, attrs: dict = None):
+    def _apply_items(
+        self,
+        func: callable,
+        keys=None,  # pylint: disable=unused-argument
+        attrs: dict = None,
+    ):
         relations = self.record.get("metadata", {}).get("relation", [])
         queue = list(relations)
         for relation in queue:
@@ -45,20 +50,20 @@ class RelationLOMResult(RelationResult):
                 data = func(identifier, attrs) or {}
                 queue.extend(data.get("metadata", {}).get("relation", []))
 
-    def _clean_one(self, data: dict, attrs: t.Optional[dict]):
+    def _clean_one(self, data: dict, keys, attrs: t.Optional[dict]):
         """Remove all but "entry" and "catalog" key."""
         for k in list(data.keys()):
             if k not in ["catalog", "entry"]:
                 del data[k]
 
-    def dereference(self, attrs: t.Optional[dict] = None):
+    def dereference(self, keys=None, attrs: t.Optional[dict] = None):
         """Dereference the relation field object inside the record."""
-        return self._apply_items(self._dereference_one, attrs)
+        return self._apply_items(self._dereference_one, keys, attrs)
 
-    def clean(self, attrs: t.Optional[dict] = None):
+    def clean(self, keys=None, attrs: t.Optional[dict] = None):
         """Remove any dereferenced attributes from inside the record."""
         # gets called pre_commit, clears any dereferenced values before committing
-        self._apply_items(self._clean_one, attrs)
+        self._apply_items(self._clean_one, keys, attrs)
 
     def append(self, value):
         """Append a relation to the list."""
