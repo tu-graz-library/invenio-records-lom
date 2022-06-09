@@ -22,9 +22,8 @@ recursive-include docs *.py
 recursive-include docs *.rst
 recursive-include docs *.txt
 recursive-include docs Makefile
+recursive-include invenio_records_lom *.csv
 recursive-include invenio_records_lom *.html
 recursive-include invenio_records_lom *.json
-recursive-include tests *.py
-
-# added by check-manifest
 recursive-include invenio_records_lom *.py
+recursive-include tests *.py

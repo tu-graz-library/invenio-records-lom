@@ -180,7 +180,7 @@ def create_fake_technical(fake: Faker) -> dict:
     return {
         "format": [fake.random.choice([fake.mime_type(), "non-digital"])],
         "size": str(fake.random.randint(1, 2**32)),
-        "location": [fake.uri() for __ in range(2)],
+        "location": {"type": "URI", "#text": fake.uri()},
         "thumbnail": {"url": fake.uri()},
         "requirement": [create_fake_requirement(fake) for __ in range(2)],
         "installationRemarks": langstringify(fake, fake.paragraph()),
@@ -241,7 +241,7 @@ def create_fake_educational(fake: Faker) -> dict:
         "interactivityLevel": vocabularify(fake, levels),
         "semanticDensity": vocabularify(fake, levels),
         "intendedEndUserRole": vocabularify(fake, end_user_roles),
-        "context": vocabularify(fake, contexts),
+        "context": [vocabularify(fake, contexts) for __ in range(2)],
         "typicalAgeRange": langstringify(fake, f"{random_int(1,4)}-{random_int(5,9)}"),
         "difficulty": vocabularify(fake, difficulties),
         "typicalLearningTime": create_fake_duration(fake),
@@ -291,10 +291,22 @@ def create_fake_learningresourcetype(fake: Faker) -> dict:
 
 def create_fake_rights(fake: Faker) -> dict:
     """Create a fake "rights"-element, compatible with LOMv1.0."""
+    urls = [
+        "https://creativecommons.org/licenses/by/4.0",
+        "https://creativecommons.org/licenses/by-sa/4.0",
+        "https://creativecommons.org/licenses/by-nd/4.0",
+        "https://creativecommons.org/licenses/by-nc/4.0",
+        "https://creativecommons.org/licenses/by-nc-sa/4.0",
+        "https://creativecommons.org/licenses/by-nc-nd/4.0",
+        "https://mit-license.org/",
+    ]
+    url = fake.random.choice(urls)
+    lang = "x-t-cc-url" if url.startswith("https://creativecommons.org/") else None
     return {
         "cost": vocabularify(fake, ["yes", "no"]),
         "copyrightAndOtherRestrictions": vocabularify(fake, ["yes", "no"]),
-        "description": langstringify(fake, fake.paragraph()),
+        "description": langstringify(fake, fake.paragraph(), lang=lang),
+        "url": fake.random.choice(urls),
     }
 
 
@@ -385,7 +397,7 @@ def create_fake_metadata(fake: Faker) -> dict:
         "lifeCycle": create_fake_lifecycle(fake),
         "metaMetadata": create_fake_metametadata(fake),
         "technical": create_fake_technical(fake),
-        "educational": [create_fake_educational(fake) for __ in range(2)],
+        "educational": create_fake_educational(fake),
         "rights": create_fake_rights(fake),
         "relation": [create_fake_relation(fake) for __ in range(2)],
         "annotation": [create_fake_annotation(fake) for __ in range(2)],
