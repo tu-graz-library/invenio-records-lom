@@ -1,0 +1,106 @@
+{
+  "application": {
+    "de": "Softwareanwendung",
+    "en": "Software Application"
+  },
+  "assessment": {
+    "de": "Lernkontrolle",
+    "en": "Assessment"
+  },
+  "audio": {
+    "de": "Audio",
+    "en": "Audio Recording"
+  },
+  "case_study": {
+    "de": "Fallstudie",
+    "en": "Case Study"
+  },
+  "course": {
+    "de": "Kurs",
+    "en": "Course"
+  },
+  "data": {
+    "de": "Daten",
+    "en": "Data"
+  },
+  "diagram": {
+    "de": "Diagramm",
+    "en": "Diagram"
+  },
+  "drill_and_practice": {
+    "de": "Übung",
+    "en": "Drill and Practice"
+  },
+  "educational_game": {
+    "de": "Lernspiel",
+    "en": "Game"
+  },
+  "experiment": {
+    "de": "Experiment",
+    "en": "Experiment"
+  },
+  "image": {
+    "de": "Abbildung",
+    "en": "Image"
+  },
+  "index": {
+    "de": "Nachschlagewerk",
+    "en": "Reference Work"
+  },
+  "lesson_plan": {
+    "de": "Unterrichtsplanung",
+    "en": "Lesson Plan"
+  },
+  "map": {
+    "de": "Karte",
+    "en": "Map"
+  },
+  "portal": {
+    "de": "Portal",
+    "en": "Web Portal"
+  },
+  "questionnaire": {
+    "de": "Fragebogen",
+    "en": "Questionnaire"
+  },
+  "script": {
+    "de": "Skript",
+    "en": "Script"
+  },
+  "sheet_music": {
+    "de": "Musiknoten",
+    "en": "Sheet Music"
+  },
+  "simulation": {
+    "de": "Simulation",
+    "en": "Simulation"
+  },
+  "slide": {
+    "de": "Präsentation",
+    "en": "Presentation"
+  },
+  "text": {
+    "de": "Textdokument",
+    "en": "Text"
+  },
+  "textbook": {
+    "de": "Lehrbuch",
+    "en": "Textbook"
+  },
+  "video": {
+    "de": "Video",
+    "en": "Video"
+  },
+  "web_page": {
+    "de": "Webseite",
+    "en": "Web Page"
+  },
+  "worksheet": {
+    "de": "Arbeitsmaterial",
+    "en": "Worksheet"
+  },
+  "other": {
+    "de": "Sonstiges",
+    "en": "Other"
+  }
+}
