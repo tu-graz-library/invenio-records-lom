@@ -11,10 +11,11 @@
 from __future__ import annotations
 
 import copy
+import csv
 import json
 import typing as t
 from collections.abc import MutableMapping
-from pathlib import Path
+from importlib import resources
 
 
 class DotAccessWrapper(MutableMapping):
@@ -49,7 +50,7 @@ class DotAccessWrapper(MutableMapping):
         """Get."""
         cursor = self.data
         for subkey in self.split(dotted_key):
-            self.check(cursor, subkey)
+            self.ascertain_unambiguity(cursor, subkey)
             try:
                 cursor = cursor[subkey]
             except (IndexError, TypeError, ValueError) as exc:
@@ -76,7 +77,7 @@ class DotAccessWrapper(MutableMapping):
                 cursor.append(next_value)
                 cursor = cursor[-1]
             else:
-                self.check(cursor, subkey)
+                self.ascertain_unambiguity(cursor, subkey)
                 if subkey not in cursor or next_subkey is None:
                     cursor[subkey] = next_value
                 cursor = cursor[subkey]
@@ -84,8 +85,8 @@ class DotAccessWrapper(MutableMapping):
     def __delitem__(self, dotted_key: str) -> None:
         """Delete."""
         *parent_keys, last_key = self.split(dotted_key)
-        parent = self[".".join(parent_keys)]
-        self.check(parent, last_key)
+        parent = self[".".join(str(key) for key in parent_keys)]
+        self.ascertain_unambiguity(parent, last_key)
         del parent[last_key]  # pylint: disable=unsupported-delete-operation
 
     def __iter__(self) -> t.Iterator:
@@ -101,14 +102,17 @@ class DotAccessWrapper(MutableMapping):
         return f"<{type(self).__qualname__}({self.data!r}) at {hex(id(self))}>"
 
     @staticmethod
-    def check(container: t.Union[dict, list], key: str) -> None:
-        """Check whether `key` fulfills the unambiguity condition."""
+    def ascertain_unambiguity(container: t.Union[dict, list], key: str) -> None:
+        """Check whether `key` is unambiguous within `container`."""
         try:
-            key = int(key)
+            int(key)  # try to int-cast key
+            key_is_int_castable = True  # int-casting attempt succeeded
         except ValueError:
-            pass
+            key_is_int_castable = False  # int-casting attempt failed
 
-        if isinstance(container, dict) and not isinstance(key, str):
+        if key_is_int_castable and isinstance(container, dict):
+            # it's not clear whether key is supposed to be int-casted or not since dicts take both
+            # when using an int-castable key, you probably meant to use it with a list anyway...
             raise ValueError("For unambiguity, dict-keys may not be int-castable.")
 
     @staticmethod
@@ -129,8 +133,8 @@ def get_learningresourcetypedict() -> dict[str, dict[str, str]]:
     Maps ((url-ending for "https://w3id.org/kim/hcrt/scheme/") -> labels_by_language),
     where labels_by_language maps (language_code -> label).
     """
-    path = Path(__file__).resolve().parent / "learning_resource_types.json"
-    return json.loads(path.read_text())
+    with resources.open_text(__package__, "learning_resource_types.json") as file_like:
+        return json.load(file_like)
 
 
 def get_oefosdict(language_code: str = "de") -> dict[str, str]:
@@ -145,15 +149,12 @@ def get_oefosdict(language_code: str = "de") -> dict[str, str]:
         raise ValueError(f"OEFOS aren't available for language_code {language_code!r}.")
     filename = filenames_by_language[language_code.lower()]
 
-    oefos_path = Path(__file__).resolve().parent / filename
+    with resources.open_text(__package__, filename) as file_like:
+        reader = csv.reader(file_like, delimiter=";")
+        __ = next(reader)  # discard header
+        for __, edv_code, __, name, __ in reader:
+            oefosdict[edv_code] = name
 
-    line_iter = iter(oefos_path.read_text().splitlines())
-    __ = next(line_iter)  # discard header
-    for line in line_iter:
-        # line is of form `{depth-level};"{EDV-code}";"{code}";"{title}";"{short title}"`
-        # e.g. `4;"603125";"603125";"Metaethik";""`
-        __, edv_code, __, name, __ = line.split(";")
-        oefosdict[edv_code.strip('"')] = name.strip('"')
     return oefosdict
 
 
@@ -202,7 +203,7 @@ def durationify(datetime: str, description: str):
     return {"duration": inner}
 
 
-class LOMMetadata:
+class LOMMetadata:  # pylint: disable=too-many-public-methods
     """Helper-class for easy creation of LOM-metadata JSONs."""
 
     # learningresourcetypes according to `https://w3id.org/kim/hcrt/scheme`
@@ -217,10 +218,57 @@ class LOMMetadata:
         "en": get_oefosdict("en"),
     }
 
-    def __init__(self, record_json: t.Optional[dict] = None) -> None:
+    def __init__(
+        self,
+        record_json: t.Optional[dict] = None,
+        overwritable: bool = False,
+    ) -> None:
         """Init."""
         record_json = copy.deepcopy(record_json or {})
-        self.record = DotAccessWrapper(record_json, overwritable=False)
+        self.record = DotAccessWrapper(record_json, overwritable=overwritable)
+
+    @classmethod
+    def create(
+        cls,
+        resource_type: str,
+        metadata: t.Optional[dict] = None,
+        access: str = "public",
+        pids: t.Optional[dict] = None,
+    ):
+        """Create `cls` with a json that is compatible with invenio-databases.
+
+        :param str resource_type: One of `current_app.config["LOM_RESOURCE_TYPES"]`
+        :param dict metadata: The metadata to be wrapped
+        :param str access: One of "public", "restricted"
+        :param dict pids: For adding external pids
+        """
+        files_enabled = resource_type == "file"
+        pids = pids or {}
+        access_dict = {
+            "embargo": {},
+            "files": access,
+            "record": access,
+        }
+        record_json = {
+            "access": access_dict,
+            "files": {"enabled": files_enabled},
+            "metadata": metadata or {},
+            "pids": pids or {},
+            "resource_type": resource_type,
+        }
+        return cls(record_json)
+
+    @property
+    def json(self):
+        """Pipe-through for convenient access of underlying json."""
+        return self.record.data
+
+    def deduped_append(self, parent_key: str, value: t.Any):
+        """Append `value` to `self.record[key]` if not already appended."""
+        self.record.setdefault(parent_key, [])
+        parent = self.record[parent_key]
+        if value not in parent:
+            parent.append(value)
 
     #
     # methods for manipulating LOM's `general` category
@@ -231,29 +279,46 @@ class LOMMetadata:
         :param str catalog: The name of the cataloging scheme (e.g. "ISBN")
         :param str id_: The value of the identifier within the cataloging scheme
         """
-        self.record["general.identifier.[]"] = catalogify(id_, catalog=catalog)
+        self.deduped_append(
+            "metadata.general.identifier",
+            catalogify(id_, catalog=catalog),
+        )
 
     def set_title(self, title: str, language_code: str) -> None:
         """Set title."""
-        self.record["general.title"] = langstringify(title, lang=language_code)
+        self.record["metadata.general.title"] = langstringify(title, lang=language_code)
 
     def append_language(self, language_code: str) -> None:
         """Append language."""
-        self.record["general.language.[]"] = language_code
+        self.deduped_append("metadata.general.language", language_code)
 
     def append_description(self, description: str, language_code: str) -> None:
         """Append description."""
-        self.record["general.description.[]"] = langstringify(
-            description, lang=language_code
+        self.deduped_append(
+            "metadata.general.description",
+            langstringify(description, lang=language_code),
         )
 
     def append_keyword(self, keyword: str, language_code: str) -> None:
         """Append keyword."""
-        self.record["general.keyword.[]"] = langstringify(keyword, lang=language_code)
+        self.deduped_append(
+            "metadata.general.keyword",
+            langstringify(keyword, lang=language_code),
+        )
 
     #
     # methods for manipulating LOM's `lifeCycle` category
     #
+    def set_version(self, version: str, datetime: str):
+        """Set version.
+
+        :param str version: The version of this metadata
+        :param str datetime: The datetime-string of this version's release in isoformat
+        """
+        version_dict = langstringify(version)
+        version_dict["datetime"] = datetime
+        self.record["metadata.lifecycle.version"] = version_dict
+
     def append_contribute(self, name: str, role: str) -> None:
         """Append contribute.
 
@@ -265,7 +330,7 @@ class LOMMetadata:
         # contributes are grouped by role
         # try to find dict for passed-in `role`, create it if non-existent
         corresponding_contribute = None  # to be the contribute corresponding to `role`
-        for contribute in self.record.get("lifecycle.contribute", []):
+        for contribute in self.record.get("metadata.lifecycle.contribute", []):
             contribute_role = contribute["role"]["value"]["langstring"]["#text"]
             if contribute_role == role:
                 corresponding_contribute = contribute
@@ -275,31 +340,33 @@ class LOMMetadata:
                 "role": vocabularify(role),
                 "entity": [],
             }
-            self.record["lifecycle.contribute.[]"] = corresponding_contribute
+            self.record["metadata.lifecycle.contribute.[]"] = corresponding_contribute
 
         # append entity
-        corresponding_contribute["entity"].append(name)
+        entities = corresponding_contribute["entity"]
+        if name not in entities:
+            entities.append(name)
 
     def set_datetime(self, datetime: str) -> None:
         """Set the datetime the learning object was created.
 
         :param str datetime: The datetime-string in isoformat
         """
-        self.record["lifecycle.datetime"] = datetime
+        self.record["metadata.lifecycle.datetime"] = datetime
 
     #
     # methods for manipulating LOM's `technical` category
     #
     def append_format(self, mimetype: str) -> None:
         """Append format."""
-        self.record["technical.format.[]"] = mimetype
+        self.deduped_append("metadata.technical.format", mimetype)
 
     def set_size(self, size: t.Union[str, int]) -> None:
         """Set size.
 
         :param str|int size: size in bytes (octets)
         """
-        self.record["technical.size"] = str(size)
+        self.record["metadata.technical.size"] = str(size)
 
     #
     # methods for manipulating LOM's `educational` category
@@ -311,18 +378,33 @@ class LOMMetadata:
         """
         labels = self.learningresourcetype_labels[learningresourcetype]
         entry = [langstringify(label, lang=lang) for lang, label in labels.items()]
-        self.record["educational.learningresourcetype.[]"] = {
+        learningresourcetype_dict = {
             "source": langstringify("https://w3id.org/kim/hcrt/scheme"),
             "id": f"https://w3id.org/kim/hcrt/{learningresourcetype}",
             "entry": entry,
         }
+        self.deduped_append(
+            "metadata.educational.learningresourcetype",
+            learningresourcetype_dict,
+        )
 
     def append_context(self, context: str) -> None:
         """Append context.
 
         :param str context: One of the values LOM recommends for `educational.context`
         """
-        self.record["educational.context.[]"] = vocabularify(context)
+        self.deduped_append("metadata.educational.context", vocabularify(context))
+
+    def append_educational_description(
+        self,
+        description: str,
+        language_code: str,
+    ) -> None:
+        """Append educational description."""
+        self.deduped_append(
+            "metadata.educational.description",
+            langstringify(description, lang=language_code),
+        )
 
     #
     # methods for manipulating LOM's `rights` category
@@ -333,9 +415,27 @@ class LOMMetadata:
         :param str url: The url of the copyright license
                         (e.g. "https://creativecommons.org/licenses/by/4.0/")
         """
-        self.record["rights.copyrightandotherrestrictions"] = vocabularify("yes")
-        self.record["rights.url"] = url
-        self.record["rights.description"] = langstringify(url, lang="x-t-cc-url")
+        self.record["metadata.rights.copyrightandotherrestrictions"] = vocabularify(
+            "yes"
+        )
+        self.record["metadata.rights.url"] = url
+        self.record["metadata.rights.description"] = langstringify(
+            url,
+            lang="x-t-cc-url",
+        )
+
+    #
+    # methods for manipulating LOM's `relation` category
+    #
+    def append_relation(self, pid: str, kind: str):
+        """Append relation of kind `kind` with entry `pid`.
+
+        `kind` is a kind, as in LOMv1.0's `relation`-group.
+        `pid` is entry, as in LOMv1.0's `relation.resource.identifier` category.
+        """
+        resource = {"identifier": [catalogify(pid, catalog="repo-pid")]}
+        relation = {"kind": vocabularify(kind), "resource": resource}
+        self.deduped_append("metadata.relation", relation)
 
     #
     # methods for manipulating LOM's `classification` category
@@ -344,7 +444,7 @@ class LOMMetadata:
         """Get the classification that holds OEFOS, create it if it didn't exist."""
         # oefos are part of the unique `classification` whose `purpose` is "discipline"
         # try to find that classification, otherwise create it
-        for classification in self.record.get("classification", []):
+        for classification in self.record.get("metadata.classification", []):
             purpose = classification["purpose"]["value"]["langstring"]["#text"]
             if purpose == "discipline":
                 return (oefos_classification := classification)
@@ -354,7 +454,7 @@ class LOMMetadata:
             "purpose": vocabularify("discipline"),
             "taxonpath": [],
         }
-        self.record["classification.[]"] = oefos_classification
+        self.record["metadata.classification.[]"] = oefos_classification
         return oefos_classification
 
     def create_oefos_taxonpath(
@@ -420,4 +520,5 @@ class LOMMetadata:
             del taxonpaths[idx]
 
         # append
-        taxonpaths.append(new_taxonpath)
+        if new_taxonpath not in taxonpaths:
+            taxonpaths.append(new_taxonpath)

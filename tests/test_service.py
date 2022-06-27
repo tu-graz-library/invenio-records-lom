@@ -66,12 +66,13 @@ def _pick_by_cls(iterable, cls, assert_unique=True):
     "access",
     _ACCESS_CONFIGURATIONS,
 )
-def test_create_draft(service, db, identity, access):
+def test_create_draft(service, db, identity, access):  # pylint: disable=too-many-locals
     """Test creating a draft, then test database changes."""
+    title_langstring = {"langstring": {"#text": "Test", "lang": "en"}}
     data = {
         "access": access,
         "files": {"enabled": False},
-        "metadata": {"general": {"title": {"string": "Test"}}},
+        "metadata": {"general": {"title": title_langstring}},
         "resource_type": "course",
     }
 
@@ -96,9 +97,17 @@ def test_create_draft(service, db, identity, access):
     assert new_versions_state.parent_id == new_parent.id
     assert new_draft.parent_id == new_parent.id
 
-    # test json
+    # test whether pid was added by service.create
     json = new_draft.json
     assert "metadata" in json
+    assert "general" in json["metadata"]
+    general = json["metadata"]["general"]
+    json_pid = general["identifier"][0]["entry"]["langstring"]["#text"]
+    assert json_pid == draft_pid.pid_value
+
+    # test json
+    # other than general.identifier, record's metadata should be identical to initial metadata
+    del general["identifier"]
     assert json["metadata"] == data["metadata"]
     assert "access" in json
     assert json["access"]["files"] == access["files"]
@@ -114,10 +123,11 @@ def test_create_draft(service, db, identity, access):
 )
 def test_publish(service, db, identity, access):  # pylint: disable=too-many-locals
     """Test publishing a record, then test database changes."""
+    title_langstring = {"langstring": {"#text": "Test", "lang": "en"}}
     data = {
         "access": access,
         "files": {"enabled": False},
-        "metadata": {"general": {"title": {"string": "Test"}}},
+        "metadata": {"general": {"title": title_langstring}},
         "resource_type": "course",
     }
 
@@ -148,9 +158,17 @@ def test_publish(service, db, identity, access):  # pylint: disable=too-many-loc
     assert new_draft.parent_id == new_parent.id
     assert new_record.parent_id == new_parent.id
 
-    # test json
+    # test whether pid was added by service.create
     json = new_record.json
     assert "metadata" in json
+    assert "general" in json["metadata"]
+    general = json["metadata"]["general"]
+    json_pid = general["identifier"][0]["entry"]["langstring"]["#text"]
+    assert json_pid == record_pid.pid_value
+
+    # test json
+    # other than general.identifier, record's metadata should be identical to initial metadata
+    del general["identifier"]
     assert json["metadata"] == data["metadata"]
     assert "access" in json
     assert json["access"]["files"] == access["files"]

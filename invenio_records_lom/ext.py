@@ -40,6 +40,16 @@ class InvenioRecordsLOM:
         Override configuration variables with the values in this package.
         """
         for k in dir(config):
+            if k == "LOM_PERSISTENT_IDENTIFIER_PROVIDERS":
+                app.config.setdefault("LOM_PERSISTENT_IDENTIFIER_PROVIDERS", [])
+                app.config["LOM_PERSISTENT_IDENTIFIER_PROVIDERS"].extend(
+                    getattr(config, k)
+                )
+
+            elif k == "LOM_PERSISTENT_IDENTIFIERS":
+                app.config.setdefault("LOM_PERSISTENT_IDENTIFIERS", {})
+                app.config["LOM_PERSISTENT_IDENTIFIERS"].update(getattr(config, k))
+
             if k.startswith("LOM_"):
                 app.config.setdefault(k, getattr(config, k))
 
