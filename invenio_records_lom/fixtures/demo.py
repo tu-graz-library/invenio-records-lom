@@ -481,18 +481,10 @@ def create_then_publish(fake: Faker, data: dict, create_fake_files: bool = False
 
     # partially apply identity=system_identity
     create = partial(service.create, identity=system_identity)
-    update_draft = partial(service.update_draft, identity=system_identity)
     publish = partial(service.publish, identity=system_identity)
 
     # create
     draft_item = create(data=data)
-
-    # add repo-pid to the record's identifiers
-    draft_data = draft_item.to_dict()
-    draft_data["metadata"]["general"]["identifier"].append(
-        {"catalog": "repo-pid", "entry": langstringify(fake, draft_item.id)}
-    )
-    draft_item = update_draft(id_=draft_item.id, data=draft_data)
 
     if create_fake_files:
         attach_fake_files(fake, draft_item)
