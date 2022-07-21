@@ -10,6 +10,7 @@ import re
 
 import arrow
 from flask import current_app
+from flask_resources import BaseObjectSchema
 from invenio_rdm_records.resources.serializers.datacite.schema import (
     get_scheme_datacite,
 )
@@ -19,6 +20,7 @@ from invenio_rdm_records.resources.serializers.ui.schema import (
     record_version,
 )
 from marshmallow import Schema, fields, missing
+from marshmallow_oneofschema import OneOfSchema
 from werkzeug.local import LocalProxy
 
 from ...records import LOMRecord
@@ -33,6 +35,28 @@ def get_text(value):
 def get_lang(value):
     """Get lang from langstring object."""
     return value["langstring"]["lang"]
+
+
+def get_related(obj: dict, relation_kind: str, catalog: str = "repo-pid") -> list:
+    """Get dereferenced records that are `relation_kind`-related to `obj`."""
+    results = []
+    for relation in obj["metadata"].get("relation", []):
+        if get_text(relation["kind"]["value"]) != relation_kind:
+            continue
+
+        for identifier in relation["resource"]["identifier"]:
+            if identifier["catalog"] != catalog:
+                continue
+
+            results.append(identifier)
+
+    return results
+
+
+def get_newest_part(obj: dict):
+    """."""
+    parts = get_related(obj, relation_kind="haspart")
+    return parts[-1]
 
 
 class Title(fields.Field):
@@ -107,8 +131,8 @@ class Rights(fields.Field):
         return [right]
 
 
-class LOMUIObjectSchema(Schema):
-    """Schema for dumping additional data helpful for html-template creation."""
+class LOMUIBaseSchema(BaseObjectSchema):
+    """Base schema for LOMUI-classes, containing all common fields."""
 
     created_date_l10n_long = FormatDate(attribute="created", format="long")
 
@@ -125,19 +149,93 @@ class LOMUIObjectSchema(Schema):
 
     title = Title(attribute="metadata.general.title")
 
-    contributors = Contributors(attribute="metadata.lifeCycle.contribute")
-
-    generalDescriptions = GeneralDescriptions(attribute="metadata.general.description")
-
-    educationalDescriptions = EducationalDescriptions(
-        attribute="metadata.educational.description"
-    )
-
     location = Location(attribute="metadata.technical.location")
 
     rights = Rights(attribute="metadata.rights")
 
     is_draft = fields.Boolean(attribute="is_draft")
+
+    contributors = fields.Method("get_contributors")
+
+    generalDescriptions = fields.Method("get_general_descriptions")
+
+    educationalDescriptions = fields.Method("get_educational_descriptions")
+
+    def get_contributors(self, obj: dict):
+        """Get contributors."""
+        ui_contributors = []
+        for lom_contribute in (
+            obj["metadata"].get("lifecycle", {}).get("contribute", [])
+        ):
+            for entity in lom_contribute["entity"]:
+                ui_contributors.append(
+                    {
+                        "fullname": entity,
+                        "role": get_text(lom_contribute["role"]["value"]),
+                    }
+                )
+        return ui_contributors
+
+    def get_general_descriptions(self, obj: dict):
+        """Get general descriptions."""
+        return [
+            get_text(desc)
+            for desc in obj["metadata"].get("general", {}).get("description", [])
+            if get_text(desc)
+        ]
+
+    def get_educational_descriptions(self, obj: dict):
+        """Get educational descriptions."""
+        return [
+            get_text(desc)
+            for desc in obj["metadata"].get("educational", {}).get("description", [])
+            if get_text(desc)
+        ]
+
+
+class LOMUIFileSchema(LOMUIBaseSchema):
+    """Schema for dumping html-template data to a record of resource_type "file"."""
+
+
+class LOMUIUnitSchema(LOMUIBaseSchema):
+    """Schema for dumping html-template data to a record of resource_type "unit"."""
+
+
+class LOMUICourseSchema(LOMUIBaseSchema):
+    """Schema for dumping html-template data to a record of resource_type "course"."""
+
+    def get_contributors(self, obj: dict):
+        """Get contributors, overwrites parent-class's `get_contributors`."""
+        ui_contributors = []
+        for unit in get_related(obj, relation_kind="haspart"):
+            ui_contributors.extend(super().get_contributors(unit))
+
+        return ui_contributors
+
+    def get_general_descriptions(self, obj: dict):
+        """Get general descriptions, overwrite parent-class's `get_general_descriptions`."""
+        newest_unit = get_newest_part(obj)
+        return super().get_general_descriptions(newest_unit)
+
+    def get_educational_descriptions(self, obj: dict):
+        """Get educational descriptions, overwrite parent-class's `get_educational_descriptions`."""
+        newest_unit = get_newest_part(obj)
+        return super().get_educational_descriptions(newest_unit)
+
+
+class LOMUIRecordSchema(OneOfSchema):
+    """Delegates to different schemas depending on data_to_serialize["resource_type"]."""
+
+    type_field = "resource_type"
+    type_schemas = {
+        "file": LOMUIFileSchema,
+        "unit": LOMUIUnitSchema,
+        "course": LOMUICourseSchema,
+    }
+
+    def get_obj_type(self, obj):
+        """Get type of `obj`, which is used as a key to look up a schema within type_schemas."""
+        return obj["resource_type"]
 
 
 class LOMToDataCite44Schema(Schema):

@@ -20,13 +20,16 @@
 import typing as t
 from os.path import splitext
 
-from flask import abort, current_app, redirect, render_template, request, url_for
+from bs4 import BeautifulSoup
+from flask import abort, current_app, g, redirect, render_template, request, url_for
 from invenio_base.utils import obj_or_import_string
 from invenio_previewer.extensions import default
 from invenio_previewer.proxies import current_previewer
 from invenio_records_resources.services.files.results import FileItem, FileList
 from invenio_records_resources.services.records.results import RecordItem
+from marshmallow import ValidationError
 
+from ...proxies import current_records_lom
 from ...resources.serializers import LOMUIJSONSerializer
 from .decorators import (
     pass_file_item,
@@ -87,25 +90,30 @@ def record_detail(
     is_preview: bool = None,
     record: RecordItem = None,
     files: t.Optional[FileList] = None,
-):
+) -> str:
     """Record detail page (aka landing page)."""
     files_dict = {} if files is None else files.to_dict()
-    record_ui = LOMUIJSONSerializer().serialize_object_to_dict(record.to_dict())
+    record_ui = LOMUIJSONSerializer().dump_obj(record.to_dict())
 
-    if is_preview and record_ui["is_draft"]:
-        abort(404)
+    is_draft = record_ui["is_draft"]
+    if is_preview and is_draft:
+        try:
+            current_records_lom.records_service.validate_draft(g.identity, record.id)
+        except ValidationError:
+            abort(404)
 
-    return render_template(
+    ugly_html_text = render_template(
         "invenio_records_lom/record.html",
         record=record_ui,
         pid=pid_value,
         files=files_dict,
         permissions=record.has_permissions_to(
-            ["edit", "new_version", "manage", "update_draft", "read_files"]
+            ["edit", "new_version", "manage", "update_draft", "read_files", "review"]
         ),
         is_preview=is_preview,
-        is_draft=record_ui["is_draft"],
+        is_draft=is_draft,
     )
+    return BeautifulSoup(ugly_html_text, features="lxml").prettify()
 
 
 @pass_is_preview

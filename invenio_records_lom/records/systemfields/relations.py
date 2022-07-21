@@ -21,9 +21,9 @@ class PIDLOMRelation(PIDRelation):
         self,
         key: str = "metadata.relation",
         *,
-        _value_key_suffix: str = "entry",  # overwrite parent-class default
-        source: str = "LOMv1.0",  # matches against {self.key}.kind.source
-        value: str = None,  # matches against {self.key}.kind.value
+        _value_key_suffix: str = "entry.langstring.#text",  # overwrite parent-class default
+        source: str = "LOMv1.0",  # matches against {self.key}.kind.source.langstring.#text
+        value: str = None,  # matches against {self.key}.kind.value.langstring.#text
         _catalog: str = "repo-pid",  # matches against {self.key}.resource.identifier.catalog
         **kwargs,
     ):

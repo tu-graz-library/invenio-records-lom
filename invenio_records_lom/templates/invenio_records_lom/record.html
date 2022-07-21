@@ -53,23 +53,37 @@
   {%- endfor %}
 </p>
 
-<h1>{{_('General Informations')}}</h1>
+{%- if record.ui.generalDescriptions %}
+<h1>{{_('General Information')}}</h1>
 <p>
   {%- for d in record.ui.generalDescriptions %}
   <span>
-    {{d}}
+    {%- for line in d.splitlines() %}
+    {{line}}
+    {%- if not loop.last %}
+    <br/>
+    {%- endif %}
+    {%- endfor %}
   </span>
   {%- endfor %}
 </p>
+{%- endif %}
 
-<h1>{{_('Educational Informations')}}</h1>
+{%- if record.ui.educationalDescriptions %}
+<h1>{{_('Educational Information')}}</h1>
 <p>
   {%- for d in record.ui.educationalDescriptions %}
   <span>
-    {{d}}
+    {%- for line in d.splitlines() %}
+    {{line}}
+    {%- if not loop.last %}
+    <br/>
+    {%- endif %}
+    {%- endfor %}
   </span>
   {%- endfor %}
 </p>
+{%- endif %}
 
 <ul class="ui list">
 {{ make_dep_tree(metadata.relation, "ispartof", "Part of the") }}
