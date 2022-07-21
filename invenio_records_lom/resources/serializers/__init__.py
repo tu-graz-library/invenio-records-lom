@@ -8,17 +8,24 @@
 """Serializers turning records into html-template-insertable dicts."""
 from copy import deepcopy
 
-from flask_resources.serializers import MarshmallowJSONSerializer
-from invenio_rdm_records.resources.serializers import UIJSONSerializer
+from flask_resources import BaseListSchema, MarshmallowSerializer
+from flask_resources.serializers import JSONSerializer, MarshmallowJSONSerializer
 from lxml.builder import ElementMaker  # pylint: disable=no-name-in-module
 
-from .schemas import LOMToDataCite44Schema, LOMUIObjectSchema
+from .schemas import LOMToDataCite44Schema, LOMUIRecordSchema
 
 
-class LOMUIJSONSerializer(UIJSONSerializer):
+class LOMUIJSONSerializer(MarshmallowSerializer):
     """Wrapper with some convenience functions around a marshmallow-schema."""
 
-    object_schema_cls = LOMUIObjectSchema
+    def __init__(self):
+        """Initialize serializer with arguments for LOM-serialization."""
+        super().__init__(
+            format_serializer_cls=JSONSerializer,
+            object_schema_cls=LOMUIRecordSchema,
+            list_schema_cls=BaseListSchema,
+            schema_context={"object_key": "ui"},
+        )
 
 
 class LOMToDataCite44Serializer(MarshmallowJSONSerializer):
