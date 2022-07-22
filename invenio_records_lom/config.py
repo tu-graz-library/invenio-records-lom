@@ -13,13 +13,19 @@ from invenio_rdm_records.services.pids import providers
 
 from .resources.serializers import LOMToDataCite44Serializer
 
+LOM_BASE_TEMPLATE = "invenio_records_lom/base.html"
+
 LOM_ROUTES = {
-    "record_detail": "/lom/<pid_value>",
-    "record_export": "/lom/<pid_value>/export/<export_format>",
-    "record_file_preview": "/lom/<pid_value>/preview/<path:filename>",
-    "record_file_download": "/lom/<pid_value>/files/<path:filename>",
-    "record_from_pid": "/lom/<any({schemes}):pid_scheme>/<path:pid_value>",
-    "record_latest": "/lom/<pid_value>/latest",
+    "record_detail": "/<pid_value>",
+    "record_export": "/<pid_value>/export/<export_format>",
+    "record_file_preview": "/<pid_value>/preview/<path:filename>",
+    "record_file_download": "/<pid_value>/files/<path:filename>",
+    "record_from_pid": "/<any({schemes}):pid_scheme>/<path:pid_value>",
+    "record_latest": "/<pid_value>/latest",
+}
+
+LOM_UI_THEME_ENDPOINTS = {
+    "record-search": "/search",
 }
 
 LOM_RECORD_EXPORTERS = {
