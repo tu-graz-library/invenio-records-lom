@@ -8,8 +8,7 @@
 
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
-import _camelCase from "lodash/camelCase";
-import _truncate from "lodash/truncate";
+import { get, camelCase, truncate } from "lodash";
 import {
   Button,
   Card,
@@ -21,38 +20,42 @@ import {
   List,
 } from "semantic-ui-react";
 import { BucketAggregation } from "react-searchkit";
-import _get from "lodash/get";
 import { loadComponents } from "@js/invenio_theme/templates";
 import Overridable from "react-overridable";
 import { SearchBar, SearchApp } from "@js/invenio_search_ui/components";
 
 export const LOMRecordResultsListItem = ({ result, index }) => {
-  const createdDate = _get(result, "ui.created", "No creation date found.");
+  const metadata = get(result, "metadata", {});
+  const access = get(result, "access_status", {});
 
-  const publicationDate = _get(result, "ui.updated", "No update date found.");
-  const access = _get(result, ["ui", "access_status"], []);
-
-  const access_id = _get(access, "id", "public");
-  const access_status = _get(access, "title", "Public");
-  const access_icon = _get(access, "icon", "unlock");
-
-  const metadata = _get(result, ["ui", "metadata"], []);
-  const description = _get(metadata, ["summary", "summary"], "No description");
-  const subjects = _get(metadata, "subject_added_entry_topical_term", []);
-
-  const publication = _get(
+  const createdDate = get(
     metadata,
-    ["production_publication_distribution_manufacture_and_copyright_notice"],
-    []
-  );
-  const creators = _get(
-    publication,
-    "name_of_producer_publisher_distributor_manufacturer",
-    []
+    "lifeCycle.datetime",
+    "No creation date found."
   );
 
-  const title = _get(metadata, ["title_statement", "title"], "No title");
-  const version = _get(result, "revision_id", null);
+  const publicationDate = get(
+    metadata,
+    "lifeCycle.datetime",
+    "No update date found."
+  );
+
+  const access_id = get(access, "id", "public");
+  const access_status = get(access, "title", "Public");
+  const access_icon = get(access, "icon", "unlock");
+
+  const description = get(
+    metadata,
+    "general.description[0].langstring.#text",
+    "No description"
+  );
+
+  const creators = get(metadata, "lifecycle.contribute", []);
+
+  const title = get(metadata, "general.title.langstring.#text", "No title");
+  const version = get(result, "revision_id", null);
+
+  const subjects = [];
 
   const viewLink = `/lom/${result.id}`;
 
@@ -68,23 +71,19 @@ export const LOMRecordResultsListItem = ({ result, index }) => {
               {access_icon && <i className={`icon ${access_icon}`}></i>}
               {access_status}
             </Label>
-            <Button basic floated="right">
-              <Icon name="eye" />
-              View
-            </Button>
           </div>
         </Item.Extra>
         <Item.Header>{title}</Item.Header>
         <Item.Meta>
           {creators.map((creator, index) => (
             <span key={index}>
-              {creator}
+              {creator.entity}
               {index < creators.length - 1 && ","}
             </span>
           ))}
         </Item.Meta>
         <Item.Description>
-          {_truncate(description, { length: 350 })}
+          {truncate(description, { length: 350 })}
         </Item.Description>
         <Item.Extra>
           {subjects.map((subject, index) => (
@@ -106,8 +105,8 @@ export const LOMRecordResultsListItem = ({ result, index }) => {
 };
 
 export const LOMRecordResultsGridItem = ({ result, index }) => {
-  const metadata = _get(result, ["ui", "metadata", "json"], []);
-  const description = _get(
+  const metadata = get(result, ["ui", "metadata", "json"], []);
+  const description = get(
     metadata,
     ["summary", "0", "summary"],
     "No description"
@@ -117,7 +116,7 @@ export const LOMRecordResultsGridItem = ({ result, index }) => {
       <Card.Content>
         <Card.Header>{result.metadata.json.title_statement.title}</Card.Header>
         <Card.Description>
-          {_truncate(description, { length: 200 })}
+          {truncate(description, { length: 200 })}
         </Card.Description>
       </Card.Content>
     </Card>
