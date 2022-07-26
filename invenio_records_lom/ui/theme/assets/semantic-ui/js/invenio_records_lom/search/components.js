@@ -25,35 +25,31 @@ import Overridable from "react-overridable";
 import { SearchBar, SearchApp } from "@js/invenio_search_ui/components";
 
 export const LOMRecordResultsListItem = ({ result, index }) => {
-  const metadata = get(result, "metadata", {});
-  const access = get(result, "access_status", {});
+  const ui = get(result, "ui", {});
+  const access = get(ui, "access_status", {});
 
   const createdDate = get(
-    metadata,
-    "lifeCycle.datetime",
+    ui,
+    "created_date_l10n_long",
     "No creation date found."
   );
 
   const publicationDate = get(
-    metadata,
-    "lifeCycle.datetime",
+    ui,
+    "created_date_l10n_long",
     "No update date found."
   );
 
-  const access_id = get(access, "id", "public");
+  const access_id = get(access, "id", "Public");
   const access_status = get(access, "title", "Public");
   const access_icon = get(access, "icon", "unlock");
 
-  const description = get(
-    metadata,
-    "general.description[0].langstring.#text",
-    "No description"
-  );
+  const description = get(ui, "generalDescriptions", "No description");
 
-  const creators = get(metadata, "lifecycle.contribute", []);
+  const persons = get(ui, "contributors", []);
 
-  const title = get(metadata, "general.title.langstring.#text", "No title");
-  const version = get(result, "revision_id", null);
+  const title = get(ui, "title", "No title");
+  const version = get(result, "metadata.lifecycle.version", null);
 
   const subjects = [];
 
@@ -75,10 +71,10 @@ export const LOMRecordResultsListItem = ({ result, index }) => {
         </Item.Extra>
         <Item.Header>{title}</Item.Header>
         <Item.Meta>
-          {creators.map((creator, index) => (
+          {persons.map((person, index) => (
             <span key={index}>
-              {creator.entity}
-              {index < creators.length - 1 && ","}
+              {person.fullname}
+              {index < persons.length - 1 && ","}
             </span>
           ))}
         </Item.Meta>

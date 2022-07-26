@@ -55,20 +55,12 @@
 
 <h1>{{_('General Informations')}}</h1>
 <p>
-  {%- for d in record.ui.generalDescriptions %}
-  <span>
-    {{d}}
-  </span>
-  {%- endfor %}
+  {{record.ui.generalDescriptions}}
 </p>
 
 <h1>{{_('Educational Informations')}}</h1>
 <p>
-  {%- for d in record.ui.educationalDescriptions %}
-  <span>
-    {{d}}
-  </span>
-  {%- endfor %}
+  {{record.ui.eductionalDescriptions}}
 </p>
 
 <ul class="ui list">

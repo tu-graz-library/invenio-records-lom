@@ -66,7 +66,7 @@ class GeneralDescriptions(fields.Field):
 
     def _serialize(self, value, attr, obj, **kwargs):
         """Serialize."""
-        return list(map(get_text, value))
+        return " ".join(list(map(get_text, value)))
 
 
 class EducationalDescriptions(fields.Field):
@@ -74,7 +74,7 @@ class EducationalDescriptions(fields.Field):
 
     def _serialize(self, value, attr, obj, **kwargs):
         """Serialize."""
-        return list(map(get_text, value))
+        return " ".join(list(map(get_text, value)))
 
 
 class Location(fields.Field):
