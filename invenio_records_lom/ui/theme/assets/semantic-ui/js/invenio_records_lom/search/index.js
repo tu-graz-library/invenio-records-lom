@@ -12,7 +12,7 @@ import {
   RDMRecordFacets,
   RDMRecordFacetsValues,
   RDMRecordSearchBarContainer,
-  RDMRecordSearchBarElement,
+  RDMRecordMultipleSearchBarElement,
   RDMToggleComponent,
   RDMCountComponent,
 } from "@js/invenio_app_rdm/search/components";
@@ -28,7 +28,7 @@ const initSearchApp = createSearchAppInit({
   "ResultsList.item": LOMRecordResultsListItem,
   "SearchApp.facets": RDMRecordFacets,
   "SearchApp.searchbarContainer": RDMRecordSearchBarContainer,
-  "SearchBar.element": RDMRecordSearchBarElement,
+  "SearchBar.element": RDMRecordMultipleSearchBarElement,
   "SearchFilters.ToggleComponent": RDMToggleComponent,
   "Count.element": RDMCountComponent,
 });
