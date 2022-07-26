@@ -90,7 +90,7 @@ def record_detail(
 ):
     """Record detail page (aka landing page)."""
     files_dict = {} if files is None else files.to_dict()
-    record_ui = LOMUIJSONSerializer().serialize_object_to_dict(record.to_dict())
+    record_ui = LOMUIJSONSerializer().dump_obj(record.to_dict())
 
     if is_preview and record_ui["is_draft"]:
         abort(404)

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2021 Graz University of Technology.
+# Copyright (C) 2021-2022 Graz University of Technology.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -8,17 +8,40 @@
 """Serializers turning records into html-template-insertable dicts."""
 from copy import deepcopy
 
-from flask_resources.serializers import MarshmallowJSONSerializer
-from invenio_rdm_records.resources.serializers import UIJSONSerializer
+from flask_resources import BaseListSchema
+from flask_resources.serializers import (
+    JSONSerializer,
+    MarshmallowJSONSerializer,
+    MarshmallowSerializer,
+)
 from lxml.builder import ElementMaker  # pylint: disable=no-name-in-module
 
 from .schemas import LOMToDataCite44Schema, LOMUIObjectSchema
 
 
-class LOMUIJSONSerializer(UIJSONSerializer):
+class LOMUIJSONSerializer(MarshmallowSerializer):
     """Wrapper with some convenience functions around a marshmallow-schema."""
 
-    object_schema_cls = LOMUIObjectSchema
+    def __init__(self):
+        """Initialise Serializer."""
+        super().__init__(
+            format_serializer_cls=JSONSerializer,
+            object_schema_cls=LOMUIObjectSchema,
+            list_schema_cls=BaseListSchema,
+            schema_context={"object_key": "ui"},
+        )
+
+    def dump_obj(self, obj):
+        """Dump the object into a JSON string."""
+        object_key = self.schema_context["object_key"]
+        obj[object_key] = self.object_schema_cls().dump(obj)
+        return obj
+
+    def dump_list(self, obj_list):
+        """Serialize a list of records."""
+        records = obj_list["hits"]["hits"]
+        obj_list["hits"]["hits"] = [self.dump_obj(obj) for obj in records]
+        return obj_list
 
 
 class LOMToDataCite44Serializer(MarshmallowJSONSerializer):
