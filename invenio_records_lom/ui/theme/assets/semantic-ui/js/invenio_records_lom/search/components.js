@@ -56,7 +56,7 @@ export const LOMRecordResultsListItem = ({ result, index }) => {
   const viewLink = `/lom/${result.id}`;
 
   return (
-    <Item key={index} href={viewLink}>
+    <Item key={index}>
       <Item.Content>
         <Item.Extra>
           <div>
@@ -69,7 +69,9 @@ export const LOMRecordResultsListItem = ({ result, index }) => {
             </Label>
           </div>
         </Item.Extra>
-        <Item.Header>{title}</Item.Header>
+        <Item.Header as="h2">
+          <a href={viewLink}>{title}</a>
+        </Item.Header>
         <Item.Meta>
           {persons.map((person, index) => (
             <span key={index}>
