@@ -23,5 +23,6 @@ class LOMRecordResource(RecordResource):
 
         routes = self.config.routes
         return [
+            route("GET", prefix(routes["list"]), self.search),
             route("GET", prefix(routes["item"]), self.read),
         ]

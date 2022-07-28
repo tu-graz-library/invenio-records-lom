@@ -26,4 +26,6 @@ recursive-include invenio_records_lom *.csv
 recursive-include invenio_records_lom *.html
 recursive-include invenio_records_lom *.json
 recursive-include invenio_records_lom *.py
+recursive-include invenio_records_lom *.js
+recursive-include invenio_records_lom *.less
 recursive-include tests *.py

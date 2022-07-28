@@ -1,0 +1,21 @@
+{#
+  Copyright (C) 2022 Graz University of Technology
+
+  invenio-records-marc21 is free software; you can redistribute it and/or modify
+  it under the terms of the MIT License; see LICENSE file for more details.
+#}
+
+
+{%- extends config.LOM_BASE_TEMPLATE %}
+
+
+{%- block javascript %}
+{{ super() }}
+{{ webpack['invenio-records-lom-search.js'] }}
+{%- endblock %}
+
+{%- block page_body %}
+
+<div id="invenio-search-lom-config" data-invenio-search-config='{{ search_app_lom_config() | tojson }}'></div>
+
+{%- endblock page_body %}
