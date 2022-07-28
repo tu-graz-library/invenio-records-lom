@@ -193,6 +193,10 @@ class LOMUIBaseSchema(BaseObjectSchema):
         ]
 
 
+class LOMUILinkSchema(LOMUIBaseSchema):
+    """Schema for dumping html-template data to a record of resource_type "link"."""
+
+
 class LOMUIFileSchema(LOMUIBaseSchema):
     """Schema for dumping html-template data to a record of resource_type "file"."""
 
@@ -231,6 +235,7 @@ class LOMUIRecordSchema(OneOfSchema):
         "file": LOMUIFileSchema,
         "unit": LOMUIUnitSchema,
         "course": LOMUICourseSchema,
+        "link": LOMUILinkSchema,
     }
 
     def get_obj_type(self, obj):
