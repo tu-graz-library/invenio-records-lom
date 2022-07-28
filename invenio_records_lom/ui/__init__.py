@@ -10,6 +10,7 @@
 from flask import Blueprint, Flask
 
 from .records import init_records_views
+from .theme import init_theme_views
 
 
 def create_blueprint(app: Flask):
@@ -19,8 +20,10 @@ def create_blueprint(app: Flask):
         __name__,
         template_folder="../templates",
         static_folder="../static",
+        url_prefix="/lom",
     )
 
     init_records_views(blueprint, app)
+    init_theme_views(blueprint, app)
 
     return blueprint

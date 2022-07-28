@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2020 Graz University of Technology.
+# Copyright (C) 2020-2022 Graz University of Technology.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -13,13 +13,34 @@ from invenio_rdm_records.services.pids import providers
 
 from .resources.serializers import LOMToDataCite44Serializer
 
+LOM_BASE_TEMPLATE = "invenio_records_lom/base.html"
+
+LOM_FACETS = {}
+
+LOM_SORT_OPTIONS = {
+    "bestmatch": {
+        "title": _("Best match"),
+        "fields": ["_score"],  # ES defaults to desc on `_score` field
+    },
+    "newest": {
+        "title": _("Newest"),
+        "fields": ["-created"],
+    },
+}
+
+LOM_SEARCH = {
+    "sort": ["bestmatch", "newest"],
+}
+"""Record search configuration."""
+
 LOM_ROUTES = {
-    "record_detail": "/lom/<pid_value>",
-    "record_export": "/lom/<pid_value>/export/<export_format>",
-    "record_file_preview": "/lom/<pid_value>/preview/<path:filename>",
-    "record_file_download": "/lom/<pid_value>/files/<path:filename>",
-    "record_from_pid": "/lom/<any({schemes}):pid_scheme>/<path:pid_value>",
-    "record_latest": "/lom/<pid_value>/latest",
+    "record_detail": "/<pid_value>",
+    "record_export": "/<pid_value>/export/<export_format>",
+    "record_file_preview": "/<pid_value>/preview/<path:filename>",
+    "record_file_download": "/<pid_value>/files/<path:filename>",
+    "record_from_pid": "/<any({schemes}):pid_scheme>/<path:pid_value>",
+    "record_latest": "/<pid_value>/latest",
+    "record_search": "/search",
 }
 
 LOM_RECORD_EXPORTERS = {
