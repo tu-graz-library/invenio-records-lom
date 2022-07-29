@@ -7,6 +7,13 @@
 Changes
 =======
 
+Version v0.5.0 (release 2022-07-29)
+
+- fix missing schema for type link
+- add the search feature
+- update UI-serialization and landing page
+
+
 Version v0.3.1 (release 2022-06-01)
 
 - update publish action
