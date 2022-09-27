@@ -7,6 +7,11 @@
 Changes
 =======
 
+Version v0.5.2 (release 2022-09-27)
+
+- fix: javascript dependencies
+
+
 Version v0.5.1 (release 2022-09-27)
 
 - fix: pylint errors
