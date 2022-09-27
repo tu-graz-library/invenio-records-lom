@@ -19,13 +19,13 @@ from invenio_drafts_resources.services.records.config import (
 )
 from invenio_rdm_records.services.components import AccessComponent, MetadataComponent
 from invenio_rdm_records.services.config import has_doi, is_record_and_has_doi
-from invenio_rdm_records.services.customizations import ConfiguratorMixin
 from invenio_records_resources.services import (
     ConditionalLink,
     FileServiceConfig,
     Link,
     RecordLink,
 )
+from invenio_records_resources.services.base.config import ConfiguratorMixin
 
 from ..records import LOMDraft, LOMRecord
 from .components import LOMPIDsComponent, ResourceTypeComponent
