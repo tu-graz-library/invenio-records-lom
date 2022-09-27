@@ -7,6 +7,14 @@
 Changes
 =======
 
+Version v0.5.1 (release 2022-09-27)
+
+- fix: pylint errors
+- fix: ConfigurationMixin changed location
+- global: pin flake8
+- global: increase version of invenio-search
+
+
 Version v0.5.0 (release 2022-07-29)
 
 - fix missing schema for type link
