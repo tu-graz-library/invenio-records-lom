@@ -6,27 +6,34 @@
 // modify it under the terms of the MIT License; see LICENSE file for more
 // details.
 
+import { parametrize } from "react-overridable";
 import { createSearchAppInit } from "@js/invenio_search_ui";
 import {
-  RDMBucketAggregationElement,
-  RDMRecordFacets,
-  RDMRecordFacetsValues,
   RDMRecordSearchBarContainer,
   RDMRecordMultipleSearchBarElement,
   RDMToggleComponent,
   RDMCountComponent,
 } from "@js/invenio_app_rdm/search/components";
 import {
+  ContribSearchAppFacets,
+  ContribBucketAggregationElement,
+  ContribBucketAggregationValuesElement,
+} from "@js/invenio_search_ui/components";
+import {
   LOMRecordResultsGridItem,
   LOMRecordResultsListItem,
 } from "./components";
 
+const ContribSearchAppFacetsWithConfig = parametrize(ContribSearchAppFacets, {
+  toogle: true,
+});
+
 const initSearchApp = createSearchAppInit({
-  "BucketAggregation.element": RDMBucketAggregationElement,
-  "BucketAggregationValues.element": RDMRecordFacetsValues,
+  "BucketAggregation.element": ContribBucketAggregationElement,
+  "BucketAggregationValues.element": ContribBucketAggregationValuesElement,
   "ResultsGrid.item": LOMRecordResultsGridItem,
   "ResultsList.item": LOMRecordResultsListItem,
-  "SearchApp.facets": RDMRecordFacets,
+  "SearchApp.facets": ContribSearchAppFacetsWithConfig,
   "SearchApp.searchbarContainer": RDMRecordSearchBarContainer,
   "SearchBar.element": RDMRecordMultipleSearchBarElement,
   "SearchFilters.ToggleComponent": RDMToggleComponent,
