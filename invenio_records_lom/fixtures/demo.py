@@ -46,10 +46,9 @@ def vocabularify(fake: Faker, choices: list) -> dict:
 
 def create_fake_datetime(fake: Faker) -> dict:
     """Create a fake datetime dict, as per LOMv1.0 Datetime-object-specification."""
-    pattern = fake.random.choice(["YMDhmsTZD", "YMDhms", "YMD", "Y"])
-    if pattern == "Y":
-        datetime = fake.year()
-    elif pattern == "YMD":
+    pattern = fake.random.choice(["YMDhmsTZD", "YMDhms", "YMD"])
+
+    if pattern == "YMD":
         datetime = fake.date()
     elif pattern == "YMDhms":
         datetime = fake.date_time().isoformat()

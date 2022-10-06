@@ -12,7 +12,7 @@ Use flask.current_app['invenio-records-lom'].records_service to interact with.
 
 # fields execute actions on creating, editing, publishing, ... the object
 # Some possibly useful fields are:
-# dumper =  # overwrite to add extensions to elasticsearch dumper,
+# dumper =  # overwrite to add extensions to opensearch dumper,
 #     e.g. adding EDTF-support
 #     cf invenio_rdm_records.records.dumpers
 # is_published =  # overwrite with PIDStatusCheckField(dump=True) to:
