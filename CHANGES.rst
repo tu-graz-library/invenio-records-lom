@@ -7,6 +7,17 @@
 Changes
 =======
 
+Version v0.6.0 (release 2022-10-14)
+
+- global: migrate to reusable workflows for publish
+- typo: fixed wrong position of .
+- test: move to reusable workflows
+- tests: remove CACHE
+- fix: change opensearch2 to opensearch in run-tests
+- global: replace elasticsearch7 with opensearch2
+- setup: update dependencies
+
+
 Version v0.5.2 (release 2022-09-27)
 
 - fix: javascript dependencies
