@@ -7,6 +7,12 @@
 Changes
 =======
 
+Version v0.6.1 (release 2023-02-01)
+
+- fix: pylint errors
+- fix: syntax error in setup.cfg
+
+
 Version v0.6.0 (release 2022-10-14)
 
 - global: migrate to reusable workflows for publish
