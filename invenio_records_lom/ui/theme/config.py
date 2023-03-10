@@ -23,6 +23,6 @@ def search_app_context():
             current_app.config["LOM_FACETS"],
             current_app.config["LOM_SORT_OPTIONS"],
             "/api/lom",
-            {"Accept": "application/vnd.invenio.lom.v1+json"},
+            {"Accept": "application/vnd.inveniolom.v1+json"},
         )
     }

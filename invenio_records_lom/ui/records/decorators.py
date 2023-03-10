@@ -170,3 +170,41 @@ def pass_file_item(func: callable):
         return func(**kwargs, file_item=file_item)
 
     return decoed
+
+
+def pass_draft(expand: bool = False) -> callable:
+    """Retrieve `draft` via passed-in `pid_value` and pass that into decorated function."""
+
+    def decorator(func):
+        @wraps(func)
+        def decoed(**kwargs):
+            service = current_records_lom.records_service
+            draft = service.read_draft(
+                identity=g.identity,
+                id_=kwargs.get("pid_value"),
+                expand=expand,
+            )
+            return func(**kwargs, draft=draft)
+
+        return decoed
+
+    return decorator
+
+
+def pass_draft_files(func: callable) -> callable:
+    """Retrieve `draft_files` from database and pass that into decorated function."""
+
+    @wraps(func)
+    def decoed(**kwargs):
+        draft_files_service = current_records_lom.records_service.draft_files
+        try:
+            draft_files = draft_files_service.list_files(
+                identity=g.identity,
+                id_=kwargs.get("pid_value"),
+            )
+        except PermissionDeniedError:
+            draft_files = None
+
+        return func(**kwargs, draft_files=draft_files)
+
+    return decoed

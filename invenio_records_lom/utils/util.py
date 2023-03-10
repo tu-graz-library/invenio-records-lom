@@ -234,6 +234,7 @@ class LOMMetadata:  # pylint: disable=too-many-public-methods
         metadata: t.Optional[dict] = None,
         access: str = "public",
         pids: t.Optional[dict] = None,
+        overwritable=False,
     ):
         """Create `cls` with a json that is compatible with invenio-databases.
 
@@ -256,7 +257,7 @@ class LOMMetadata:  # pylint: disable=too-many-public-methods
             "pids": pids or {},
             "resource_type": resource_type,
         }
-        return cls(record_json)
+        return cls(record_json, overwritable=overwritable)
 
     @property
     def json(self):
@@ -486,7 +487,7 @@ class LOMMetadata:  # pylint: disable=too-many-public-methods
             }
             taxons.append(taxon)
         return {
-            "source": "https://w3id.org/oerbase/vocabs/oefos2012",
+            "source": langstringify("https://w3id.org/oerbase/vocabs/oefos2012"),
             "taxon": taxons,
         }
 

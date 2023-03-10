@@ -34,6 +34,10 @@ LOM_SEARCH = {
 """Record search configuration."""
 
 LOM_ROUTES = {
+    # the blueprint prefixes `/lom` to these routes
+    "uploads": "/uploads",
+    "deposit_create": "/uploads/new",
+    "deposit_edit": "/uploads/<pid_value>",
     "record_detail": "/<pid_value>",
     "record_export": "/<pid_value>/export/<export_format>",
     "record_file_preview": "/<pid_value>/preview/<path:filename>",
@@ -47,6 +51,8 @@ LOM_RECORD_EXPORTERS = {
     "json": {
         "name": _("JSON"),
         "serializer": "flask_resources.serializers:JSONSerializer",
+        "content-type": "application/json",
+        "filename": "{id}.json",
     },
 }
 
@@ -55,6 +61,7 @@ LOM_RESOURCE_TYPES = [
     "unit",
     "file",
     "link",
+    "upload",
 ]
 
 LOM_PUBLISHER = "Graz University of Technology"

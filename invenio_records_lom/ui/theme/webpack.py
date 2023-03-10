@@ -17,14 +17,21 @@ theme = WebpackThemeBundle(
     "assets",
     default="semantic-ui",
     themes={
-        "semantic-ui": {
-            "entry": {
-                "invenio-records-lom-theme": "./less/invenio_records_lom/theme.less",
+        # theme-name ~> kwargs_for_WebpackBundle
+        "semantic-ui": dict(
+            aliases={},
+            entry={
+                "invenio-records-lom-deposit": "./js/invenio_records_lom/deposit/index.js",
                 "invenio-records-lom-search": "./js/invenio_records_lom/search/index.js",
+                "invenio-records-lom-theme": "./less/invenio_records_lom/theme.less",
             },
-            "dependencies": {
+            dependencies={
                 "@babel/runtime": "^7.9.0",
+                "react": "^16.13.0",
+                "react-dom": "^16.13.0",
             },
-        },
+            devDependencies={},
+            peerDependencies={},
+        ),
     },
 )

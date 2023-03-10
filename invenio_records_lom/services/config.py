@@ -21,6 +21,7 @@ from invenio_rdm_records.services.components import AccessComponent, MetadataCom
 from invenio_rdm_records.services.config import has_doi, is_record_and_has_doi
 from invenio_records_resources.services import (
     ConditionalLink,
+    FileLink,
     FileServiceConfig,
     Link,
     RecordLink,
@@ -96,10 +97,27 @@ class LOMRecordServiceConfig(RecordServiceConfig, ConfiguratorMixin):
 
     # links
     links_item = {
-        "self_html": ConditionalLink(
+        "doi": Link(
+            "https://doi.org/{+pid_doi}",
+            when=has_doi,
+            vars=lambda record, vars: vars.update(
+                {
+                    f"pid_{scheme}": pid["identifier"]
+                    for (scheme, pid) in record.pids.items()
+                }
+            ),
+        ),
+        "files": ConditionalLink(
             cond=is_record,
-            if_=RecordLink("{+ui}/lom/{id}"),
-            else_=RecordLink("{+ui}/lom/uploads/{id}"),
+            if_=RecordLink("{+api}/lom/{id}/files"),
+            else_=RecordLink("{+api}/lom/{id}/draft/files"),
+        ),
+        "latest_html": RecordLink("{+ui}/lom/id/latest", when=is_record),
+        "record_html": RecordLink("{+ui}/lom/{id}", when=is_draft),
+        "self": ConditionalLink(
+            cond=is_record,
+            if_=RecordLink("{+api}/lom/{id}"),
+            else_=RecordLink("{+api}/lom/{id}/draft"),
         ),
         "self_doi": Link(
             "{+ui}/lom/doi/{+pid_doi}",
@@ -111,18 +129,11 @@ class LOMRecordServiceConfig(RecordServiceConfig, ConfiguratorMixin):
                 }
             ),
         ),
-        "doi": Link(
-            "https://doi.org/{+pid_doi}",
-            when=has_doi,
-            vars=lambda record, vars: vars.update(
-                {
-                    f"pid_{scheme}": pid["identifier"]
-                    for (scheme, pid) in record.pids.items()
-                }
-            ),
+        "self_html": ConditionalLink(
+            cond=is_record,
+            if_=RecordLink("{+ui}/lom/{id}"),
+            else_=RecordLink("{+ui}/lom/uploads/{id}"),
         ),
-        "latest_html": RecordLink("{+ui}/lom/id/latest", when=is_record),
-        "record_html": RecordLink("{+ui}/lom/{id}", when=is_draft),
     }
 
     components = [
@@ -143,8 +154,18 @@ class LOMDraftFilesServiceConfig(FileServiceConfig, ConfiguratorMixin):
     permission_action_prefix = "draft_"
     permission_policy_cls = LOMRecordPermissionPolicy
 
-    file_links_list = {}
-    file_links_item = {}
+    # links to appear within FileList-result:
+    file_links_list = {
+        "self": RecordLink("{+api}/lom/{id}/draft/files"),
+    }
+
+    # links to appear within the items of FileList-results:
+    # (note that, due to `Link.should_render`, some of these links may not appear on items)
+    file_links_item = {
+        "commit": FileLink("{+api}/lom/{id}/draft/files/{key}/commit"),
+        "content": FileLink("{+api}/lom/{id}/draft/files/{key}/content"),
+        "self": FileLink("{+api}/lom/{id}/draft/files/{key}"),
+    }
 
 
 class LOMRecordFilesServiceConfig(FileServiceConfig, ConfiguratorMixin):

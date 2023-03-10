@@ -31,3 +31,15 @@ def create_records_bp(app: Flask):
     """Create records blueprint."""
     ext = app.extensions["invenio-records-lom"]
     return ext.records_resource.as_blueprint()
+
+
+def create_draft_files_bp(app: Flask):
+    """Create draft files blueprint."""
+    ext = app.extensions["invenio-records-lom"]
+    return ext.draft_files_resource.as_blueprint()
+
+
+def create_record_files_bp(app: Flask):
+    """Create record files bluprint."""
+    ext = app.extensions["invenio-records-lom"]
+    return ext.record_files_resource.as_blueprint()

@@ -7,9 +7,16 @@
 
 """Utilities for creation of LOM-compliant metadata."""
 
-from .util import DotAccessWrapper, LOMMetadata
+from .util import (
+    DotAccessWrapper,
+    LOMMetadata,
+    get_learningresourcetypedict,
+    get_oefosdict,
+)
 
 __all__ = (
     "DotAccessWrapper",
+    "get_learningresourcetypedict",
+    "get_oefosdict",
     "LOMMetadata",
 )
