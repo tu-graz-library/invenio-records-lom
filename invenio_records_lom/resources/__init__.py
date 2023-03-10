@@ -7,10 +7,16 @@
 
 """Invenio-Records-LOM module for creating REST APIs."""
 
-from .config import LOMRecordResourceConfig
+from .config import (
+    LOMDraftFilesResourceConfig,
+    LOMRecordFilesResourceConfig,
+    LOMRecordResourceConfig,
+)
 from .resources import LOMRecordResource
 
 __all__ = (
+    "LOMDraftFilesResourceConfig",
+    "LOMRecordFilesResourceConfig",
     "LOMRecordResource",
     "LOMRecordResourceConfig",
 )

@@ -115,8 +115,9 @@ class Rights(fields.Field):
     def _serialize(self, value, attr, obj, **kwargs):
         """Serialize."""
         right = {}
+        value = value or {}
 
-        if "creativecommons" in value["url"]:
+        if "creativecommons" in value.get("url", ""):
             result = re.search("licenses/([a-z-]+)/.*", value["url"])
             id_ = f"CC {result.group(1).upper()}"
             icon = f"{id_.lower().replace(' ', '-')}-icon"
@@ -227,6 +228,10 @@ class LOMUICourseSchema(LOMUIBaseSchema):
         return super().get_educational_descriptions(newest_unit)
 
 
+class LOMUIUploadSchema(LOMUIFileSchema):
+    """Schema for dumping html-template data to a record of resource_type "upload"."""
+
+
 class LOMUIRecordSchema(OneOfSchema):
     """Delegates to different schemas depending on data_to_serialize["resource_type"]."""
 
@@ -236,6 +241,7 @@ class LOMUIRecordSchema(OneOfSchema):
         "unit": LOMUIUnitSchema,
         "course": LOMUICourseSchema,
         "link": LOMUILinkSchema,
+        "upload": LOMUIUploadSchema,
     }
 
     def get_obj_type(self, obj):

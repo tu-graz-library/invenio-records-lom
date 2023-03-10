@@ -1,0 +1,30 @@
+{# -*- coding: utf-8 -*-
+
+  Copyright (C) 2022 Graz University of Technology.
+
+  invenio-records-lom is free software; you can redistribute it and/or modify it
+  under the terms of the MIT License; see LICENSE file for more details.
+#}
+
+{%- extends config.BASE_TEMPLATE -%}
+
+{%- if not record.is_published and record.versions and record.versions.index and record.versions.index > 1 %}
+  {%- set title = _("New Version of OER Upload") %}
+{%- elif not record.is_published %}
+  {%- set title = _("New OER Upload") %}
+{% else %}
+  {%- set title = _("Edit OER Upload") %}
+{%- endif %}
+
+{%- block page_body %}
+  {# `tojson`'s output contains `"`s, so wrap value-attribute in `'` instead of `"` #}
+  <input id="lom-deposit-config" type="hidden" name="lom-deposit-config" value='{{forms_config | tojson}}'>
+  <input id="lom-deposit-files"  type="hidden" name="lom-deposit-files"  value='{{files | tojson }}'>
+  <input id="lom-deposit-record" type="hidden" name="lom-deposit-record" value='{{record | tojson}}'>
+  <div id="lom-deposit-form"><!-- content is react-controlled --></div>
+{%- endblock page_body %}
+
+{%- block javascript %}
+      {{ super() }}
+      {{ webpack["invenio-records-lom-deposit.js"] }}
+{%- endblock javascript %}

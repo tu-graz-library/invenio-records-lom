@@ -27,6 +27,7 @@ Use flask.current_app['invenio-records-lom'].records_service to interact with.
 from invenio_drafts_resources.records import Draft, Record
 from invenio_drafts_resources.records.api import ParentRecord
 from invenio_pidstore.models import PIDStatus
+from invenio_rdm_records.records.systemfields import DraftStatus
 from invenio_records.systemfields import DictField, ModelField, RelationsField
 from invenio_records_resources.records.api import FileRecord
 from invenio_records_resources.records.systemfields import (
@@ -35,6 +36,8 @@ from invenio_records_resources.records.systemfields import (
     PIDField,
     PIDStatusCheckField,
 )
+from invenio_requests.records.api import Request
+from invenio_requests.records.systemfields.relatedrecord import RelatedRecord
 
 from . import models
 from .systemfields import (
@@ -63,6 +66,7 @@ class LOMParent(ParentRecord):
         delete=False,
     )
     access = ParentRecordAccessField()
+    review = RelatedRecord(Request, keys=["type", "receiver", "status"])
 
 
 class LOMFileDraft(FileRecord):
@@ -73,7 +77,39 @@ class LOMFileDraft(FileRecord):
     record_cls = None  # defined below
 
 
-class LOMDraft(Draft):
+class RelationsMeta(type):
+    """For self-referential `RelationsField`.
+
+    Delays assigning to `.relations`' `pid_field` until class is already created.
+    """
+
+    def __new__(cls, name, bases, attrs):
+        """Create and return a new class with `.relations`-attribute."""
+        new_cls = super().__new__(cls, name, bases, attrs)
+        relations = RelationsField(
+            wholes=PIDLOMRelation(
+                source="LOMv1.0",
+                value="ispartof",
+                pid_field=new_cls.pid,
+                cache_key="lom-wholes",
+            ),
+            parts=PIDLOMRelation(
+                source="LOMv1.0",
+                value="haspart",
+                pid_field=new_cls.pid,
+                cache_key="lom-parts",
+            ),
+        )
+        relations.__set_name__(new_cls, "relations")
+        new_cls.relations = relations
+        return new_cls
+
+
+class LOMRecordMeta(type(Record), RelationsMeta):
+    """Meta-Class for LOM-Records."""
+
+
+class LOMDraft(Draft, metaclass=LOMRecordMeta):
     """For representing entries from the 'lom_drafts_metadata'-SQL-table."""
 
     model_cls = models.LOMDraftMetadata
@@ -101,6 +137,7 @@ class LOMDraft(Draft):
     is_published = PIDStatusCheckField(status=PIDStatus.REGISTERED, dump=True)
     pids = DictField()
     resource_type = DictField()
+    status = DraftStatus()
 
 
 LOMFileDraft.record_cls = LOMDraft
@@ -112,38 +149,6 @@ class LOMFileRecord(FileRecord):
     model_cls = models.LOMFileRecordMetadata
     # LOMFileRecord and LOMRecord depend on each other, monkey-patch this in later
     record_cls = None  # defined below
-
-
-class RelationsMeta(type):
-    """For self-referential `RelationsField`.
-
-    Delays assigning to `.relations`' `pid_field` until class is already created.
-    """
-
-    def __new__(mcs, name, bases, attrs):
-        """Create and return a new class with `.relations`-attribute."""
-        new_mcs = super().__new__(mcs, name, bases, attrs)
-        relations = RelationsField(
-            wholes=PIDLOMRelation(
-                source="LOMv1.0",
-                value="ispartof",
-                pid_field=new_mcs.pid,
-                cache_key="lom-wholes",
-            ),
-            parts=PIDLOMRelation(
-                source="LOMv1.0",
-                value="haspart",
-                pid_field=new_mcs.pid,
-                cache_key="lom-parts",
-            ),
-        )
-        relations.__set_name__(new_mcs, "relations")
-        new_mcs.relations = relations
-        return new_mcs
-
-
-class LOMRecordMeta(type(Record), RelationsMeta):
-    """Meta-Class for LOM-Records."""
 
 
 class LOMRecord(Record, metaclass=LOMRecordMeta):
@@ -177,6 +182,7 @@ class LOMRecord(Record, metaclass=LOMRecordMeta):
     is_published = PIDStatusCheckField(status=PIDStatus.REGISTERED, dump=True)
     pids = DictField()
     resource_type = DictField()
+    status = DraftStatus()
 
 
 LOMFileRecord.record_cls = LOMRecord

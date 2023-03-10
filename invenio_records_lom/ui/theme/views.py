@@ -17,7 +17,6 @@ def search():
     """Search help guide."""
     return render_template("invenio_records_lom/search.html")
 
-
 def init_theme_views(blueprint, app):
     """Blueprint for the routes and resource provided by invenio-records-lom."""
     routes = app.config.get("LOM_ROUTES")

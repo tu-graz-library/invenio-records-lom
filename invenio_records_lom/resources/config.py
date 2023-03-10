@@ -9,12 +9,28 @@
 
 from flask_resources import ResponseHandler
 from invenio_records_resources.resources import RecordResourceConfig
+from invenio_records_resources.resources.files import FileResourceConfig
 
 from .serializers import LOMUIJSONSerializer
 
 record_serializer = {
-    "application/vnd.invenio.lom.v1+json": ResponseHandler(LOMUIJSONSerializer()),
+    "application/vnd.inveniolom.v1+json": ResponseHandler(LOMUIJSONSerializer()),
 }
+
+
+class LOMDraftFilesResourceConfig(FileResourceConfig):
+    """LOM Draft Files Resource configuration."""
+
+    blueprint_name = "lom_draft_files"
+    url_prefix = "/lom/<pid_value>/draft"
+
+
+class LOMRecordFilesResourceConfig(FileResourceConfig):
+    """LOM Record Files Resource configuration."""
+
+    allow_upload = False
+    blueprint_name = "lom_record_files"
+    url_prefix = "/lom/<pid_value>"
 
 
 class LOMRecordResourceConfig(RecordResourceConfig):
@@ -28,6 +44,7 @@ class LOMRecordResourceConfig(RecordResourceConfig):
     routes = {
         "list": "",
         "item": "/<pid_value>",
+        "item-draft": "/<pid_value>/draft",
     }
 
     response_handlers = record_serializer

@@ -11,6 +11,8 @@
 """User interface utilities for records."""
 
 from flask import Blueprint, Flask
+from flask_babelex import lazy_gettext as _
+from flask_menu import current_menu
 from invenio_pidstore.errors import (
     PIDDeletedError,
     PIDDoesNotExistError,
@@ -18,6 +20,7 @@ from invenio_pidstore.errors import (
 )
 from invenio_records_resources.services.errors import PermissionDeniedError
 
+from .deposits import deposit_create, deposit_edit, uploads
 from .errors import (
     not_found_error,
     record_permission_denied_error,
@@ -40,6 +43,18 @@ def init_records_views(blueprint: Blueprint, app: Flask):
     with app.app_context():
         schemes = app_ext.records_service.config.pids_providers
 
+    blueprint.add_url_rule(
+        routes["uploads"],
+        view_func=uploads,
+    )
+    blueprint.add_url_rule(
+        routes["deposit_create"],
+        view_func=deposit_create,
+    )
+    blueprint.add_url_rule(
+        routes["deposit_edit"],
+        view_func=deposit_edit,
+    )
     blueprint.add_url_rule(
         routes["record_detail"],
         view_func=record_detail,
@@ -74,3 +89,17 @@ def init_records_views(blueprint: Blueprint, app: Flask):
     blueprint.register_error_handler(
         PermissionDeniedError, record_permission_denied_error
     )
+
+    # register dashboard-tab
+    @blueprint.before_app_first_request
+    def register_lom_dashboard_tab():
+        """Register entry for lom in the `flask_menu`-submenu "dashboard"."""
+        user_dashboard_menu = current_menu.submenu("dashboard")
+        user_dashboard_menu.submenu("OER").register(
+            "invenio_records_lom.uploads",  # <blueprint-name>.<view-func-name>
+            text=_("OER-Uploads"),
+            order=5,
+            # visible_when=...,
+            # :callable[[], bool], flask_login.current_user.is_authenticated and Permission(<perm>).can()
+            # perm = flask_principal.<SomeKindOfNeed>("name-of-need")
+        )

@@ -7,10 +7,16 @@
 
 """Flask extension for invenio-records-lom."""
 from invenio_rdm_records.services.pids import PIDManager, PIDsService
+from invenio_records_resources.resources import FileResource
 from invenio_records_resources.services import FileService
 
 from . import config
-from .resources import LOMRecordResource, LOMRecordResourceConfig
+from .resources import (
+    LOMDraftFilesResourceConfig,
+    LOMRecordFilesResourceConfig,
+    LOMRecordResource,
+    LOMRecordResourceConfig,
+)
 from .services import (
     LOMDraftFilesServiceConfig,
     LOMRecordFilesServiceConfig,
@@ -56,12 +62,12 @@ class InvenioRecordsLOM:
     def init_services(self, app):
         """Initialize services."""
         record_service_config = LOMRecordServiceConfig.build(app)
-        file_service_config = LOMRecordFilesServiceConfig.build(app)
+        files_service_config = LOMRecordFilesServiceConfig.build(app)
         draft_files_config = LOMDraftFilesServiceConfig.build(app)
         # pylint: disable-next=attribute-defined-outside-init
         self.records_service = LOMRecordService(
             config=record_service_config,
-            files_service=FileService(file_service_config),
+            files_service=FileService(files_service_config),
             draft_files_service=FileService(draft_files_config),
             pids_service=PIDsService(record_service_config, PIDManager),
         )
@@ -69,7 +75,19 @@ class InvenioRecordsLOM:
     def init_resources(self, app):  # pylint: disable=unused-argument
         """Initialize resouces."""
         # pylint: disable-next=attribute-defined-outside-init
+        self.draft_files_resource = FileResource(
+            config=LOMDraftFilesResourceConfig,
+            service=self.records_service.draft_files,
+        )
+
+        # pylint: disable-next=attribute-defined-outside-init
+        self.record_files_resource = FileResource(
+            config=LOMRecordFilesResourceConfig,
+            service=self.records_service.files,
+        )
+
+        # pylint: disable-next=attribute-defined-outside-init
         self.records_resource = LOMRecordResource(
-            LOMRecordResourceConfig,
-            self.records_service,
+            config=LOMRecordResourceConfig,
+            service=self.records_service,
         )
