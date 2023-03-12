@@ -83,26 +83,26 @@ class RelationsMeta(type):
     Delays assigning to `.relations`' `pid_field` until class is already created.
     """
 
-    def __new__(cls, name, bases, attrs):
+    def __new__(mcs, name, bases, attrs):
         """Create and return a new class with `.relations`-attribute."""
-        new_cls = super().__new__(cls, name, bases, attrs)
+        new_mcs = super().__new__(mcs, name, bases, attrs)
         relations = RelationsField(
             wholes=PIDLOMRelation(
                 source="LOMv1.0",
                 value="ispartof",
-                pid_field=new_cls.pid,
+                pid_field=new_mcs.pid,
                 cache_key="lom-wholes",
             ),
             parts=PIDLOMRelation(
                 source="LOMv1.0",
                 value="haspart",
-                pid_field=new_cls.pid,
+                pid_field=new_mcs.pid,
                 cache_key="lom-parts",
             ),
         )
-        relations.__set_name__(new_cls, "relations")
-        new_cls.relations = relations
-        return new_cls
+        relations.__set_name__(new_mcs, "relations")
+        new_mcs.relations = relations
+        return new_mcs
 
 
 class LOMRecordMeta(type(Record), RelationsMeta):

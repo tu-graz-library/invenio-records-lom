@@ -20,10 +20,10 @@ class NoValidationSchema(Schema):
 
 
 class LangstringField(fields.Dict):
-    """A dict-field of form {"langstring": {"#text": str, "lang": str}}"""
+    """A dict-field of form {"langstring": {"#text": str, "lang": str}}."""
 
     default_error_messages = {
-        "missing_langstring_key": "No {key!r}-key in this langstring.",
+        "missing_langstring_key": "No {keys!r}-key in this langstring.",
         "extraneous_keys": "Extraneous keys in this langstring: {keys!r}.",
     }
 
@@ -33,7 +33,7 @@ class LangstringField(fields.Dict):
         # validate outer keys
         outer_keys = set(langstring_outer)
         if "langstring" not in outer_keys:
-            raise self.make_error("missing_langstring_key", key="langstring")
+            raise self.make_error("missing_langstring_key", keys="langstring")
         if not outer_keys <= {"langstring"}:
             raise self.make_error(
                 "extraneous_keys", keys=sorted(outer_keys - {"langstring"})
@@ -46,9 +46,9 @@ class LangstringField(fields.Dict):
             raise self.make_error("invalid")
         inner_keys = set(langstring_inner)
         if "#text" not in inner_keys:
-            raise self.make_error("missing_langstring_key", key="#text")
+            raise self.make_error("missing_langstring_key", keys="#text")
         if "lang" not in inner_keys:
-            raise self.make_error("missing_langstring_key", key="lang")
+            raise self.make_error("missing_langstring_key", keys="lang")
         if not inner_keys <= {"#text", "lang"}:
             raise self.make_error(
                 "extraneous_keys", keys=sorted(inner_keys - {"#text", "lang"})
@@ -125,6 +125,6 @@ class MetadataSchema(Schema):
         data = super().load(data, **kwargs)
         return data
 
-    def dump(self, data, **kwargs):
+    def dump(self, obj, **_):
         """Overwrite parent as to dump everything always."""
-        return data
+        return obj

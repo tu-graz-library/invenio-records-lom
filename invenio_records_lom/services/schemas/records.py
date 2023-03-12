@@ -1,19 +1,17 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2021 Graz University of Technology.
+# Copyright (C) 2021-2023 Graz University of Technology.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
 """Marshmallow schema for validating and serializing LOM JSONs."""
 
-import copy
 
 from flask import current_app
 from flask_babelex import lazy_gettext as _
 from invenio_rdm_records.services.schemas import PIDSchema, RDMRecordSchema
 from marshmallow import (
-    Schema,
     ValidationError,
     fields,
     post_dump,
@@ -54,12 +52,13 @@ class LOMRecordSchema(RDMRecordSchema):
 
     @pre_dump
     @pre_load
-    def add_resource_type_to_metadata(self, obj, **kwargs):
+    def add_resource_type_to_metadata(self, obj, **_):
         """Add `resource_type` to `obj["metadata"]`.
 
         `RDMRecordSchema` does not play nice with `OneOfSchema`, hence `MetadataSchema`
         does custom multiplexing. For this, `obj["metadata"]` needs the
-        `resource_type` stored within itself."""
+        `resource_type` stored within itself.
+        """
         if "metadata" not in obj:
             obj["metadata"] = {}
         obj["metadata"]["type"] = obj.get("resource_type")
@@ -67,7 +66,7 @@ class LOMRecordSchema(RDMRecordSchema):
 
     @post_dump
     @post_load
-    def remove_resource_type_from_metadata(self, obj, **kwargs):
+    def remove_resource_type_from_metadata(self, obj, **_):
         """Remove `resource_type` from `obj["metadata"]`.
 
         Cleanup to the above adding of `resource_type` to `obj["metadata"]`.
