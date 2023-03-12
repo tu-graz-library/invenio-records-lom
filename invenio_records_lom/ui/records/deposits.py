@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2022 Graz University of Technology.
+#
+# Copyright (C) 2022-2023 Graz University of Technology.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
 """View-functions for deposit-related pages."""
 
-from flask import current_app, g, render_template
+from flask import current_app, render_template
 from flask_login import current_user, login_required
 from invenio_i18n.ext import current_i18n
 from invenio_records_resources.services.files.results import FileList
@@ -57,9 +58,9 @@ def get_deposit_template_context(**extra_form_config_kwargs) -> dict:
     language_vocabulary = {"de": {"name": "Deutsch"}, "en": {"name": "English"}}
     resourcetype_vocabulary = {"": {"name": ""}, "video": {"name": "Video"}}
 
-    return dict(
-        files={"default_preview": None, "entries": [], "links": {}},
-        forms_config={
+    return {
+        "files": {"default_preview": None, "entries": [], "links": {}},
+        "forms_config": {
             "autocomplete_names": "search",
             "current_locale": str(current_i18n.locale),
             "decimal_size_display": app_config.get(
@@ -79,8 +80,8 @@ def get_deposit_template_context(**extra_form_config_kwargs) -> dict:
             **extra_form_config_kwargs,
         },
         # can't get the following from `app_config`, as that ignores blueprint-prefix...
-        searchbar_config={"searchUrl": "/lom/search"},
-    )
+        "searchbar_config": {"searchUrl": "/lom/search"},
+    }
 
 
 @login_required
