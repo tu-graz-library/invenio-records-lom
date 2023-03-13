@@ -7,6 +7,12 @@
 Changes
 =======
 
+Version v0.7.0 (release 2023-03-13)
+
+- global: fix various problems
+- finish preview of deposit for test-server
+
+
 Version v0.6.1 (release 2023-02-01)
 
 - fix: pylint errors
