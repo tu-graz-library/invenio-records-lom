@@ -243,7 +243,7 @@ class LOMMetadata:  # pylint: disable=too-many-public-methods
         :param str access: One of "public", "restricted"
         :param dict pids: For adding external pids
         """
-        files_enabled = resource_type == "file"
+        files_enabled = resource_type in ["file", "upload"]
         pids = pids or {}
         access_dict = {
             "embargo": {},
