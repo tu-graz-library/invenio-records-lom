@@ -7,6 +7,11 @@
 Changes
 =======
 
+Version v0.7.2 (release 2023-03-15)
+
+- fix file-upload
+
+
 Version v0.7.1 (release 2023-03-13)
 
 - add .js-files that were erroneously missing from last PR
