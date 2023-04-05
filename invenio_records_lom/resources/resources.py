@@ -8,10 +8,10 @@
 """LOM resources."""
 
 from flask_resources import route
-from invenio_drafts_resources.resources import RecordResource
+from invenio_rdm_records.resources import RDMRecordResource
 
 
-class LOMRecordResource(RecordResource):
+class LOMRecordResource(RDMRecordResource):
     """LOM Record resource."""
 
     def create_url_rules(self):
@@ -23,8 +23,12 @@ class LOMRecordResource(RecordResource):
 
         routes = self.config.routes
         return [
+            route("DELETE", prefix(routes["item-pids-reserve"]), self.pids_discard),
+            route("DELETE", prefix(routes["item-draft"]), self.delete_draft),
             route("GET", prefix(routes["list"]), self.search),
             route("GET", prefix(routes["item"]), self.read),
             route("POST", prefix(routes["list"]), self.create),
+            route("POST", prefix(routes["item-publish"]), self.publish),
+            route("POST", prefix(routes["item-pids-reserve"]), self.pids_reserve),
             route("PUT", prefix(routes["item-draft"]), self.update_draft),
         ]

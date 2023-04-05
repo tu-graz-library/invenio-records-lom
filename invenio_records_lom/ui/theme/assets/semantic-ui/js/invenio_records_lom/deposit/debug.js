@@ -68,19 +68,33 @@ export class DebugApiClient {
     return resp;
   }
   async publishDraft(draftLinks) {
-    throw new Error("Not implemented.");
+    return this._createResponse(() =>
+      debugAxiosWithConfig.post(
+        draftLinks.publish,
+        {},
+        { params: { expand: 1 } }
+      )
+    );
   }
 
   async deleteDraft(draftLinks) {
-    throw new Error("Not implemented.");
+    return this._createResponse(() =>
+      debugAxiosWithConfig.delete(draftLinks.self, {})
+    );
   }
 
   async reservePID(draftLinks, pidType) {
-    throw new Error("Not implemented.");
+    return this._createResponse(() => {
+      const link = draftLinks[`reserve_${pidType}`];
+      return debugAxiosWithConfig.post(link, {}, { params: { expand: 1 } });
+    });
   }
 
   async discardPID(draftLinks, pidType) {
-    throw new Error("Not implemented.");
+    return this._createResponse(() => {
+      const link = draftLinks[`reserve_${pidType}`];
+      return debugAxiosWithConfig.delete(link, { params: { expand: 1 } });
+    });
   }
 
   async createOrUpdateReview(draftLinks, communityId) {

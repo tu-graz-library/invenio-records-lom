@@ -17,7 +17,16 @@ import {
   SaveButton,
 } from "react-invenio-deposit";
 import { AccordionField } from "react-invenio-forms";
-import { Card, Container, Grid, Ref, Sticky } from "semantic-ui-react";
+import {
+  Card,
+  Container,
+  Grid,
+  Icon,
+  Message,
+  Popup,
+  Ref,
+  Sticky,
+} from "semantic-ui-react";
 import { i18next } from "@translations/invenio_app_rdm/i18next";
 
 import {
@@ -70,8 +79,14 @@ export default class LOMDepositForm extends React.Component {
         <FormFeedback
           fieldPath="message"
           labels={{
-            "metadata.general": "General",
-            "metadata.general.title.langstring.lang": "Title-lang",
+            // TODO:
+            // uses paths of length two for now
+            // this works for now, as every category has only one sub-field that can have errors
+            // use longer paths once implemented in invenio...
+            "metadata.general": i18next.t("Title"),
+            "metadata.lifecycle": i18next.t("Contributors"),
+            "metadata.rights": i18next.t("License"),
+            "metadata.classification": i18next.t("OEFOS"),
           }}
         />
         {/* TODO: Community-Header */}
@@ -81,7 +96,16 @@ export default class LOMDepositForm extends React.Component {
               <AccordionField
                 active
                 includesPaths={["files.enabled"]}
-                label={i18next.t("Files")}
+                label={
+                  <>
+                    <Icon
+                      color="red"
+                      name="asterisk"
+                      style={{ float: "left", marginRight: 14 }}
+                    />
+                    {i18next.t("Files")}
+                  </>
+                }
               >
                 {this.noFiles && this.props.record.is_published && (
                   <div className="text-align-center pb-10">
@@ -134,11 +158,43 @@ export default class LOMDepositForm extends React.Component {
                       </Grid>
                     </Card.Content>
                   </Card>
-                  <AccessRightField
-                    label={i18next.t("Visibility")}
-                    labelIcon="shield"
-                    fieldPath="access"
-                  />
+                  <Card className="access-right">
+                    <Card.Content>
+                      <Card.Header>
+                        <label
+                          className="field-label-class invenio-field-label"
+                          htmlFor="access"
+                        >
+                          <Icon name="shield" />
+                          {i18next.t("Visibility")}
+                          <Popup
+                            trigger={
+                              <Icon className="ml-10" name="info circle" />
+                            }
+                            content={i18next.t(
+                              "OER-uploads are always public."
+                            )}
+                          />
+                        </label>
+                      </Card.Header>
+                    </Card.Content>
+                    <Card.Content>
+                      <Message
+                        icon
+                        positive
+                        visible
+                        data-test-id="access-message"
+                      >
+                        <Icon name="lock open" />
+                        <Message.Content>
+                          <Message.Header>{i18next.t("Public")}</Message.Header>
+                          {i18next.t(
+                            "The record and files are publicly accessible."
+                          )}
+                        </Message.Content>
+                      </Message>
+                    </Card.Content>
+                  </Card>
                   <Card>
                     <Card.Content>
                       <DeleteButton

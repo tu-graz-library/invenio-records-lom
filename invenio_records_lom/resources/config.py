@@ -7,13 +7,15 @@
 
 """REST API configuration."""
 
-from flask_resources import ResponseHandler
+import marshmallow
+from flask_resources import JSONSerializer, ResponseHandler
 from invenio_records_resources.resources import RecordResourceConfig
 from invenio_records_resources.resources.files import FileResourceConfig
 
 from .serializers import LOMUIJSONSerializer
 
 record_serializer = {
+    "application/json": ResponseHandler(JSONSerializer()),
     "application/vnd.inveniolom.v1+json": ResponseHandler(LOMUIJSONSerializer()),
 }
 
@@ -45,6 +47,13 @@ class LOMRecordResourceConfig(RecordResourceConfig):
         "list": "",
         "item": "/<pid_value>",
         "item-draft": "/<pid_value>/draft",
+        "item-publish": "/<pid_value>/draft/actions/publish",
+        "item-pids-reserve": "/<pid_value>/draft/pids/<scheme>",
+    }
+
+    request_view_args = {
+        "pid_value": marshmallow.fields.Str(),
+        "scheme": marshmallow.fields.Str(),
     }
 
     response_handlers = record_serializer

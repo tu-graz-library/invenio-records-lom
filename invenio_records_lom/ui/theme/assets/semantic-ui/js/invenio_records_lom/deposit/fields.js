@@ -31,7 +31,7 @@ const CloseButton = ({ closeAction }) => {
   return closeAction ? (
     <Form.Field>
       <Button
-        aria-label="Remove Field"
+        aria-label={i18next.t("Remove Field")}
         className="close-btn"
         icon="close"
         onClick={closeAction}
@@ -42,7 +42,7 @@ const CloseButton = ({ closeAction }) => {
 
 const FieldLabel = ({ fieldPath, iconName, label, required }) => {
   const icon = iconName ? <Icon name={iconName} /> : null;
-  const requiredIcon = required ? <Icon name="red asterisk" /> : null;
+  const requiredIcon = required ? <Icon color="red" name="asterisk" /> : null;
   return label || icon ? (
     <label htmlFor={fieldPath || null}>
       {requiredIcon}
@@ -83,10 +83,9 @@ export class LeftLabeledTextField extends React.Component {
           )}
           <InputTag
             disabled={isSubmitting}
-            fluid
+            fluid="true"
             id={fieldPath}
             label={label}
-            minHeight={InputTag === "textarea" ? "100" : undefined}
             name={fieldPath}
             onBlur={handleBlur}
             onChange={handleChange}
@@ -130,7 +129,7 @@ export const TitledTextField = (props) => {
     title,
   } = props;
   const icon = iconName ? <Icon name={iconName} /> : null;
-  const requiredIcon = required ? <Icon name="red asterisk" /> : null;
+  const requiredIcon = required ? <Icon color="red" name="asterisk" /> : null;
   const labelElement =
     title || icon ? (
       <label htmlFor={fieldPath}>
@@ -150,7 +149,6 @@ export const TitledTextField = (props) => {
           fieldPath={fieldPath}
           label={label}
           placeholder={placeholder}
-          required={required}
           rows={rows}
         />
         <CloseButton closeAction={closeAction} />
@@ -260,15 +258,15 @@ export class ContributorField extends React.Component {
               setFieldValue(`${name}.value`, value)
             }
             options={options}
-            placeholder="Select Role"
+            placeholder={i18next.t("Select Role")}
             search
             selection
           />
           <LeftLabeledTextField
             className="twelve wide"
             fieldPath={`${fieldPath}.name`}
-            label="Name"
-            placeholder="Enter name here"
+            label={i18next.t("Name")}
+            placeholder={i18next.t("Enter name here")}
           />
           <CloseButton closeAction={closeAction} />
         </GroupField>
@@ -294,7 +292,7 @@ export const LangstringGroupField = (props) => {
     title,
   } = props;
   const icon = iconName ? <Icon name={iconName} /> : null;
-  const requiredIcon = required ? <Icon name="red asterisk" /> : null;
+  const requiredIcon = required ? <Icon color="red" name="asterisk" /> : null;
   const labelElement =
     title || icon ? (
       <label htmlFor={`${fieldPath}.langstring.#text`}>
@@ -345,7 +343,7 @@ export const LangstringSingleField = (props) => {
     title,
   } = props;
   const icon = iconName ? <Icon name={iconName} /> : null;
-  const requiredIcon = required ? <Icon name="red asterisk" /> : null;
+  const requiredIcon = required ? <Icon color="red" name="asterisk" /> : null;
   const labelElement =
     title || icon ? (
       <label htmlFor={`${fieldPath}.langstring.#text`}>
@@ -388,7 +386,7 @@ export class VocabularyGroupField extends React.Component {
       title,
     } = this.props;
 
-    const requiredIcon = required ? <Icon name="red asterisk" /> : null;
+    const requiredIcon = required ? <Icon color="red" name="asterisk" /> : null;
     const labelElement =
       title || icon ? (
         <label>

@@ -113,7 +113,9 @@ class LOMRecordServiceConfig(RecordServiceConfig, ConfiguratorMixin):
             else_=RecordLink("{+api}/lom/{id}/draft/files"),
         ),
         "latest_html": RecordLink("{+ui}/lom/id/latest", when=is_record),
+        "publish": RecordLink("{+api}/lom/{id}/draft/actions/publish", when=is_draft),
         "record_html": RecordLink("{+ui}/lom/{id}", when=is_draft),
+        "reserve_doi": RecordLink("{+api}/lom/{id}/draft/pids/doi"),
         "self": ConditionalLink(
             cond=is_record,
             if_=RecordLink("{+api}/lom/{id}"),
