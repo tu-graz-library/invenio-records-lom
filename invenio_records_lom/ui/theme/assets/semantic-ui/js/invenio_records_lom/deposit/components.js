@@ -14,6 +14,8 @@ import {
   RichInputField,
   TextField,
 } from "react-invenio-forms";
+import { PIDField } from "react-invenio-deposit";
+import { useSelector } from "react-redux";
 import { Button, Divider, Form, Icon, Input } from "semantic-ui-react";
 import { i18next } from "@translations/invenio_app_rdm/i18next";
 
@@ -30,6 +32,10 @@ import {
 // TODO: translations via i18next.t
 
 export function RequiredAccordion(props) {
+  // record.is_published should be one of `true`, `false`, `null` (counts as false)
+  const recordIsPublished =
+    useSelector((state) => state?.deposit?.record?.is_published) === true;
+
   return (
     <AccordionField
       active
@@ -38,31 +44,67 @@ export function RequiredAccordion(props) {
         "metadata.general.title.langstring.lang",
         "metadata.general.title.langstring.#text",
       ]}
-      label="Required Fields"
+      label={
+        <>
+          <Icon
+            color="red"
+            name="asterisk"
+            style={{ float: "left", marginRight: 14 }}
+          />
+          {i18next.t("Required Fields")}
+        </>
+      }
     >
+      <PIDField
+        btnLabelDiscardPID={i18next.t("Cancel DOI reservation.")}
+        btnLabelGetPID={i18next.t("Reserve a DOI.")}
+        canBeManaged={true}
+        canBeUnmanaged={true}
+        fieldPath="pids.doi"
+        fieldLabel={
+          <>
+            <Icon color="red" name="asterisk" />
+            <Icon name="book" />
+            {i18next.t("Digital Object Identifier")}
+          </>
+        }
+        isEditingPublishedRecord={recordIsPublished}
+        managedHelpText={i18next.t(
+          "Reserved DOIs are registered when publishing your upload."
+        )}
+        pidIcon={null}
+        pidLabel={i18next.t("DOI")}
+        pidPlaceholder={i18next.t("Enter your existing DOI here.")}
+        pidType="doi"
+        required={false} // this field is required, but the red asterisk is added via the fieldLabel prop...
+        unmanagedHelpText={i18next.t(
+          "A DOI allows your upload to be unambiguously cited. It is of form `10.1234/foo.bar`."
+        )}
+      />
       <TitledTextField
         fieldPath="metadata.form.title"
-        label="Title"
-        placeholder="Enter your title here."
+        iconName="book"
+        placeholder={i18next.t("Enter your title here.")}
         required
+        title={i18next.t("Title")}
       />
       <DropdownField
         fieldPath="metadata.form.license"
         iconName="drivers license"
-        placeholder="Select License"
+        placeholder={i18next.t("Select License")}
         required
-        title="License"
+        title={i18next.t("License")}
         vocabularyName="license"
       />
       <ArrayField
-        addButtonLabel="Add Contributor"
+        addButtonLabel={i18next.t("Add Contributor")}
         defaultNewValue={{}}
         fieldPath="metadata.form.contributor"
         label={
           <label>
-            <Icon name="red asterisk" />
+            <Icon color="red" name="asterisk" />
             <Icon name="user plus" />
-            {"Contributors"}
+            {i18next.t("Contributors")}
           </label>
         }
       >
@@ -75,15 +117,15 @@ export function RequiredAccordion(props) {
         )}
       </ArrayField>
       <ArrayField
-        addButtonLabel="Add OEFOS"
+        addButtonLabel={i18next.t("Add OEFOS")}
         defaultNewValue={{}}
         fieldPath="metadata.form.oefos"
         label={
           //<FieldLabel icon="barcode" label="OEFOS" />
           <label>
-            <Icon name="red asterisk" />
+            <Icon color="red" name="asterisk" />
             <Icon name="barcode" />
-            {"OEFOS"}
+            {i18next.t("OEFOS")}
           </label>
         }
       >
@@ -91,7 +133,7 @@ export function RequiredAccordion(props) {
           <DropdownField
             closeAction={() => arrayHelpers.remove(indexPath)}
             fieldPath={`metadata.form.oefos.${indexPath}`}
-            placeholder="Select OEFOS"
+            placeholder={i18next.t("Select OEFOS")}
             vocabularyName="oefos"
           />
         )}
@@ -102,33 +144,34 @@ export function RequiredAccordion(props) {
 
 export function OptionalAccordion(props) {
   return (
-    <AccordionField includesPaths={[]} label="Optional">
+    <AccordionField includesPaths={[]} label={i18next.t("Optional Fields")}>
       <TitledTextField
         fieldPath="metadata.form.description"
-        label="Description"
-        placeholder="Enter your description here."
+        iconName="pencil"
+        placeholder={i18next.t("Enter your description here.")}
         rows={5}
+        title={i18next.t("Description")}
       />
       <ArrayField
-        addButtonLabel="Add Tag"
+        addButtonLabel={i18next.t("Add Tag")}
         defaultNewValue={{ value: "" }}
         fieldPath="metadata.form.tag"
-        label={<FieldLabel icon="tag" label="Tags" />}
+        label={<FieldLabel icon="tag" label={i18next.t("Tags")} />}
       >
         {({ arrayHelpers, indexPath }) => (
           <TitledTextField
             closeAction={() => arrayHelpers.remove(indexPath)}
             fieldPath={`metadata.form.tag.${indexPath}.value`}
-            label="Tag"
-            placeholder="Enter your tag here"
+            label={i18next.t("Tag")}
+            placeholder={i18next.t("Enter your tag here")}
           />
         )}
       </ArrayField>
       <DropdownField
         fieldPath="metadata.form.language"
         iconName="globe"
-        placeholder="Select Language"
-        title="Language"
+        placeholder={i18next.t("Select Language")}
+        title={i18next.t("Language")}
         vocabularyName="language"
       />
       {

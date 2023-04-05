@@ -130,7 +130,7 @@ export class LOMDepositRecordSerializer extends DepositRecordSerializer {
     // create oefos-classification
     let oefosClassification = {
       purpose: {
-        source: { langstring: { lang: "x-none", "#text": "LOMv1.0." } },
+        source: { langstring: { lang: "x-none", "#text": "LOMv1.0" } },
         value: { langstring: { lang: "x-none", "#text": "discipline" } },
       },
       taxonpath: [],
@@ -190,10 +190,10 @@ export class LOMDepositRecordSerializer extends DepositRecordSerializer {
     const form = metadata.form;
 
     // deserialize title
-    form.title = _get(metadata, "general.title.langstring.#text");
+    form.title = _get(metadata, "general.title.langstring.#text", "");
 
     // deserialize license
-    form.license = { value: _get(metadata, "rights.url") };
+    form.license = { value: _get(metadata, "rights.url", "") };
 
     // deserialize contributors
     const validRoles = Object.keys(_get(this, "vocabularies.contributor", {}));
@@ -219,11 +219,11 @@ export class LOMDepositRecordSerializer extends DepositRecordSerializer {
     // deserialize tags
     const tagLangstringObjects = _get(metadata, "general.keyword", []);
     form.tag = tagLangstringObjects.map((langstringObject) => ({
-      value: _get(langstringObject, "langstring.#text"),
+      value: _get(langstringObject, "langstring.#text", ""),
     }));
 
     // deserialize language
-    form.language = { value: _get(metadata, "general.language.0") };
+    form.language = { value: _get(metadata, "general.language.0", "") };
 
     return record;
   }
@@ -314,7 +314,9 @@ export class LOMDepositRecordSerializer extends DepositRecordSerializer {
 
     // deserialize error for title
     const titleError = _get(deserializedErrors, "metadata.general.title", null);
-    _set(deserializedErrors, "metadata.form.title", titleError);
+    if (titleError) {
+      _set(deserializedErrors, "metadata.form.title", titleError);
+    }
 
     // deserialize error for license
     const licenseErrorMessages = [];
@@ -323,11 +325,14 @@ export class LOMDepositRecordSerializer extends DepositRecordSerializer {
         licenseErrorMessages.push(...messages);
       }
     }
-    _set(
-      deserializedErrors,
-      "metadata.form.license",
-      licenseErrorMessages.join(" ")
-    );
+    const licenseErrorMessage = licenseErrorMessages.join(" ");
+    if (licenseErrorMessage) {
+      _set(
+        deserializedErrors,
+        "metadata.form.license",
+        licenseErrorMessages.join(" ")
+      );
+    }
 
     // deserialize error for contribute
     const contributeError = _get(
@@ -335,9 +340,24 @@ export class LOMDepositRecordSerializer extends DepositRecordSerializer {
       "metadata.lifecycle.contribute",
       null
     );
-    _set(deserializedErrors, "metadata.form.contribute", contributeError);
+    if (contributeError) {
+      _set(deserializedErrors, "metadata.form.contribute", contributeError);
+    }
 
-    // debug({ deserializedErrors });
+    // deserialize error for oefos
+    const classificationErrorMessages = errors
+      .filter((error) =>
+        String(error.field || "").startsWith("metadata.classification")
+      )
+      .map((error) => error.messages || [])
+      .flat();
+    if (classificationErrorMessages.length > 0) {
+      _set(
+        deserializedErrors,
+        "metadata.form.oefos",
+        classificationErrorMessages.join(" ")
+      );
+    }
 
     // add error for debug-purposes
     /*deserializedErrors["metadata"] = {

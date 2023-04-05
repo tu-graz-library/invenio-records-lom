@@ -6,6 +6,10 @@
 # under the terms of the MIT License; see LICENSE file for more details.
 
 """Schemas which get wrapped by serializers."""
+# TODO: remove the following lines after moving to python3.9
+# allow `list[dict]` annotation, works without future-import for python>=3.9
+from __future__ import annotations
+
 import re
 
 import arrow
@@ -168,7 +172,7 @@ class LOMUIBaseSchema(BaseObjectSchema):
         for lom_contribute in (
             obj["metadata"].get("lifecycle", {}).get("contribute", [])
         ):
-            for entity in lom_contribute["entity"]:
+            for entity in lom_contribute.get("entity", []):
                 ui_contributors.append(
                     {
                         "fullname": entity,
@@ -280,10 +284,10 @@ class LOMToDataCite44Schema(Schema):
         serialized_identifiers = []
 
         # identifiers from 'pids'-key, goes first so DOI gets included
-        for scheme, id_ in obj["pids"].items():
+        for scheme, pid_info in obj["pids"].items():
             serialized_identifiers.append(
                 {
-                    "identifier": id_["identifier"],  # e.g. 10.1234/foo
+                    "identifier": pid_info["identifier"],  # e.g. 10.1234/foo
                     "identifierType": scheme.upper(),  # e.g. 'DOI', 'ISBN'
                 }
             )
@@ -303,16 +307,16 @@ class LOMToDataCite44Schema(Schema):
 
     def get_creators(self, obj: LOMRecord):
         """Get list of creator-dicts."""
-        contributes = obj["metadata"].get("lifeCycle", {}).get("contribute", [])
+        contributes = obj["metadata"].get("lifecycle", {}).get("contribute", [])
         entities = []
         for contribute in contributes:
-            entities.append(contribute.get("entity"))
+            entities.extend(contribute.get("entity", []))
         return [{"name": entity} for entity in entities]
 
     def get_titles(self, obj: LOMRecord):
         """Get list of title-dicts."""
-        title = obj["metadata"].get("general", {}).get("title", "")
-        if not title:
+        title = obj["metadata"].get("general", {}).get("title", None)
+        if title is None:
             return []
         return [{"title": get_text(title), "lang": get_lang(title)}]
 
@@ -322,12 +326,18 @@ class LOMToDataCite44Schema(Schema):
 
     def get_publicationYear(self, obj: LOMRecord):
         """Get publication year."""
-        contributes = obj["metadata"].get("lifeCycle", {}).get("contribute", [])
+        contributes = obj["metadata"].get("lifecycle", {}).get("contribute", [])
         publish_dates = []
         for contribute in contributes:
-            role = contribute.get("role", {}).get("value")
-            if role == "publisher":
-                publish_dates.append(contribute.get("date", {}).get("dateTime"))
+            role = (
+                contribute.get("role", {})
+                .get("value", {})
+                .get("langstring", {})
+                .get("#text", "")
+            )
+            if role.lower() == "publisher":
+                if publish_date := contribute.get("date", {}).get("dateTime"):
+                    publish_dates.append(publish_date)
 
         if publish_dates:
             year = min(arrow.get(publish_date).year for publish_date in publish_dates)
@@ -340,14 +350,15 @@ class LOMToDataCite44Schema(Schema):
     def get_contributors(self, obj: LOMRecord):
         """Get list of contributor-dicts."""
         contributes = obj["metadata"].get("lifeCycle", {}).get("contribute", [])
-        contributordicts = []
+        contributors: list[dict[str, str]] = []
         for contribute in contributes:
-            contributordict = {
-                "contributorType": "Other",
-                "name": contribute.get("entity"),
-            }
-            contributordicts.append(contributordict)
-        return contributordicts or missing
+            for entity in contribute.get("entity", []):
+                contributor = {
+                    "contributorType": "Other",
+                    "name": entity,
+                }
+                contributors.append(contributor)
+        return contributors or missing
 
     def get_dates(self, obj: LOMRecord):
         """Get list of date-dicts."""

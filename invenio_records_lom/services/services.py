@@ -23,7 +23,7 @@ class LOMRecordService(RDMRecordService):
         draft_item = super().create(identity, data, uow=uow, expand=expand)
 
         # add repo-pid to the record's identifiers
-        metadata = LOMMetadata(draft_item.to_dict())
+        metadata = LOMMetadata(data)
         metadata.append_identifier(draft_item.id, catalog="repo-pid")
         return super().update_draft(
             identity=identity,
