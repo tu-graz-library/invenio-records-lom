@@ -8,6 +8,7 @@
 """Permission-config classes for LOMRecordService-objects."""
 
 from invenio_rdm_records.services.generators import (
+    IfFileIsLocal,
     IfRestricted,
     RecordOwners,
     SecretLinks,
@@ -29,6 +30,9 @@ class LOMRecordPermissionPolicy(RDMRecordPermissionPolicy):
 
     # no rights for CommunityCurators, as this package doesn't implement communities
     # no rights for SubmissionReviewers, as this package doesn't implement reviews
+    #
+    # General permission-categories, to be used in below categories
+    #
     can_manage = [RecordOwners(), SystemProcess()]
     can_curate = can_manage + [SecretLinks("edit")]
     can_review = can_curate
@@ -51,6 +55,11 @@ class LOMRecordPermissionPolicy(RDMRecordPermissionPolicy):
     can_read_files = [
         IfRestricted("files", then_=can_view, else_=can_all),
     ]
+    can_get_content_files = [
+        # note: even though this is closer to business logic than permissions,
+        # it was simpler and less coupling to implement this as permission check
+        IfFileIsLocal(then_=can_read_files, else_=[SystemProcess()]),
+    ]
     # Allow submitting new record
     can_create = can_authenticated
 
@@ -67,6 +76,18 @@ class LOMRecordPermissionPolicy(RDMRecordPermissionPolicy):
     can_update_draft = can_review
     # Allow uploading, updating and deleting files in drafts
     can_draft_create_files = can_review
+    can_draft_set_content_files = [
+        # if local then same permission as can_draft_create_files
+        IfFileIsLocal(then_=can_review, else_=[SystemProcess()]),
+    ]
+    can_draft_get_content_files = [
+        # if local then same permission as can_draft_read_files
+        IfFileIsLocal(then_=can_preview, else_=[SystemProcess()]),
+    ]
+    can_draft_commit_files = [
+        # if local then same permission as can_draft_create_files
+        IfFileIsLocal(then_=can_review, else_=[SystemProcess()]),
+    ]
     can_draft_update_files = can_review
     can_draft_delete_files = can_review
 

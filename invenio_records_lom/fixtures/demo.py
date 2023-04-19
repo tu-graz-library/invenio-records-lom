@@ -23,7 +23,7 @@ from ..proxies import current_records_lom
 # functions for LOM datatypes
 #
 def langstringify(fake: Faker, text: str, lang: str = "") -> dict:
-    """Wraps `text` in a dict, emulating LOMv1.0 LangString-objects.
+    """Wraps `text` in a dict, emulating LOMv1.0 langstring-objects.
 
     If `lang` is given and None, no "lang"-key is added to the returned dict.
     If `lang` is given and truthy, its value is used for the "lang"-key.
@@ -56,7 +56,7 @@ def create_fake_datetime(fake: Faker) -> dict:
         time_zone_designator = fake.pytimezone()
         datetime = fake.date_time(tzinfo=time_zone_designator).isoformat()
 
-    return {"dateTime": datetime, "description": langstringify(fake, fake.sentence())}
+    return {"datetime": datetime, "description": langstringify(fake, fake.sentence())}
 
 
 def create_fake_duration(fake: Faker) -> dict:
@@ -69,7 +69,7 @@ def create_fake_duration(fake: Faker) -> dict:
 
 
 def create_fake_vcard(fake: Faker) -> str:
-    """Returns a placeholder-string for a vCard-object."""
+    """Returns a placeholder-string for a vcard-object."""
     return f"{fake.last_name()}, {fake.first_name()}"
 
 
@@ -107,7 +107,7 @@ def create_fake_contribute(fake: Faker, roles: list) -> dict:
     """Create a fake "contribute"-element, compatible with LOMv1.0."""
     return {
         "role": vocabularify(fake, roles),
-        "entity": create_fake_vcard(fake),
+        "entity": [create_fake_vcard(fake) for __ in range(2)],
         "date": create_fake_datetime(fake),
     }
 
@@ -118,7 +118,7 @@ def create_fake_contribute(fake: Faker, roles: list) -> dict:
 def create_fake_general(fake: Faker) -> dict:
     """Create a fake "general"-element, compatible with LOMv1.0."""
     structures = ["atomic", "collection", "networked", "hierarchical", "linear"]
-    aggregationLevels = ["1", "2", "3", "4"]
+    aggregationlevels = ["1", "2", "3", "4"]
 
     return {
         "identifier": [create_fake_identifier(fake) for __ in range(2)],
@@ -128,12 +128,12 @@ def create_fake_general(fake: Faker) -> dict:
         "keyword": [langstringify(fake, fake.word()) for __ in range(2)],
         "coverage": [langstringify(fake, fake.paragraph()) for __ in range(2)],
         "structure": vocabularify(fake, structures),
-        "aggregationLevel": vocabularify(fake, aggregationLevels),
+        "aggregationlevel": vocabularify(fake, aggregationlevels),
     }
 
 
 def create_fake_lifecycle(fake: Faker) -> dict:
-    """Create a fake "lifeCycle"-element, compatible with LOMv1.0."""
+    """Create a fake "lifecycle"-element, compatible with LOMv1.0."""
     roles = [
         "author",
         "publisher",
@@ -159,17 +159,20 @@ def create_fake_lifecycle(fake: Faker) -> dict:
     return {
         "version": langstringify(fake, f"{randint(0,9)}.{randint(0,9)}"),
         "status": vocabularify(fake, statuses),
-        "contribute": [create_fake_contribute(fake, roles) for __ in range(2)],
+        "contribute": [
+            create_fake_contribute(fake, ["author"]),  # guarantee one author exists
+            create_fake_contribute(fake, roles[1:]),  # create one random other role
+        ],
     }
 
 
 def create_fake_metametadata(fake: Faker) -> dict:
-    """Create a fake "metaMetadata"-element, compatible with LOMv1.0."""
+    """Create a fake "metametadata"-element, compatible with LOMv1.0."""
     roles = ["creator", "validator"]
     return {
         "identifier": [create_fake_identifier(fake) for __ in range(2)],
         "contribute": [create_fake_contribute(fake, roles) for __ in range(2)],
-        "metadataSchemas": ["LOMv1.0"],
+        "metadataschemas": ["LOMv1.0"],
         "language": create_fake_language(fake),
     }
 
@@ -182,8 +185,8 @@ def create_fake_technical(fake: Faker) -> dict:
         "location": {"type": "URI", "#text": fake.uri()},
         "thumbnail": {"url": fake.uri()},
         "requirement": [create_fake_requirement(fake) for __ in range(2)],
-        "installationRemarks": langstringify(fake, fake.paragraph()),
-        "otherPlatformRequirements": langstringify(fake, fake.paragraph()),
+        "installationremarks": langstringify(fake, fake.paragraph()),
+        "otherplatformrequirements": langstringify(fake, fake.paragraph()),
         "duration": create_fake_duration(fake),
     }
 
@@ -191,12 +194,12 @@ def create_fake_technical(fake: Faker) -> dict:
 def create_fake_requirement(fake: Faker) -> dict:
     """Create a fake "requirement"-element, compatible with LOMv1.0."""
     return {
-        "orComposite": [create_fake_orcomposite(fake) for __ in range(2)],
+        "orcomposite": [create_fake_orcomposite(fake) for __ in range(2)],
     }
 
 
 def create_fake_orcomposite(fake: Faker) -> dict:
-    """Create a fake "orComposite"-element, compatible with LOMv1.0."""
+    """Create a fake "orcomposite"-element, compatible with LOMv1.0."""
     type_ = fake.random.choice(["operating system", "browser"])
     if type_ == "operating system":
         requirement_names = [
@@ -219,8 +222,8 @@ def create_fake_orcomposite(fake: Faker) -> dict:
     return {
         "type": vocabularify(fake, [type_]),
         "name": vocabularify(fake, requirement_names),
-        "minimumVersion": str(fake.random.randint(1, 4)),
-        "maximumVersion": str(fake.random.randint(5, 8)),
+        "minimumversion": str(fake.random.randint(1, 4)),
+        "maximumversion": str(fake.random.randint(5, 8)),
     }
 
 
@@ -235,22 +238,22 @@ def create_fake_educational(fake: Faker) -> dict:
     random_int = fake.random.randint
 
     return {
-        "interactivityType": vocabularify(fake, interactivity_types),
-        "learningResourceType": create_fake_learningresourcetype(fake),
-        "interactivityLevel": vocabularify(fake, levels),
-        "semanticDensity": vocabularify(fake, levels),
-        "intendedEndUserRole": vocabularify(fake, end_user_roles),
+        "interactivitytype": vocabularify(fake, interactivity_types),
+        "learningresourcetype": create_fake_learningresourcetype(fake),
+        "interactivitylevel": vocabularify(fake, levels),
+        "semanticdensity": vocabularify(fake, levels),
+        "intendedenduserrole": vocabularify(fake, end_user_roles),
         "context": [vocabularify(fake, contexts) for __ in range(2)],
-        "typicalAgeRange": langstringify(fake, f"{random_int(1,4)}-{random_int(5,9)}"),
+        "typicalagerange": langstringify(fake, f"{random_int(1,4)}-{random_int(5,9)}"),
         "difficulty": vocabularify(fake, difficulties),
-        "typicalLearningTime": create_fake_duration(fake),
+        "typicallearningtime": create_fake_duration(fake),
         "description": langstringify(fake, fake.paragraph()),
         "language": [create_fake_language(fake) for __ in range(2)],
     }
 
 
 def create_fake_learningresourcetype(fake: Faker) -> dict:
-    """Create a fake "learningResourceType"-element, compatible with LOM-UIBK."""
+    """Create a fake "learningresourcetype"-element, compatible with LOM-UIBK."""
     url_endings = [
         "application",
         "assessment",
@@ -303,7 +306,7 @@ def create_fake_rights(fake: Faker) -> dict:
     lang = "x-t-cc-url" if url.startswith("https://creativecommons.org/") else None
     return {
         "cost": vocabularify(fake, ["yes", "no"]),
-        "copyrightAndOtherRestrictions": vocabularify(fake, ["yes", "no"]),
+        "copyrightandotherrestrictions": vocabularify(fake, ["yes", "no"]),
         "description": langstringify(fake, fake.paragraph(), lang=lang),
         "url": fake.random.choice(urls),
     }
@@ -360,14 +363,14 @@ def create_fake_classification(fake: Faker) -> dict:
 
     return {
         "purpose": vocabularify(fake, purposes),
-        "taxonPath": [create_fake_taxonpath(fake) for __ in range(2)],
+        "taxonpath": [create_fake_taxonpath(fake) for __ in range(2)],
         "description": langstringify(fake, fake.paragraph()),
         "keyword": langstringify(fake, fake.word()),
     }
 
 
 def create_fake_taxonpath(fake: Faker) -> dict:
-    """Create a fake "taxonPath"-element, compatible with LOMv1.0."""
+    """Create a fake "taxonpath"-element, compatible with LOMv1.0."""
     return {
         "source": langstringify(fake, fake.word(), lang="x-none"),
         "taxon": [create_fake_taxon(fake) for __ in range(2)],
@@ -393,8 +396,8 @@ def create_fake_metadata(fake: Faker) -> dict:
     """Create a fake json-representation of a "lom"-element, compatible with LOMv1.0."""
     data_to_use = {
         "general": create_fake_general(fake),
-        "lifeCycle": create_fake_lifecycle(fake),
-        "metaMetadata": create_fake_metametadata(fake),
+        "lifecycle": create_fake_lifecycle(fake),
+        "metametadata": create_fake_metametadata(fake),
         "technical": create_fake_technical(fake),
         "educational": create_fake_educational(fake),
         "rights": create_fake_rights(fake),

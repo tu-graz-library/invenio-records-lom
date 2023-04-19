@@ -12,6 +12,7 @@ from flask_babelex import gettext as _
 from invenio_rdm_records.services.pids import providers
 
 from .resources.serializers import LOMToDataCite44Serializer
+from .services.pids import LOMDataCitePIDProvider
 
 LOM_BASE_TEMPLATE = "invenio_records_lom/base.html"
 
@@ -71,7 +72,7 @@ LOM_PUBLISHER = "Graz University of Technology"
 #
 LOM_PERSISTENT_IDENTIFIER_PROVIDERS = [
     # DataCite DOI provider
-    providers.DataCitePIDProvider(
+    LOMDataCitePIDProvider(
         "datacite",
         client=providers.DataCiteClient(
             "datacite",
