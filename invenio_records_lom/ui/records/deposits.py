@@ -7,7 +7,7 @@
 
 """View-functions for deposit-related pages."""
 
-from flask import current_app, render_template
+from flask import current_app, g, render_template
 from flask_login import current_user, login_required
 from invenio_i18n.ext import current_i18n
 from invenio_records_resources.services.files.results import FileList
@@ -138,12 +138,14 @@ def deposit_edit(
 @login_required
 def uploads():
     """Show overview of lom-records uploaded by user, upload further records."""
-    # TODO: newer versions of expand also take flask.g.identity
     avatar_url = current_user_resources.users_service.links_item_tpl.expand(
-        current_user
+        g.identity, current_user
     )["avatar"]
     return render_template(
         "invenio_records_lom/uploads.html",
-        # TODO: newer versions also take `searchbar_config` here
+        # TODO: newer versions of the original template now also take `searchbar_config` here
+        # see `invenio_app_rdm/users_ui/views/dashboard.py:uploads`
+        # also see `invenio_app_rdm/users_ui/templates/uploads.html`
+        # searchbar_config={"searchUrl": ...},
         user_avatar=avatar_url,
     )
