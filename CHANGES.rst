@@ -7,6 +7,12 @@
 Changes
 =======
 
+Version v0.8.0 (release 2023-04-20)
+
+- make compatible with invenio v11
+- support DOI, publishing, deleting
+
+
 Version v0.7.2 (release 2023-03-15)
 
 - fix file-upload
