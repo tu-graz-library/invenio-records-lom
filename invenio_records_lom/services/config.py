@@ -18,7 +18,11 @@ from invenio_drafts_resources.services.records.config import (
     is_record,
 )
 from invenio_rdm_records.services.components import AccessComponent, MetadataComponent
-from invenio_rdm_records.services.config import has_doi, is_record_and_has_doi
+from invenio_rdm_records.services.config import (
+    has_doi,
+    is_iiif_compatible,
+    is_record_and_has_doi,
+)
 from invenio_records_resources.services import (
     ConditionalLink,
     FileLink,
@@ -166,6 +170,9 @@ class LOMDraftFilesServiceConfig(FileServiceConfig, ConfiguratorMixin):
     file_links_item = {
         "commit": FileLink("{+api}/lom/{id}/draft/files/{key}/commit"),
         "content": FileLink("{+api}/lom/{id}/draft/files/{key}/content"),
+        "iiif_base": FileLink(
+            "{+api}/lom/iiif/draft:{id}:{key}", when=is_iiif_compatible
+        ),
         "self": FileLink("{+api}/lom/{id}/draft/files/{key}"),
     }
 
@@ -177,4 +184,8 @@ class LOMRecordFilesServiceConfig(FileServiceConfig, ConfiguratorMixin):
     permission_policy_cls = LOMRecordPermissionPolicy
 
     file_links_list = {}
-    file_links_item = {}
+    file_links_item = {
+        "iiif_base": FileLink(
+            "{+api}/lom/iiif/record:{id}:{key}", when=is_iiif_compatible
+        ),
+    }
