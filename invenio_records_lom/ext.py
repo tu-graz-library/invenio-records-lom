@@ -6,6 +6,8 @@
 # under the terms of the MIT License; see LICENSE file for more details.
 
 """Flask extension for invenio-records-lom."""
+from invenio_rdm_records.resources import IIIFResource
+from invenio_rdm_records.services import IIIFService
 from invenio_rdm_records.services.pids import PIDManager, PIDsService
 from invenio_records_resources.resources import FileResource
 from invenio_records_resources.services import FileService
@@ -13,6 +15,7 @@ from invenio_records_resources.services import FileService
 from . import config
 from .resources import (
     LOMDraftFilesResourceConfig,
+    LOMIIIFResourceConfig,
     LOMRecordFilesResourceConfig,
     LOMRecordResource,
     LOMRecordResourceConfig,
@@ -72,12 +75,23 @@ class InvenioRecordsLOM:
             pids_service=PIDsService(record_service_config, PIDManager),
         )
 
+        # pylint: disable-next=attribute-defined-outside-init
+        self.iiif_service = IIIFService(
+            records_service=self.records_service, config=None
+        )
+
     def init_resources(self, app):  # pylint: disable=unused-argument
         """Initialize resouces."""
         # pylint: disable-next=attribute-defined-outside-init
         self.draft_files_resource = FileResource(
             config=LOMDraftFilesResourceConfig,
             service=self.records_service.draft_files,
+        )
+
+        # pylint: disable-next=attribute-defined-outside-init
+        self.iiif_resource = IIIFResource(
+            config=LOMIIIFResourceConfig,
+            service=self.iiif_service,
         )
 
         # pylint: disable-next=attribute-defined-outside-init

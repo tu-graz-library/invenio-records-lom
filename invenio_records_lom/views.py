@@ -25,6 +25,7 @@ def init(state: BlueprintSetupState):
     registry.register(ext.records_service, service_id="lom-records")
     registry.register(ext.records_service.files, service_id="lom-files")
     registry.register(ext.records_service.draft_files, service_id="lom-draft-files")
+    registry.register(ext.iiif_service, service_id="lom-iiif")
 
 
 def create_records_bp(app: Flask):
@@ -43,3 +44,9 @@ def create_record_files_bp(app: Flask):
     """Create record files bluprint."""
     ext = app.extensions["invenio-records-lom"]
     return ext.record_files_resource.as_blueprint()
+
+
+def create_iiif_bp(app: Flask):
+    """Create IIIF blueprint."""
+    ext = app.extensions["invenio-records-lom"]
+    return ext.iiif_resource.as_blueprint()

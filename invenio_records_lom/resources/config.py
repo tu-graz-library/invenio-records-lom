@@ -9,6 +9,7 @@
 
 import marshmallow
 from flask_resources import JSONSerializer, ResponseHandler
+from invenio_rdm_records.resources import IIIFResourceConfig
 from invenio_records_resources.resources import RecordResourceConfig
 from invenio_records_resources.resources.files import FileResourceConfig
 
@@ -57,3 +58,10 @@ class LOMRecordResourceConfig(RecordResourceConfig):
     }
 
     response_handlers = record_serializer
+
+
+class LOMIIIFResourceConfig(IIIFResourceConfig):
+    """LOM IIIF Resource Config."""
+
+    blueprint_name = "lom_iiif"
+    url_prefix = "/lom/iiif"

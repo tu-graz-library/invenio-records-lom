@@ -9,6 +9,7 @@
 
 from .config import (
     LOMDraftFilesResourceConfig,
+    LOMIIIFResourceConfig,
     LOMRecordFilesResourceConfig,
     LOMRecordResourceConfig,
 )
@@ -16,6 +17,7 @@ from .resources import LOMRecordResource
 
 __all__ = (
     "LOMDraftFilesResourceConfig",
+    "LOMIIIFResourceConfig",
     "LOMRecordFilesResourceConfig",
     "LOMRecordResource",
     "LOMRecordResourceConfig",
