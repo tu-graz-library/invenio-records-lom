@@ -7,6 +7,11 @@
 Changes
 =======
 
+Version v0.8.1 (release 2023-04-28)
+
+- upload: require license permission
+
+
 Version v0.8.0 (release 2023-04-20)
 
 - make compatible with invenio v11
