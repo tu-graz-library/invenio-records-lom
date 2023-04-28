@@ -27,6 +27,20 @@ from sqlalchemy.orm.exc import NoResultFound
 from ...proxies import current_records_lom
 
 
+# TODO: this implementation is a quick hack. it is a workflow of the tu graz and
+# should be implemented within the invenio-workflows-tugraz package
+def license_required(func: callable):
+    """Check if the logged in user has the permission to create oer's."""
+
+    @wraps(func)
+    def decoed(**kwargs):
+        # TODO: for now default false. implement proper check
+        kwargs["is_licensed"] = False
+        return func(**kwargs)
+
+    return decoed
+
+
 def pass_record_latest(func: callable):
     """Retrieve latest version of `record` from db and pass that into decorated function."""
 

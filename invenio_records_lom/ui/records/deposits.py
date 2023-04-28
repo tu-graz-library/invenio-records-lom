@@ -16,7 +16,7 @@ from invenio_users_resources.proxies import current_user_resources
 
 from ...proxies import current_records_lom
 from ...utils import LOMMetadata, get_oefosdict
-from .decorators import pass_draft, pass_draft_files
+from .decorators import license_required, pass_draft, pass_draft_files
 
 
 def get_deposit_template_context(**extra_form_config_kwargs) -> dict:
@@ -136,13 +136,20 @@ def deposit_edit(
 
 
 @login_required
-def uploads():
+@license_required
+def uploads(is_licensed: bool = False):
     """Show overview of lom-records uploaded by user, upload further records."""
     avatar_url = current_user_resources.users_service.links_item_tpl.expand(
         g.identity, current_user
     )["avatar"]
+
+    if is_licensed:
+        template = "invenio_records_lom/uploads.html"
+    else:
+        template = "invenio_records_lom/not_licensed_text.html"
+
     return render_template(
-        "invenio_records_lom/uploads.html",
+        template,
         # TODO: newer versions of the original template now also take `searchbar_config` here
         # see `invenio_app_rdm/users_ui/views/dashboard.py:uploads`
         # also see `invenio_app_rdm/users_ui/templates/uploads.html`
