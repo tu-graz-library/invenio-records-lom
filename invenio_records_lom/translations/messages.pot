@@ -1,58 +1,163 @@
-# Translations template for invenio_records_lom.
-# Copyright (C) 2022 Graz University of Technology
-# This file is distributed under the same license as the invenio_records_lom
+# Translations template for invenio-records-lom.
+# Copyright (C) 2023 Graz University of Technology
+# This file is distributed under the same license as the invenio-records-lom
 # project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2023.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: invenio_records_lom 0.1.0\n"
+"Project-Id-Version: invenio-records-lom 0.8.0\n"
 "Report-Msgid-Bugs-To: info@tugraz.at\n"
-"POT-Creation-Date: 2022-03-25 13:22+0100\n"
+"POT-Creation-Date: 2023-04-28 13:37+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.9.1\n"
+"Generated-By: Babel 2.12.1\n"
+
+#: invenio_records_lom/config.py:23
+msgid "Best match"
+msgstr ""
 
 #: invenio_records_lom/config.py:27
+msgid "Newest"
+msgstr ""
+
+#: invenio_records_lom/config.py:53
 msgid "JSON"
 msgstr ""
 
-#: invenio_records_lom/config.py:53 invenio_records_lom/config.py:60
-#: invenio_records_lom/config.py:84
+#: invenio_records_lom/config.py:82 invenio_records_lom/config.py:89
+#: invenio_records_lom/config.py:113
 msgid "DOI"
 msgstr ""
 
-#: invenio_records_lom/config.py:65
+#: invenio_records_lom/config.py:94
 msgid "OAI ID"
 msgstr ""
 
-#: invenio_records_lom/config.py:91
+#: invenio_records_lom/config.py:120
 msgid "OAI"
 msgstr ""
 
-#: invenio_records_lom/services/schemas/records.py:23
+#: invenio_records_lom/services/pids.py:53
+msgid "Missing publisher."
+msgstr ""
+
+#: invenio_records_lom/services/schemas/records.py:32
 msgid "Persistent identifier scheme unknown to LOM."
 msgstr ""
 
-#: invenio_records_lom/templates/invenio_records_lom/record.html:56
-msgid "General Informations"
+#: invenio_records_lom/templates/invenio_records_lom/not_licensed_text.html:12
+#: invenio_records_lom/templates/invenio_records_lom/uploads.html:14
+msgid "OER Uploads"
 msgstr ""
 
-#: invenio_records_lom/templates/invenio_records_lom/record.html:65
-msgid "Educational Informations"
+#: invenio_records_lom/templates/invenio_records_lom/not_licensed_text.html:26
+msgid "Open Educational Resources"
 msgstr ""
 
-#: invenio_records_lom/templates/invenio_records_lom/record.html:96
+#: invenio_records_lom/templates/invenio_records_lom/not_licensed_text.html:29
+msgid ""
+"\"Open Educational Resources (OER) are open educational materials, i.e. "
+"teaching and learning materials that\n"
+"        are freely accessible and, thanks to appropriate licensing (or "
+"because they are in the public domain), may be\n"
+"        edited, further developed and distributed without additional "
+"permission.\""
+msgstr ""
+
+#: invenio_records_lom/templates/invenio_records_lom/not_licensed_text.html:34
+msgid "Bündnis Freie Bildung, 2015"
+msgstr ""
+
+#: invenio_records_lom/templates/invenio_records_lom/not_licensed_text.html:36
+msgid "Permission required!"
+msgstr ""
+
+#: invenio_records_lom/templates/invenio_records_lom/not_licensed_text.html:39
+msgid ""
+"Here you can upload your openly licensed teaching and learning materials "
+"(Open Educational Resources, OER for\n"
+"        short). By doing this, you can archive them sustainably and make "
+"them publicly accessible and usable to others.\n"
+"        Furthermore, all open educational resources uploaded here are "
+"automatically transferred to <a href=\"oerhub.at\">OERhub.at</a> - a\n"
+"        national search engine for OER - in order to reach an even "
+"greater audience reach."
+msgstr ""
+
+#: invenio_records_lom/templates/invenio_records_lom/not_licensed_text.html:46
+msgid ""
+"To use the upload feature, have your account activated by sending your "
+"OER certificate issued by the national\n"
+"        certification body to <a "
+"href=\"mailto:telucation@tugraz.at\">telucation@tugraz.at</a>."
+msgstr ""
+
+#: invenio_records_lom/templates/invenio_records_lom/not_licensed_text.html:51
+msgid ""
+"Not yet certified? Members of Graz University of Technology are required "
+"to obtain the OER certificate from\n"
+"        fnma at Graz University of Technology, which you can obatin as "
+"part of the in-house training. Please register\n"
+"        via your business card in <a "
+"href=\"online.tugraz.at\">TUGRAZonline</a>."
+msgstr ""
+
+#: invenio_records_lom/templates/invenio_records_lom/not_licensed_text.html:57
+msgid ""
+"As a member of another university, visit the information page on OER "
+"certification to find a corresponding\n"
+"        offer at your university and submit your certificate to <a "
+"href=\"mailto:telucation@tugraz.at\">telucation@tugraz.at</a>,\n"
+"        after which an upload is possible."
+msgstr ""
+
+#: invenio_records_lom/templates/invenio_records_lom/not_licensed_text.html:63
+msgid ""
+"For further information, please contact the OU Educational Technology "
+"directly at +43(316)873-8577 or write an email to <a "
+"href=\"mailto:telucation@tugraz.at\">telucation@tugraz.at</a>."
+msgstr ""
+
+#: invenio_records_lom/templates/invenio_records_lom/record.html:57
+msgid "General Information"
+msgstr ""
+
+#: invenio_records_lom/templates/invenio_records_lom/record.html:73
+msgid "Educational Information"
+msgstr ""
+
+#: invenio_records_lom/templates/invenio_records_lom/record.html:110
 msgid "Original Content"
 msgstr ""
 
-#: invenio_records_lom/templates/invenio_records_lom/record.html:106
+#: invenio_records_lom/templates/invenio_records_lom/record.html:120
 msgid "Export"
+msgstr ""
+
+#: invenio_records_lom/templates/invenio_records_lom/uploads.html:36
+msgid "Type query then press enter for search"
+msgstr ""
+
+#: invenio_records_lom/templates/invenio_records_lom/uploads.html:47
+msgid "New OER-Upload"
+msgstr ""
+
+#: invenio_records_lom/templates/invenio_records_lom/records/deposit.html:12
+msgid "New Version of OER Upload"
+msgstr ""
+
+#: invenio_records_lom/templates/invenio_records_lom/records/deposit.html:14
+msgid "New OER Upload"
+msgstr ""
+
+#: invenio_records_lom/templates/invenio_records_lom/records/deposit.html:16
+msgid "Edit OER Upload"
 msgstr ""
 
 #: invenio_records_lom/templates/invenio_records_lom/records/export.html:26
@@ -89,5 +194,9 @@ msgstr ""
 
 #: invenio_records_lom/templates/invenio_records_lom/records/macros/files.html:93
 msgid "Download"
+msgstr ""
+
+#: invenio_records_lom/ui/records/__init__.py:100
+msgid "OER-Uploads"
 msgstr ""
 
