@@ -1,17 +1,16 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2021 Graz University of Technology.
+# Copyright (C) 2021-2023 Graz University of Technology.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
-"""Permission-config classes for LOMRecordService-objects."""
+"""Permission-policy class for LOMRecordService-objects."""
 
 from invenio_rdm_records.services.generators import (
     IfFileIsLocal,
     IfRestricted,
     RecordOwners,
-    SecretLinks,
 )
 from invenio_rdm_records.services.permissions import RDMRecordPermissionPolicy
 from invenio_records_permissions.generators import (
@@ -19,6 +18,8 @@ from invenio_records_permissions.generators import (
     AuthenticatedUser,
     SystemProcess,
 )
+
+from .generators import OERCertifiedUsers, OERCurators
 
 
 class LOMRecordPermissionPolicy(RDMRecordPermissionPolicy):
@@ -31,16 +32,18 @@ class LOMRecordPermissionPolicy(RDMRecordPermissionPolicy):
     # no rights for CommunityCurators, as this package doesn't implement communities
     # no rights for SubmissionReviewers, as this package doesn't implement reviews
     #
-    # General permission-categories, to be used in below categories
+    # General permission-groups, to be used in below categories
     #
     can_manage = [RecordOwners(), SystemProcess()]
-    can_curate = can_manage + [SecretLinks("edit")]
+    can_curate = can_manage + [OERCurators()]
     can_review = can_curate
-    can_preview = can_manage + [SecretLinks("preview")]
-    can_view = can_manage + [SecretLinks("view")]
+    can_preview = can_manage
+    can_view = can_manage
 
     can_authenticated = [AuthenticatedUser(), SystemProcess()]
     can_all = [AnyUser(), SystemProcess()]
+
+    can_handle_oer = [OERCertifiedUsers(), OERCurators(), SystemProcess()]
 
     #
     #  Records
@@ -61,13 +64,13 @@ class LOMRecordPermissionPolicy(RDMRecordPermissionPolicy):
         IfFileIsLocal(then_=can_read_files, else_=[SystemProcess()]),
     ]
     # Allow submitting new record
-    can_create = can_authenticated
+    can_create = can_handle_oer
 
     #
     # Drafts
     #
     # Allow ability to search drafts
-    can_search_drafts = can_authenticated
+    can_search_drafts = can_handle_oer
     # Allow reading metadata of a draft
     can_read_draft = can_preview
     # Allow reading files of a draft

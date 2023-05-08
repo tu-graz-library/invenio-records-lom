@@ -16,7 +16,12 @@ from invenio_users_resources.proxies import current_user_resources
 
 from ...proxies import current_records_lom
 from ...utils import LOMMetadata, get_oefosdict
-from .decorators import license_required, pass_draft, pass_draft_files
+from .decorators import (
+    pass_draft,
+    pass_draft_files,
+    pass_is_oer_certified,
+    require_lom_permission,
+)
 
 
 def get_deposit_template_context(**extra_form_config_kwargs) -> dict:
@@ -85,6 +90,7 @@ def get_deposit_template_context(**extra_form_config_kwargs) -> dict:
 
 
 @login_required
+@require_lom_permission("create", default_endpoint="invenio_records_lom.uploads")
 def deposit_create() -> str:
     """Create a new deposit."""
     service_config = current_records_lom.records_service.config
@@ -113,6 +119,7 @@ def deposit_create() -> str:
 
 
 @login_required
+@require_lom_permission("handle_oer", default_endpoint="invenio_records_lom.uploads")
 @pass_draft(expand=True)
 @pass_draft_files
 def deposit_edit(
@@ -136,14 +143,14 @@ def deposit_edit(
 
 
 @login_required
-@license_required
-def uploads(is_licensed: bool = False):
+@pass_is_oer_certified
+def uploads(is_oer_certified: bool = False):
     """Show overview of lom-records uploaded by user, upload further records."""
     avatar_url = current_user_resources.users_service.links_item_tpl.expand(
         g.identity, current_user
     )["avatar"]
 
-    if is_licensed:
+    if is_oer_certified:
         template = "invenio_records_lom/uploads.html"
     else:
         template = "invenio_records_lom/not_licensed_text.html"

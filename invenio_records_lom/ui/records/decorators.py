@@ -20,23 +20,21 @@
 
 from functools import wraps
 
-from flask import g, request
+from flask import g, redirect, request, url_for
 from invenio_records_resources.services.errors import PermissionDeniedError
 from sqlalchemy.orm.exc import NoResultFound
 
 from ...proxies import current_records_lom
 
 
-# TODO: this implementation is a quick hack. it is a workflow of the tu graz and
-# should be implemented within the invenio-workflows-tugraz package
-def license_required(func: callable):
+def pass_is_oer_certified(func: callable):
     """Check if the logged in user has the permission to create oer's."""
 
     @wraps(func)
     def decoed(**kwargs):
-        # TODO: for now default false. implement proper check
-        kwargs["is_licensed"] = False
-        return func(**kwargs)
+        service = current_records_lom.records_service
+        is_oer_certified = service.check_permission(g.identity, "handle_oer")
+        return func(**kwargs, is_oer_certified=is_oer_certified)
 
     return decoed
 
@@ -222,3 +220,25 @@ def pass_draft_files(func: callable) -> callable:
         return func(**kwargs, draft_files=draft_files)
 
     return decoed
+
+
+def require_lom_permission(action_name: str, *, default_endpoint: str):
+    """Require permission from permission-policy, otherwise redirect to `default_endpoint`.
+
+    example usage:
+    @require_lom_permission('create', 'invenio_records_lom.uploads')
+    # checks `flask.g.identity` against `LOMPermissionPolicy.can_create`
+    # if no permission redirects to endpoint "uploads" of blueprint "invenio_records_lom"
+    """
+
+    def view_decorator(view_func):
+        @wraps(view_func)
+        def decorated_view(*args, **kwargs):
+            service = current_records_lom.records_service
+            if not service.check_permission(g.identity, action_name):
+                return redirect(url_for(default_endpoint))
+            return view_func(*args, **kwargs)
+
+        return decorated_view
+
+    return view_decorator

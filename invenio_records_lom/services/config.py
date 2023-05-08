@@ -30,7 +30,7 @@ from invenio_records_resources.services import (
     Link,
     RecordLink,
 )
-from invenio_records_resources.services.base.config import ConfiguratorMixin
+from invenio_records_resources.services.base.config import ConfiguratorMixin, FromConfig
 
 from ..records import LOMDraft, LOMRecord
 from .components import LOMPIDsComponent, ResourceTypeComponent
@@ -93,8 +93,9 @@ class LOMRecordServiceConfig(RecordServiceConfig, ConfiguratorMixin):
     # Schemas
     schema = LOMRecordSchema
 
-    permission_policy_cls = LOMRecordPermissionPolicy
-
+    permission_policy_cls = FromConfig(
+        "LOM_PERMISSION_POLICY", default=LOMRecordPermissionPolicy, import_string=True
+    )
     # PIDConfiguration
     pids_providers = FromConfigLOMPIDsProviders()
     pids_required = FromConfigLOMRequiredPIDs()
@@ -158,7 +159,9 @@ class LOMDraftFilesServiceConfig(FileServiceConfig, ConfiguratorMixin):
 
     record_cls = LOMDraft
     permission_action_prefix = "draft_"
-    permission_policy_cls = LOMRecordPermissionPolicy
+    permission_policy_cls = FromConfig(
+        "LOM_PERMISSION_POLICY", default=LOMRecordPermissionPolicy, import_string=True
+    )
 
     # links to appear within FileList-result:
     file_links_list = {
@@ -181,7 +184,9 @@ class LOMRecordFilesServiceConfig(FileServiceConfig, ConfiguratorMixin):
     """Config for LOM files service."""
 
     record_cls = LOMRecord
-    permission_policy_cls = LOMRecordPermissionPolicy
+    permission_policy_cls = FromConfig(
+        "LOM_PERMISSION_POLICY", default=LOMRecordPermissionPolicy, import_string=True
+    )
 
     file_links_list = {}
     file_links_item = {
