@@ -12,10 +12,19 @@ from flask_babelex import gettext as _
 from invenio_rdm_records.services.pids import providers
 
 from .resources.serializers import LOMToDataCite44Serializer
+from .services.permissions import LOMRecordPermissionPolicy
 from .services.pids import LOMDataCitePIDProvider
 
 LOM_BASE_TEMPLATE = "invenio_records_lom/base.html"
 
+#
+# Permission Configuration
+#
+LOM_PERMISSION_POLICY = LOMRecordPermissionPolicy
+
+#
+# Search Configuration
+#
 LOM_FACETS = {}
 
 LOM_SORT_OPTIONS = {
@@ -34,6 +43,9 @@ LOM_SEARCH = {
 }
 """Record search configuration."""
 
+#
+# HTML-Request Configuration
+#
 LOM_ROUTES = {
     # the blueprint prefixes `/lom` to these routes
     "uploads": "/uploads",
@@ -57,6 +69,9 @@ LOM_RECORD_EXPORTERS = {
     },
 }
 
+#
+# Schema Configuration
+#
 LOM_RESOURCE_TYPES = [
     "course",
     "unit",
