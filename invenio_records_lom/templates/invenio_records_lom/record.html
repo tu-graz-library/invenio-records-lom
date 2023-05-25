@@ -11,128 +11,144 @@
 {%- from "invenio_records_lom/records/macros/tree.html" import make_dep_tree %}
 
 {% block head_title %}
-<title>{{ record.ui.title }}</title>
+  <title>{{ record.ui.title }}</title>
 {% endblock head_title %}
 
+{# Labels for version, resource-type, access-status #}
 {% block record_header %}
-{% block record_header_button %}
+  {% block record_header_button %}
+    {% if is_preview and not is_preview_submission_request and can_manage_record and is_draft %}
+      <nav class="back-navigation rel-pb-2 pl-0" aria-label="{{ _('Back-navigation') }}">
+        {% set back_page = url_for('invenio_records_lom.deposit_edit', pid_value=record.id) %}
+        {% set back_btn_label = _('Back to edit') %}
+        <a class="ui button labeled icon small compact" href="{{ back_page }}">
+          <i class="ui icon angle left"></i> {{ back_btn_label }}
+        </a>
+      </nav>
+    {% endif %}
+  {% endblock record_header_button %}
 
-{{ super() }}
+  {# parent-template has record_management here, this isn't enabled for lom for now... #}
 
-{% endblock record_header_button %}
-<div class="ui grid middle aligned">
-  <div class="two column row">
-    <div class="right floated right aligned column">
-      {% if record.ui.resource_type %}
-      <span class="ui label small grey"> {{ record.ui.resource_type | capitalize }}</span>
-      {% endif %}
-      <span class="ui label small access-status {{ record.ui.access_status.id }}"
-            data-tooltip="{{ record.ui.access_status.description_l10n }}">
-        {% if record.ui.access_status.icon %}
-        <i class="icon {{ record.ui.access_status.icon }}"></i>
-        {% endif %}
-        {{ record.ui.access_status.title_l10n }}
-      </span>
+  <section id="record-info" aria-label="{{ _('Labels for version, resource-type, access-status') }}">
+    <div class="ui grid middle aligned">
+      <div class="two column row">
+        <div class="left floated left aligned column">
+          {# parent-template has this here, but which date to show?
+            <span class="ui" title="{{ _('Publication date') }}">
+              {{ _('Published') }} {{ record.ui.publication_date_l10n_long }}
+            </span>
+          #}
+          {# version would only be an out-of-context number, could show this after implementing version side-card
+            <span class="label text-muted">
+              {{ _('Version {version_number}').format(version_number=record.ui.version) }}
+            </span>
+          #}
+        </div>
+        <div class="right floated right aligned column">
+          {% if record.ui.resource_type %}
+            <span class="ui label small neutral mb-5"
+                  title="{{ _('Resource type') }}">{{ record.ui.resource_type | capitalize }}</span>
+          {% endif %}
+          <span class="ui label small access-status {{ record.ui.access_status.id }} mb-5"
+                title="{{ _('Access status') }}"
+                data-tooltip="{{ record.ui.access_status.description_l10n }}"
+                data-inverted=""
+          >
+            {% if record.ui.access_status.icon %}
+              <i class="icon {{ record.ui.access_status.icon }}"></i>
+            {% endif %}
+            {{ record.ui.access_status.title_l10n }}
+          </span>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
+  </section>
+  <div class="ui divider hidden"></div>
 {% endblock record_header %}
 
+{# Title #}
 {% block record_title %}
-<h1>{{ record.ui.title }}</h1>
+  <section id="record-title-section" aria-label="{{ _('Record title and creators') }}">
+    <h1 id="record-title" class="wrap-overflowing-text">{{ record.ui.title }}</h1>
+    <section id="creatibutors" aria-label="{{ _('Contributors') }}">
+      {# TODO: make authors clickable, group by role?, revisit graphical layout #}
+      {% for cont in record.ui.contributors %}
+        <span class="ui tooltip-popup text-muted">
+          {{cont.fullname}} ({{cont.role}})
+        </span>
+        {{"; " if not loop.last}}
+      {% endfor %}
+    </section>
+  </section>
 {% endblock record_title %}
 
+{# Description #}
 {% block record_content %}
+  {% if record.ui.generalDescriptions or record.ui.educationalDescriptions %}
+    <section id="description" class="rel-mt-2" aria-label="{{ _('Record Description') }}">
+      <h2 id="description-heading">{{_('Description')}}</h2>
+      {% for desc in record.ui.generalDescriptions %}
+        <p style="white-space: pre-wrap;">{{ desc | safe }}</p>
+      {% endfor %}
+      {% for desc in record.ui.educationalDescriptions %}
+        <p style="white-space: pre-wrap;">{{ desc | safe }}</p>
+      {% endfor %}
+    </section>
+  {% endif %}
 
-<p>
-  {%- for o in record.ui.contributors %}
-  <span class="ui tooltip-popup text-muted">
-    {{o.fullname}} ({{o.role}})
-  </span>
-  {{"; " if not loop.last}}
-  {%- endfor %}
-</p>
-
-{%- if record.ui.generalDescriptions %}
-<h1>{{_('General Information')}}</h1>
-<p>
-  {%- for d in record.ui.generalDescriptions %}
-  <span>
-    {%- for line in d.splitlines() %}
-    {{line}}
-    {%- if not loop.last %}
-    <br/>
-    {%- endif %}
-    {%- endfor %}
-  </span>
-  {%- endfor %}
-</p>
-{%- endif %}
-
-{%- if record.ui.educationalDescriptions %}
-<h1>{{_('Educational Information')}}</h1>
-<p>
-  {%- for d in record.ui.educationalDescriptions %}
-  <span>
-    {%- for line in d.splitlines() %}
-    {{line}}
-    {%- if not loop.last %}
-    <br/>
-    {%- endif %}
-    {%- endfor %}
-  </span>
-  {%- endfor %}
-</p>
-{%- endif %}
-
-<ul class="ui list">
-{{ make_dep_tree(metadata.relation, "ispartof", "Part of the") }}
-</ul>
-
-<ul class="ui list">
-{{ make_dep_tree(metadata.relation, "haspart", "Contains") }}
-</ul>
-
+{# Relation #}
+{% if record.metadata.relation %}
+  <section id="relation" class="rel-mt-2" aria-label="{{ _(Relations) }}">
+    <ul class="ui list">
+      {{ make_dep_tree(record.metadata.relation, "ispartof", "Part of the") }}
+    </ul>
+    <ul class="ui list">
+      {{ make_dep_tree(record.metadata.relation, "haspart", "Contains") }}
+    </ul>
+  </section>
+{% endif %}
 {% endblock record_content %}
 
+{# Files #}
 {% block record_files %}
-{%- include "invenio_records_lom/records/files.html" %}
+  {% include "invenio_records_lom/records/files.html" %}
 {% endblock record_files %}
 
+{# Additional Details #}
 {% block record_details %}
+  {# disable parent-template's additional details block #}
 {% endblock record_details %}
 
 {% block record_sidebar %}
-{% include "invenio_app_rdm/records/details/side_bar/licenses.html" %}
-
-{% if record.ui.location %}
-<section id="original-content" aria-label="" class="ui segment rdm-sidebar">
-  <h2 class="ui small header">{{_("Original Content")}}</h2>
-  <p>
-    <a href="{{record.ui.location}}">{{record.ui.title}}</a>
-  </p>
-</section>
-{% endif %}
-
-{%- if config.get("LOM_RECORD_EXPORTERS") -%}
-{# if no export formats are specified, don't bother showing the box #}
-<div class="ui segment rdm-sidebar exports">
-  <dt><b>{{ _('Export')}}</b></dt>
-  <hr class="thin-line">
-  <dd class="top-bottom-padded">
-    <div class="ui celled horizontal list separated-list">
-      {# dynamically create the list of export formats #}
-      {%- for fmt, val in config.get("LOM_RECORD_EXPORTERS", {}).items() -%}
-        {%- set name = val.get("name", fmt) -%}
-        {% if is_preview %}
-          {%- set export_url = url_for('invenio_records_lom.record_export', pid_value=record.id, export_format=fmt, preview=1) -%}
-        {% else %}
-          {%- set export_url = url_for('invenio_records_lom.record_export', pid_value=record.id, export_format=fmt) -%}
-        {% endif %}
-         <div class="item"><a href="{{ export_url }}">{{ name }}</a></div>
-      {%- endfor -%}
-    </div>
-  </dd>
-</div>
-{%- endif -%}
+  {# TODO: invenio's sidebar also has manage-menu, versions, keywords (OEFOS), details, and fancier export card #}
+  {% include "invenio_app_rdm/records/details/side_bar/licenses.html" %}
+  {% if record.ui.location %}
+    <section id="original-content" aria-label="" class="ui segment rdm-sidebar">
+      <h2 class="ui small header">{{_("Original Content")}}</h2>
+      <p>
+        <a href="{{record.ui.location}}">{{record.ui.title}}</a>
+      </p>
+    </section>
+  {% endif %}
+  {% if config.get("LOM_RECORD_EXPORTERS") %}
+    {# if no export formats are specified, don't bother showing the box #}
+    <section id="export-record" aria-label="{{ _('Export') }}" class="ui segment rdm-sidebar exports">
+      <h2 class="ui small header">{{ _('Export') }}</h2>
+      <div class="ui celled horizontal list separated-list">
+        {# dynamically create the list of export formats #}
+        {% for fmt, val in config.get("LOM_RECORD_EXPORTERS", {}).items() %}
+          {% set name = val.get("name", fmt) %}
+          {% if is_preview %}
+            {% set export_url = url_for('invenio_records_lom.record_export', pid_value=record.id, export_format=fmt, preview=1) %}
+          {% else %}
+            {% set export_url = url_for('invenio_records_lom.record_export', pid_value=record.id, export_format=fmt) %}
+          {% endif %}
+          <div class="item">
+            <a href="{{ export_url }}">{{ name }}</a>
+          </div>
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
 {% endblock record_sidebar %}

@@ -20,7 +20,6 @@
 import typing as t
 from os.path import splitext
 
-from bs4 import BeautifulSoup
 from flask import abort, current_app, g, redirect, render_template, request, url_for
 from invenio_base.utils import obj_or_import_string
 from invenio_previewer.extensions import default
@@ -102,7 +101,7 @@ def record_detail(
         except ValidationError:
             abort(404)
 
-    ugly_html_text = render_template(
+    return render_template(
         "invenio_records_lom/record.html",
         record=record_ui,
         pid=pid_value,
@@ -113,7 +112,6 @@ def record_detail(
         is_preview=is_preview,
         is_draft=is_draft,
     )
-    return BeautifulSoup(ugly_html_text, features="lxml").prettify()
 
 
 @pass_is_preview
@@ -121,8 +119,8 @@ def record_detail(
 def record_export(
     record: RecordItem = None,
     export_format: str = None,
-    pid_value: str = None,  # pylint: disable=unused-argument
-    is_preview: bool = False,
+    pid_value: str = None,
+    is_preview: bool = False,  # pylint: disable=unused-argument
 ):
     """Export view for LOM records."""
     exporter = current_app.config.get("LOM_RECORD_EXPORTERS", {}).get(export_format)
@@ -136,15 +134,13 @@ def record_export(
         }
     )
     exported_record = serializer.serialize_object(record.to_dict())
-    return render_template(
-        "invenio_records_lom/records/export.html",
-        export_format=exporter.get("name", export_format),
-        exported_record=exported_record,
-        record=LOMUIJSONSerializer().serialize_object_to_dict(record.to_dict()),
-        permissions=record.has_permissions_to(["update_draft"]),
-        is_preview=is_preview,
-        is_draft=record._record.is_draft,  # pylint: disable=protected-access
-    )
+    content_type = exporter.get("content-type", export_format)
+    filename = exporter.get("filename", export_format).format(id=pid_value)
+    headers = {
+        "Content-Type": content_type,
+        "Content-Disposition": f"attachment; filename={filename}",
+    }
+    return (exported_record, 200, headers)
 
 
 @pass_is_preview
