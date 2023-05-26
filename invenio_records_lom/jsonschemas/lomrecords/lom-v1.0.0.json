@@ -7,21 +7,9 @@
 
   "properties": {
     "$schema": {
-      "description": "This record's jsonschema.",
-      "type": "string"
-    },
-    "id": {
-      "description": "Invenio record identifier (integer).",
-      "type": "string"
-    },
-    "name": {
-      "description": "Author name.",
-      "type": "string"
-    },
-    "organization": {
-      "description": "Organization the author belongs to.",
+      "description": "Path to both, this record's jsonschema and this record's opensearch-mapping.",
       "type": "string"
     }
   },
-  "required": ["id", "name", "$schema"]
+  "required": ["$schema"]
 }

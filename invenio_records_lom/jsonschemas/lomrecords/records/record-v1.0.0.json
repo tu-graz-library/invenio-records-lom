@@ -1,0 +1,27 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "local://lomrecords/records/record-v1.0.0.json",
+  "$comment": "Actual validation is done via `marshmallow`.",
+
+  "additionalProperties": false,
+  "title": "invenio-records-lom v1.0.0",
+  "type": "object",
+
+  "properties": {
+    "$schema": {
+      "description": "Relative path to both, this record's jsonschema and this record's opensearch-mapping.",
+      "type": "string"
+    },
+    "access": {},
+    "custom_fields": {},
+    "files": {},
+    "id": {},
+    "metadata": {},
+    "notes": {},
+    "pid": {},
+    "pids": {},
+    "provenance": {},
+    "resource_type": {},
+    "tombstone": {}
+  }
+}

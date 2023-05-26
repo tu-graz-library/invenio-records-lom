@@ -27,6 +27,14 @@ from invenio_records_lom.fixtures import create_fake_data
 @pytest.fixture(scope="module")
 def app_config(app_config):  # pylint: disable=redefined-outer-name
     """Override pytest-invenio app_config-fixture."""
+    # configuration for `jsonresolver`-package interoperability
+    app_config[
+        "RECORDS_REFRESOLVER_CLS"
+    ] = "invenio_records.resolver.InvenioRefResolver"
+    app_config[
+        "RECORDS_REFRESOLVER_STORE"
+    ] = "invenio_jsonschemas.proxies.current_refresolver_store"
+
     # Enable DOI minting...
     app_config["DATACITE_ENABLED"] = True
     app_config["DATACITE_USERNAME"] = "INVALID"
