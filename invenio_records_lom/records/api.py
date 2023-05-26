@@ -28,7 +28,12 @@ from invenio_drafts_resources.records import Draft, Record
 from invenio_drafts_resources.records.api import ParentRecord
 from invenio_pidstore.models import PIDStatus
 from invenio_rdm_records.records.systemfields import DraftStatus
-from invenio_records.systemfields import DictField, ModelField, RelationsField
+from invenio_records.systemfields import (
+    ConstantField,
+    DictField,
+    ModelField,
+    RelationsField,
+)
 from invenio_records_resources.records.api import FileRecord
 from invenio_records_resources.records.systemfields import (
     FilesField,
@@ -137,6 +142,7 @@ class LOMDraft(Draft, metaclass=LOMRecordMeta):
     is_published = PIDStatusCheckField(status=PIDStatus.REGISTERED, dump=True)
     pids = DictField()
     resource_type = DictField()
+    schema = ConstantField("$schema", "local://lomrecords/records/record-v1.0.0.json")
     status = DraftStatus()
 
 
@@ -182,6 +188,7 @@ class LOMRecord(Record, metaclass=LOMRecordMeta):
     is_published = PIDStatusCheckField(status=PIDStatus.REGISTERED, dump=True)
     pids = DictField()
     resource_type = DictField()
+    schema = ConstantField("$schema", "local://lomrecords/records/record-v1.0.0.json")
     status = DraftStatus()
 
 

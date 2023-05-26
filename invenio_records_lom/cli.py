@@ -13,6 +13,7 @@ from invenio_access.permissions import system_identity
 
 from .fixtures import publish_fake_records
 from .proxies import current_records_lom
+from .records.models import LOMRecordMetadata
 
 
 @click.group()
@@ -49,3 +50,24 @@ def demo(number, seed):
     for __ in publish_fake_records(number, seed):
         pass
     click.secho("Published fake LOM records to the database!", fg="green")
+
+
+@lom.command()
+@with_appcontext
+def reindex():
+    """Reindex all published records from SQL-database in opensearch-indices."""
+    click.secho("Reindexing LOM records...", fg="green")
+
+    record_ids = [
+        record.json["id"]
+        for record in LOMRecordMetadata.query.all()
+        if record.json and "id" in record.json
+    ]
+
+    service = current_records_lom.records_service
+    indexer = service.indexer
+    for record_id in record_ids:
+        record_api_object = service.record_cls.pid.resolve(record_id)
+        indexer.index(record_api_object)
+
+    click.secho("Successfully reindexed LOM records!", fg="green")
