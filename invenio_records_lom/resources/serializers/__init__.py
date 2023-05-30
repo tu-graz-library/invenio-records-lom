@@ -6,13 +6,14 @@
 # under the terms of the MIT License; see LICENSE file for more details.
 
 """Serializers turning records into html-template-insertable dicts."""
+from collections.abc import Mapping
 from copy import deepcopy
 
 from flask_resources import BaseListSchema, MarshmallowSerializer
 from flask_resources.serializers import JSONSerializer, MarshmallowJSONSerializer
 from lxml.builder import ElementMaker  # pylint: disable=no-name-in-module
 
-from .schemas import LOMToDataCite44Schema, LOMUIRecordSchema
+from .schemas import LOMMetadataToOAISchema, LOMToDataCite44Schema, LOMUIRecordSchema
 
 
 class LOMUIJSONSerializer(MarshmallowSerializer):
@@ -52,7 +53,20 @@ class LOMToLOMXMLSerializer:
 
     def __init__(self, metadata, lom_id, oaiserver_id_prefix, doi):
         """Constructor."""
-        self.metadata = metadata
+        # metadata might be out of order, and includes extraneous fields
+        # sort and filter with marshmallow:
+        # TODO: clean some of this up in database rather than here
+        metadata = deepcopy(metadata)
+        if "lifeCycle" in metadata:
+            # convert old capitalization to new one (note the capitalization of the 'C')
+            metadata["lifecycle"] = metadata.pop("lifeCycle")
+        if "metaMetadata" in metadata:
+            # convert old capitalization to new one (note the capitalization of the second 'M')
+            metadata["metametadata"] = metadata.pop("metaMetadata")
+        try:
+            self.metadata = LOMMetadataToOAISchema().load(metadata)
+        except Exception:  # pylint: disable=broad-exception-caught
+            self.metadata = metadata
         self.lom_id = lom_id
         self.oaiserver_id_prefix = oaiserver_id_prefix
         self.doi = doi
@@ -91,7 +105,8 @@ class LOMToLOMXMLSerializer:
     def build_langstring(self, jsn, parent_tag):
         """Append XML corresponding to `jsn` to `parent_tag`.
 
-        `jsn` has to be of form `{"lang": "lang-name", "#text": "any_text"}`.
+        `jsn` has to either be of form `{"lang": "lang-name", "#text": "any_text"}`,
+        or be of form {"#text": "any_text"}.
         """
         if "lang" in jsn:
             tag = self.element_maker.langstring(
@@ -106,13 +121,15 @@ class LOMToLOMXMLSerializer:
         """Append location to parent_tag."""
         tag = self.element_maker.location(
             jsn["#text"],
-            **{"{http://www.w3.org/XML/1998/namespace}lang": jsn["type"]},
+            # while some of LOM-UIBK's examples include a type-attribute here, most don't
+            # the `lom-uibk.xsd` also forbids extra attributes in this place...
         )
         parent_tag.append(tag)
 
     def build(self, jsn, parent_tag, inner_tag=None):
         """Walk through `jsn`, append its corresponding XML to `parent_tag`."""
-        if isinstance(jsn, dict):
+        # `LOMMetadataToOAISchema` returns a mix of `dict`s and `OrderedDict`s, check against common parent-class `Mapping`
+        if isinstance(jsn, Mapping):
             for key, value in jsn.items():
                 if key == "identifier":
                     for lst in [
