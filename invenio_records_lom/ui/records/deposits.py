@@ -60,8 +60,83 @@ def get_deposit_template_context(**extra_form_config_kwargs) -> dict:
         "Author": {"name": "Author"},
         "Publisher": {"name": "Publisher"},
     }
+    format_vocabulary = {
+        "application/epub+zip": {
+            "name": "application/epub+zip - Electronic Publication (.epub)"
+        },
+        "application/gzip": {
+            "name": "application/gzip - GZip Compressed Archive (.gz)"
+        },
+        "application/json": {"name": "application/json - JSON format (.json)"},
+        "application/msword": {"name": "application/msword - Microsoft Word (.doc)"},
+        "application/octet-stream": {
+            "name": "application/octet-stream - Other Binary Documents"
+        },
+        "application/pdf": {
+            "name": "application/pdf - Adobe Portable Document Format (.pdf)"
+        },
+        "application/vnd.ms-excel": {
+            "name": "application/vnd.ms-excel - Microsoft Excel (.xls)"
+        },
+        "application/vnd.ms-powerpoint": {
+            "name": "application/vnd.ms-powerpoint - Microsoft PowerPoint (.ppt)"
+        },
+        "application/xml": {"name": "application/xml - XML (.xml)"},
+        "application/zip": {"name": "application/zip - ZIP Archive (.zip)"},
+        "audio/aac": {"name": "audio/aac - AAC Audio (.aac)"},
+        "audio/midi": {
+            "name": "audio/midi - Musical Instrument Digital Interface (.midi, .mid)"
+        },
+        "audio/mpeg": {"name": "audio/mpeg - MP3 Audio (.mp3)"},
+        "audio/wav": {"name": "audio/wav - Waveform Audio Format (.wav)"},
+        "image/bmp": {"name": "image/bmp - Windows OS/2 Bitmap Graphics (.bmp)"},
+        "image/gif": {"name": "image/gif - Graphics Interchange Format (.gif)"},
+        "image/jpeg": {"name": "image/jpeg - JPEG images (.jpg, .jpeg)"},
+        "image/png": {"name": "image/png - Portable Network Graphics (.png)"},
+        "image/svg+xml": {"name": "image/svg+xml - Scalable Vector Graphics (.svg)"},
+        "image/tiff": {"name": "image/tiff - Tagged Image File Format (.tif, .tiff)"},
+        "image/webp": {"name": "image/webp - WEBP Image (.webp)"},
+        "text/css": {"name": "text/css - Cascading Style Sheets (.css)"},
+        "text/csv": {"name": "text/csv - Comma-separated values (.csv)"},
+        "text/html": {"name": "text/html - HyperText Markup Language (.html)"},
+        "text/plain": {"name": "text/plain - Other Text, ASCII (.txt, …)"},
+        "video/mp4": {"name": "video/mp4 - MP4 Video (.mp4)"},
+        "video/x-msvideo": {"name": "video/x-msvideo - Audio Video Interleave (.avi)"},
+    }
+
     language_vocabulary = {"de": {"name": "Deutsch"}, "en": {"name": "English"}}
-    resourcetype_vocabulary = {"": {"name": ""}, "video": {"name": "Video"}}
+    resourcetype_vocabulary = {
+        "https://w3id.org/kim/hcrt/application": {"name": "Software Application"},
+        "https://w3id.org/kim/hcrt/assessment": {"name": "Assessment"},
+        "https://w3id.org/kim/hcrt/audio": {"name": "Audio Recording"},
+        "https://w3id.org/kim/hcrt/case_study": {"name": "Case Study"},
+        "https://w3id.org/kim/hcrt/course": {"name": "Course"},
+        "https://w3id.org/kim/hcrt/data": {"name": "Data"},
+        "https://w3id.org/kim/hcrt/diagram": {"name": "Diagram"},
+        "https://w3id.org/kim/hcrt/drill_and_practice": {"name": "Drill and Practice"},
+        "https://w3id.org/kim/hcrt/educational_game": {"name": "Game"},
+        "https://w3id.org/kim/hcrt/experiment": {"name": "Experiment"},
+        "https://w3id.org/kim/hcrt/image": {"name": "Image"},
+        "https://w3id.org/kim/hcrt/index": {"name": "Reference Work"},
+        "https://w3id.org/kim/hcrt/lesson_plan": {"name": "Lesson Plan"},
+        "https://w3id.org/kim/hcrt/map": {"name": "Map"},
+        "https://w3id.org/kim/hcrt/portal": {"name": "Web Portal"},
+        "https://w3id.org/kim/hcrt/questionnaire": {"name": "Questionnaire"},
+        "https://w3id.org/kim/hcrt/script": {"name": "Script"},
+        "https://w3id.org/kim/hcrt/sheet_music": {"name": "Sheet Music"},
+        "https://w3id.org/kim/hcrt/simulation": {"name": "Simulation"},
+        "https://w3id.org/kim/hcrt/slide": {"name": "Presentation"},
+        "https://w3id.org/kim/hcrt/text": {"name": "Text"},
+        "https://w3id.org/kim/hcrt/textbook": {"name": "Textbook"},
+        "https://w3id.org/kim/hcrt/video": {"name": "Video"},
+        "https://w3id.org/kim/hcrt/web_page": {"name": "Web Page"},
+        "https://w3id.org/kim/hcrt/worksheet": {"name": "Worksheet"},
+        "https://w3id.org/kim/hcrt/other": {"name": "Other"},
+    }
+    # sort `resourcetype_vocabulary` by name
+    resourcetype_vocabulary = dict(
+        sorted(resourcetype_vocabulary.items(), key=lambda item: item[1]["name"])
+    )
 
     return {
         "files": {"default_preview": None, "entries": [], "links": {}},
@@ -77,6 +152,7 @@ def get_deposit_template_context(**extra_form_config_kwargs) -> dict:
             "quota": app_config.get("APP_RDM_DEPOSIT_FORM_QUOTA"),
             "vocabularies": {
                 "contributor": contributor_vocabulary,
+                "format": format_vocabulary,
                 "language": language_vocabulary,
                 "license": license_vocabulary,
                 "oefos": oefos_vocabulary,
@@ -106,6 +182,11 @@ def deposit_create() -> str:
     defaults = current_app.config.get("LOM_DEPOSIT_FORM_DEFAULTS", {})
     for dotted_key, value in defaults.items():
         empty_metadata.record.setdefault(dotted_key, value)
+
+    # insert default-publisher from config (if exists)
+    app_config = current_app.config
+    if default_publisher := app_config.get("LOM_PUBLISHER"):
+        empty_metadata.append_contribute(default_publisher, role="publisher")
 
     template_context: dict = get_deposit_template_context(createUrl="/api/lom")
     return render_template(

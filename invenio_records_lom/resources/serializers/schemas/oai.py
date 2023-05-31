@@ -190,7 +190,14 @@ class LocationSchema(ExcludeUnknownOrderedSchema):
 class TechnicalSchema(ExcludeUnknownOrderedSchema):
     """Schema for LOM-UIBK's `technical` category."""
 
-    format = fields.Str(required=True)  # e.g. video/mp4
+    format = fields.List(
+        fields.Str(
+            required=True,
+            validate=validate.Length(min=1, error="Format must not be empty."),
+        ),
+        required=True,
+        validate=validate.Length(min=1, max=1, error="Must have exactly one format."),
+    )  # e.g. ['video/mp4']
     # TODO: optional field: size
     location = fields.Nested(LocationSchema(), required=True)
     # TODO: optional field: thumbnail

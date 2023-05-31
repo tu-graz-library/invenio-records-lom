@@ -85,6 +85,8 @@ export default class LOMDepositForm extends React.Component {
             // use longer paths once implemented in invenio...
             "metadata.general": i18next.t("Title"),
             "metadata.lifecycle": i18next.t("Contributors"),
+            "metadata.technical": i18next.t("Format"),
+            "metadata.educational": i18next.t("Resource Type"),
             "metadata.rights": i18next.t("License"),
             "metadata.classification": i18next.t("OEFOS"),
           }}
