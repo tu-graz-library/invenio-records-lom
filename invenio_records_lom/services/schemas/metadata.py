@@ -101,12 +101,57 @@ class ContributeSchema(Schema):
 
 
 class LifecycleSchema(Schema):
-    """Schema for Lom's `lifecycle category."""
+    """Schema for LOM's `lifecycle` category."""
 
     contribute = fields.List(
         fields.Nested(ContributeSchema()),
         validate=validate.Length(min=1, error="Enter at least one contribution."),
     )
+
+
+class LocationSchema(Schema):
+    """Schema for LOM's `technical.location`."""
+
+    text = fields.String(attribute="#text", data_key="#text")
+
+
+class TechnicalSchema(Schema):
+    """Schema for LOM's `technical` category."""
+
+    format = fields.List(
+        fields.String(
+            required=True,
+            validate=validate.Length(min=1, error="Missing data for required field."),
+        ),
+        validate=validate.Length(min=1, max=1, error="Must enter exactly one format."),
+    )
+    location = fields.Nested(LocationSchema)
+
+
+class LearningResourceTypeSchema(Schema):
+    """Scheam for LOM's `educational.learningresourcetype`."""
+
+    source = fields.Field(
+        required=True,
+        validate=validate.Equal(
+            {
+                "langstring": {
+                    "#text": "https://w3id.org/kim/hcrt/scheme",
+                    "lang": "x-none",
+                }
+            }
+        ),
+    )
+    id = fields.String(
+        required=True,
+        validate=validate.Length(min=1, error="Missing data for required field."),
+    )
+
+
+class EducationalSchema(Schema):
+    """Schema for LOM's `educational` category."""
+
+    learningresourcetype = fields.Nested(LearningResourceTypeSchema, required=True)
 
 
 class RightsSchema(Schema):
@@ -121,7 +166,7 @@ class RightsSchema(Schema):
 
 
 class TaxonSchema(Schema):
-    """Schema for Lom's `classification.taxonpath.taxon`-category."""
+    """Schema for LOM's `classification.taxonpath.taxon`-category."""
 
     id = fields.String(
         required=True,
@@ -190,6 +235,8 @@ class MetadataSchema(Schema):
 
     general = fields.Nested(GeneralSchema, required=True)
     lifecycle = fields.Nested(LifecycleSchema, required=True)
+    technical = fields.Nested(TechnicalSchema, rquired=True)
+    educational = fields.Nested(EducationalSchema, required=True)
     rights = fields.Nested(RightsSchema, required=True)
     classification = fields.Nested(
         ClassificationSchema,

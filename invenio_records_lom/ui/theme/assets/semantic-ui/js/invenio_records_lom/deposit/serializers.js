@@ -195,6 +195,14 @@ export class LOMDepositRecordSerializer extends DepositRecordSerializer {
     // deserialize license
     form.license = { value: _get(metadata, "rights.url", "") };
 
+    // deserialize format
+    form.format = { value: _get(metadata, "technical.format.0", "") };
+
+    // deserialize resource-type
+    form.resourcetype = {
+      value: _get(metadata, "educational.learningresourcetype.id", ""),
+    };
+
     // deserialize contributors
     const validRoles = Object.keys(_get(this, "vocabularies.contributor", {}));
     form.contributor = [];
@@ -258,6 +266,29 @@ export class LOMDepositRecordSerializer extends DepositRecordSerializer {
           lang: "x-t-cc-url",
         },
       },
+    });
+
+    // serialize format
+    const format = _get(metadata, "form.format.value", "");
+    _set(metadata, "technical.format.0", format);
+
+    // set location
+    _set(
+      metadata,
+      "technical.location.#text",
+      _get(recordToSerialize, "links.record_html", "")
+    );
+
+    // serialize resource-type
+    const resourcetypeUrl = _get(metadata, "form.resourcetype.value");
+    _set(metadata, "educational.learningresourcetype", {
+      source: {
+        langstring: {
+          "#text": "https://w3id.org/kim/hcrt/scheme",
+          lang: "x-none",
+        },
+      },
+      id: resourcetypeUrl,
     });
 
     // serialize contributors
@@ -327,10 +358,32 @@ export class LOMDepositRecordSerializer extends DepositRecordSerializer {
     }
     const licenseErrorMessage = licenseErrorMessages.join(" ");
     if (licenseErrorMessage) {
+      _set(deserializedErrors, "metadata.form.license", licenseErrorMessage);
+    }
+
+    // deserialize error for format
+    const formatErrorMessages = [];
+    for (const { field, messages } of errors) {
+      if (String(field).startsWith("metadata.technical.format")) {
+        formatErrorMessages.push(...messages);
+      }
+    }
+    const formatErrorMessage = formatErrorMessages.join(" ");
+    if (formatErrorMessage) {
+      _set(deserializedErrors, "metadata.form.format", formatErrorMessage);
+    }
+
+    // deserialize error for resourcetype
+    const resourcetypeErrorMessage = _get(
+      deserializedErrors,
+      "metadata.educational.learningresourcetype.id",
+      null
+    );
+    if (resourcetypeErrorMessage) {
       _set(
         deserializedErrors,
-        "metadata.form.license",
-        licenseErrorMessages.join(" ")
+        "metadata.form.resourcetype",
+        resourcetypeErrorMessage
       );
     }
 

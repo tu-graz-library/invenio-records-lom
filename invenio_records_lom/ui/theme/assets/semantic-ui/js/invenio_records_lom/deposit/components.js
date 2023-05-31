@@ -96,6 +96,22 @@ export function RequiredAccordion(props) {
         title={i18next.t("License")}
         vocabularyName="license"
       />
+      <DropdownField
+        fieldPath="metadata.form.format"
+        iconName="tag"
+        placeholder={i18next.t("Select Format")}
+        required
+        title={i18next.t("Format")}
+        vocabularyName="format"
+      />
+      <DropdownField
+        fieldPath="metadata.form.resourcetype"
+        iconName="tag"
+        placeholder={i18next.t("Select Resource Type")}
+        required
+        title={i18next.t("Resource Type")}
+        vocabularyName="resourcetype"
+      />
       <ArrayField
         addButtonLabel={i18next.t("Add Contributor")}
         defaultNewValue={{}}
