@@ -7,6 +7,16 @@
 Changes
 =======
 
+Version v0.9.0 (release 2023-06-01)
+
+- add `format` and `resource-type` to upload-page
+- add schema for cleaner OAI-PMH-output
+- add "$schema"-key to jsons in database
+- update landing page
+- implement and configure permissions
+- fix image-preview by implementing iiif-resource
+
+
 Version v0.8.1 (release 2023-04-28)
 
 - upload: require license permission
