@@ -9,6 +9,8 @@
 
 from marshmallow import EXCLUDE, Schema, fields, validate
 
+from ....utils import make_lom_vcard
+
 
 class ExcludeUnknownOrderedSchema(Schema):
     """Schema configured to be ordered and exclude unknown."""
@@ -162,12 +164,7 @@ class ContributeSchema(ExcludeUnknownOrderedSchema):
         if not isinstance(entities, list):
             entities = [entities]
 
-        return [
-            {
-                "vcard": e,  # TODO: fix vcard
-            }
-            for e in entities
-        ]
+        return [{"vcard": make_lom_vcard(fn=e)} for e in entities]
 
 
 class LifecycleSchema(ExcludeUnknownOrderedSchema):

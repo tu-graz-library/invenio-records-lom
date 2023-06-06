@@ -13,10 +13,12 @@ from .util import (
     get_learningresourcetypedict,
     get_oefosdict,
 )
+from .vcard import make_lom_vcard
 
 __all__ = (
     "DotAccessWrapper",
     "get_learningresourcetypedict",
     "get_oefosdict",
     "LOMMetadata",
+    "make_lom_vcard",
 )
