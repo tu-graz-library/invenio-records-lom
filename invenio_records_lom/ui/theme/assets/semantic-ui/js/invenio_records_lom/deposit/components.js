@@ -1,35 +1,23 @@
 // This file is part of invenio-records-lom
-// Copyright (C) 2022 Graz University of Technology.
+// Copyright (C) 2022-2023 Graz University of Technology.
 //
 // invenio-records-lom is free software; you can redistribute it and/or modify it
 // under the terms of the MIT License; see LICENSE file for more details.
 
-import { Field as FormikField } from "formik";
 import React from "react";
-import {
-  AccordionField,
-  ArrayField,
-  FieldLabel,
-  GroupField,
-  RichInputField,
-  TextField,
-} from "react-invenio-forms";
+import { AccordionField, ArrayField, FieldLabel } from "react-invenio-forms";
 import { PIDField } from "react-invenio-deposit";
 import { useSelector } from "react-redux";
-import { Button, Divider, Form, Icon, Input } from "semantic-ui-react";
+import { Form, Icon } from "semantic-ui-react";
 import { i18next } from "@translations/invenio_app_rdm/i18next";
 
 import {
   ContributorField,
   DebugInfo,
-  LangstringGroupField,
   LeftLabeledTextField,
   DropdownField,
   TitledTextField,
-  VocabularyGroupField,
 } from "./fields";
-
-// TODO: translations via i18next.t
 
 export function RequiredAccordion(props) {
   // record.is_published should be one of `true`, `false`, `null` (counts as false)
@@ -117,11 +105,12 @@ export function RequiredAccordion(props) {
         defaultNewValue={{}}
         fieldPath="metadata.form.contributor"
         label={
-          <label>
+          // automatically wrapped in <label /> by `ArrayField`
+          <>
             <Icon color="red" name="asterisk" />
             <Icon name="user plus" />
             {i18next.t("Contributors")}
-          </label>
+          </>
         }
       >
         {({ arrayHelpers, indexPath }) => (
@@ -137,12 +126,12 @@ export function RequiredAccordion(props) {
         defaultNewValue={{}}
         fieldPath="metadata.form.oefos"
         label={
-          //<FieldLabel icon="barcode" label="OEFOS" />
-          <label>
+          // automatically wrapped in <label /> by `ArrayField`
+          <>
             <Icon color="red" name="asterisk" />
             <Icon name="barcode" />
             {i18next.t("OEFOS")}
-          </label>
+          </>
         }
       >
         {({ arrayHelpers, indexPath }) => (
@@ -184,15 +173,13 @@ export function OptionalAccordion(props) {
         )}
       </ArrayField>
       <DropdownField
+        clearable
         fieldPath="metadata.form.language"
         iconName="globe"
         placeholder={i18next.t("Select Language")}
         title={i18next.t("Language")}
         vocabularyName="language"
       />
-      {
-        // TODO: resource_type
-      }
     </AccordionField>
   );
 }
@@ -208,6 +195,8 @@ export function TestAccordion(props) {
       ]}
       label={"Tests"}
     >
+      <p>0</p>
+      <DebugInfo fieldPath="metadata.form" />
       <DebugInfo fieldPath="metadata" />
       <p>1</p>
       <LeftLabeledTextField
@@ -217,180 +206,24 @@ export function TestAccordion(props) {
         required
       />
       <p>2</p>
-      <LangstringGroupField
-        debug
-        fieldPath="metadata.general.title"
-        label="Test"
-        placeholder="Hitchhiker's Guide to the Galaxy"
-      />
+      <Form.Field>
+        <label htmlFor="metadata.form.test">Test</label>
+        <Form.Dropdown
+          className="sixteen wide"
+          defaultValue=""
+          fluid
+          id="metadata.form.test"
+          name="metadata.form.test"
+          options={[
+            { key: "1", value: "1", text: "1st" },
+            { key: "2", value: "2", text: "2nd" },
+          ]}
+          placeholder="choose"
+          search
+          selection
+        />
+      </Form.Field>
       <p>3</p>
-      <LangstringGroupField
-        fieldPath="metadata.general.title"
-        iconName="book"
-        label="label"
-        placeholder="Hitchhiker's Guide to the Galaxy"
-        required
-        title="Title"
-      />
-      <p>4</p>
-      <ArrayField
-        addButtonLabel="Add Description"
-        defaultNewValue={{ langstring: { "#text": "", lang: "" } }}
-        fieldPath="metadata.general.description"
-        label={
-          <FieldLabel
-            htmlfor="metadata.general.description"
-            icon="pencil"
-            label="Descriptions"
-          />
-        }
-      >
-        {({ arrayHelpers, indexPath }) => (
-          <LangstringGroupField
-            debug
-            closeAction={() => arrayHelpers.remove(indexPath)}
-            fieldPath={`metadata.general.description.${indexPath}`}
-            label="Description"
-            rows="5"
-          />
-        )}
-      </ArrayField>
-      <p>5</p>
-      <LangstringGroupField />
-      <p>6</p>
-      <DebugInfo fieldPath="metadata.general.identifier" />
-      <ArrayField
-        addButtonLabel="Add Identifier"
-        defaultNewValue={{
-          catalog: "",
-          entry: { langstring: { "#text": "", lang: "x-none" } },
-        }}
-        fieldPath="metadata.general.identifier"
-        label={
-          <FieldLabel
-            htmlFor="metadata.general.identifier"
-            icon="barcode"
-            label="Identifiers"
-          />
-        }
-      >
-        {({ arrayHelpers, indexPath }) => (
-          <VocabularyGroupField
-            closeAction={() => arrayHelpers.remove(indexPath)}
-            debug
-            fieldPath={`metadata.general.identifier.${indexPath}`}
-            label="Identifier"
-            placeholder="e.g. 123456-789"
-          />
-        )}
-      </ArrayField>
-      <p>7</p>
-      <ArrayField
-        addButtonLabel="Add OEFOS"
-        defaultNewValue={{}}
-        fieldPath="metadata.oefos"
-        label={<FieldLabel icon="barcode" label="OEFOS" />}
-      >
-        {({ arrayHelpers, indexPath }) => (
-          <DropdownField
-            closeAction={() => arrayHelpers.remove(indexPath)}
-            debug
-            fieldPath={`metadata.oefos.${indexPath}`}
-          />
-        )}
-      </ArrayField>
-      <DebugInfo fieldPath="metadata.oefos" />
-      <p>8</p>
     </AccordionField>
   );
 }
-
-const Language = () => {
-  return (
-    <ArrayField
-      addButtonLabel="Add Language"
-      defaultNewValue={{ value: "" }}
-      fieldPath="metadata.general.language"
-      label={
-        <FieldLabel
-          htmlFor="metadata.general.language"
-          icon="globe"
-          label="Languages"
-        />
-      }
-    >
-      {({ arrayHelpers, indexPath }) => (
-        <GroupField>
-          <TextField
-            fieldPath={`metadata.general.language.${indexPath}.value`}
-            helpText={null}
-            label={null}
-            placeholder=""
-            width={16}
-          />
-          <Form.Field>
-            <Button
-              aria-label="Remove Field"
-              className="close-btn"
-              icon="close"
-              onClick={() => arrayHelpers.remove(indexPath)}
-            />
-          </Form.Field>
-        </GroupField>
-      )}
-    </ArrayField>
-  );
-};
-
-const RichInput = ({ indexPath }) => {
-  return (
-    <RichInputField
-      className="fourteen wide"
-      fieldPath={`metadata.general.description.${indexPath}.langstring.#text`}
-      editorConfig={{
-        removePlugins: [
-          "Image",
-          "ImageCaption",
-          "ImageStyle",
-          "ImageToolbar",
-          "ImageUpload",
-          "MediaEmbed",
-          "Table",
-          "TableToolbar",
-          "TableProperties",
-          "TableCellProperties",
-        ],
-      }}
-      label={
-        <FieldLabel
-          htmlFor={`metadata.general.description.${indexPath}.langstring.#text`}
-          icon="pencil"
-          label="Description"
-        />
-      }
-      optimized
-    />
-  );
-};
-const FormikChildren = ({ indexPath }) => {
-  <FormikField
-    className="invenio-text-input-field"
-    id={`metadata.lifecycle.identifier.${indexPath}.catalog`}
-    name={`metadata.lifecycle.identifier.${indexPath}.catalog`}
-  >
-    {({ field, meta }) => {
-      return (
-        <div className="four wide field">
-          <Input
-            {...field}
-            error={meta.error}
-            fluid
-            label="Catalog"
-            placeholder="e.g. ISBN, DOI"
-            type="text"
-          />
-        </div>
-      );
-    }}
-  </FormikField>;
-};

@@ -1,5 +1,5 @@
 // This file is part of invenio-records-lom
-// Copyright (C) 2022 Graz University of Technology.
+// Copyright (C) 2022-2023 Graz University of Technology.
 //
 // invenio-records-lom is free software; you can redistribute it and/or modify it
 // under the terms of the MIT License; see LICENSE file for more details.
@@ -12,6 +12,7 @@ import _set from "lodash/set";
 import _sortBy from "lodash/sortBy";
 import { DepositRecordSerializer } from "react-invenio-deposit";
 
+// TODO: move `debug` to debug.js
 const debug = (obj) => alert(JSON.stringify(obj, null, 2));
 
 export class LOMDepositRecordSerializer extends DepositRecordSerializer {
@@ -49,7 +50,10 @@ export class LOMDepositRecordSerializer extends DepositRecordSerializer {
         }
       }
     }
+
+    // this sorts lexigraphically, not numerically
     oefosIds.sort();
+
     _set(
       recordToDeserialize,
       "metadata.form.oefos",
@@ -81,14 +85,13 @@ export class LOMDepositRecordSerializer extends DepositRecordSerializer {
       ([role, contributorList]) => {
         // _groupBy converts role.value to string, unchosen role becomes "undefined"
         role = role !== "undefined" ? role : "";
-        const contribute = {
+        return {
           role: {
             source: { langstring: { "#text": "LOMv1.0", lang: "x-none" } },
             value: { langstring: { "#text": role || "", lang: "x-none" } },
           },
+          entity: contributorList.map(({ name }) => name || ""),
         };
-        contribute.entity = contributorList.map(({ name }) => name || "");
-        return contribute;
       }
     );
     _set(metadata, "lifecycle.contribute", metadataContributors);
@@ -119,7 +122,7 @@ export class LOMDepositRecordSerializer extends DepositRecordSerializer {
     if (!metadata.classification) {
       metadata.classification = [];
     }
-    // remove old oefos, if existent
+    // filter out classification that previously held oefos, if any
     metadata.classification = metadata.classification.filter(
       (classification) =>
         !(
@@ -137,6 +140,7 @@ export class LOMDepositRecordSerializer extends DepositRecordSerializer {
     };
     // append one taxonpath per longest oefos-value
     for (const value of longestOefosValues) {
+      // if value === "2074", path is ["2", "207", "2074"]
       const path = [1, 3, 4, 6]
         .filter((len) => len <= value.length)
         .map((len) => value.slice(0, len));
@@ -182,6 +186,8 @@ export class LOMDepositRecordSerializer extends DepositRecordSerializer {
       "ui",
       "versions",
     ]);
+
+    // initialize; data relevant to upload-form is stored in `metadata.form`
     if (!record.metadata) {
       record.metadata = {};
     }
@@ -204,7 +210,7 @@ export class LOMDepositRecordSerializer extends DepositRecordSerializer {
     };
 
     // deserialize contributors
-    const validRoles = Object.keys(_get(this, "vocabularies.contributor", {}));
+    const validRoles = Object.keys(_get(this, "vocabularies.contributor", []));
     form.contributor = [];
     for (const contribute of _get(metadata, "lifecycle.contribute", [])) {
       let role = _get(contribute, "role.value.langstring.#text", "");
@@ -238,7 +244,21 @@ export class LOMDepositRecordSerializer extends DepositRecordSerializer {
 
   // frontend->backend
   serialize(record) {
-    const recordToSerialize = _cloneDeep(record);
+    const recordToSerialize = _pick(_cloneDeep(record), [
+      "access",
+      "custom_fields",
+      // exclude `expanded`
+      "files",
+      "id",
+      // exclude `is_published`
+      "links",
+      "metadata", // contains `form` for now, excluded later
+      "parent",
+      "pids",
+      "resource_type",
+      // exclude `status`
+      // exclude `versions`
+    ]);
     const metadata = recordToSerialize.metadata || {};
 
     // remove `__key` from array-items
@@ -328,101 +348,60 @@ export class LOMDepositRecordSerializer extends DepositRecordSerializer {
     }
 
     delete metadata.form;
-    // TODO: remove extraneous fields from record...
-    // debug({ recordToSerialize });
     return recordToSerialize;
   }
 
   // backend->frontend
   deserializeErrors(errors) {
-    // [{field: .., messages: ..}] ~> {field: messages.joined}
-    // debug({ type: "before error-deserialization", errors });
     let deserializedErrors = {};
 
+    // [{field: .., messages: ..}] ~> {field: messages.join(" ")}
     for (const e of errors) {
       _set(deserializedErrors, e.field, e.messages.join(" "));
     }
 
-    // deserialize error for title
-    const titleError = _get(deserializedErrors, "metadata.general.title", null);
-    if (titleError) {
-      _set(deserializedErrors, "metadata.form.title", titleError);
-    }
-
-    // deserialize error for license
-    const licenseErrorMessages = [];
-    for (const { field, messages } of errors) {
-      if (String(field).startsWith("metadata.rights")) {
-        licenseErrorMessages.push(...messages);
+    // utility to set errors matching a regexp to `metadata.form`
+    const set_errors = (regexp, target_key) => {
+      const errorMessage = errors
+        .filter(({ field }) => regexp.test(field))
+        .flatMap(({ messages }) => messages || [])
+        .join(" ");
+      if (errorMessage) {
+        _set(deserializedErrors, `metadata.form.${target_key}`, errorMessage);
       }
-    }
-    const licenseErrorMessage = licenseErrorMessages.join(" ");
-    if (licenseErrorMessage) {
-      _set(deserializedErrors, "metadata.form.license", licenseErrorMessage);
-    }
+    };
 
-    // deserialize error for format
-    const formatErrorMessages = [];
-    for (const { field, messages } of errors) {
-      if (String(field).startsWith("metadata.technical.format")) {
-        formatErrorMessages.push(...messages);
-      }
-    }
-    const formatErrorMessage = formatErrorMessages.join(" ");
-    if (formatErrorMessage) {
-      _set(deserializedErrors, "metadata.form.format", formatErrorMessage);
-    }
-
-    // deserialize error for resourcetype
-    const resourcetypeErrorMessage = _get(
-      deserializedErrors,
-      "metadata.educational.learningresourcetype.id",
-      null
+    // set single-field errors
+    set_errors(/^metadata\.general\.title$/, "title");
+    set_errors(/^metadata\.rights/, "license.value");
+    set_errors(/^metadata\.technical\.format/, "format.value");
+    set_errors(
+      /^metadata\.educational\.learningresourcetype\.id$/,
+      "resourcetype.value"
     );
-    if (resourcetypeErrorMessage) {
-      _set(
-        deserializedErrors,
-        "metadata.form.resourcetype",
-        resourcetypeErrorMessage
-      );
-    }
 
-    // deserialize error for contribute
-    const contributeError = _get(
-      deserializedErrors,
-      "metadata.lifecycle.contribute",
-      null
-    );
-    if (contributeError) {
-      _set(deserializedErrors, "metadata.form.contribute", contributeError);
-    }
+    // set array-errors
+    // TODO: contributor-errors
+    //       finding the correct index for `contributor`-errors is non-trivial as the data gets flattened
+    //       i.e. an error at "contribute.1.entity.0"'s index depends on how many `entity`s there are in "contribute.0.entity"...
+    set_errors(/^metadata\.lifecycle\.contribute$/, "contributor"); // assign all sub-errors to `ArrayField` for now...
 
-    // deserialize error for oefos
-    const classificationErrorMessages = errors
-      .filter((error) =>
-        String(error.field || "").startsWith("metadata.classification")
-      )
-      .map((error) => error.messages || [])
-      .flat();
-    if (classificationErrorMessages.length > 0) {
-      _set(
-        deserializedErrors,
-        "metadata.form.oefos",
-        classificationErrorMessages.join(" ")
-      );
-    }
+    // serialization of OEFOS removes empty and incorrect fields
+    // only possible error left is when no OEFOS where provided, set that to `ArrayField`-path
+    set_errors(/^metadata\.classification/, "oefos");
+
+    // empty tags are removed by serialization, providing no tags is allowed
+    // hence no errors wrt tags should ever occur
+    set_errors(/^metadata\.general\.keyword/, "tag");
 
     // add error for debug-purposes
-    /*deserializedErrors["metadata"] = {
+    /*deserializedErrors["metadata"]["form"] = {
       // "general.title.langstring.lang": "deserialization-error",
-      general: {
-        title: { langstring: { lang: "title-lang error" } },
-        description: {
-          0: { langstring: { lang: "desc-lang error" } },
-          1: { langstring: { "#text": "desc-text-error" } },
-        },
+      title: "title-lang error",
+      contributor: {
+        0: { name: "name error" },
+        1: { role: { value: "error" } },
       },
-      lifecycle: { version: { langstring: { "#text": "version-text error" } } },
     };*/
 
     return deserializedErrors;
