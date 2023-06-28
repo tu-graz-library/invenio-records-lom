@@ -1,22 +1,45 @@
 // This file is part of Invenio
-// Copyright (C) 2022 Graz University of Technology.
+// Copyright (C) 2022-2023 Graz University of Technology.
 //
 // React-Invenio-Deposit is free software; you can redistribute it and/or modify it
 // under the terms of the MIT License; see LICENSE file for more details.
 
-import { Field as FormikField, getIn, useFormikContext } from "formik";
+import { getIn, useField, useFormikContext } from "formik";
 import _get from "lodash/get";
-import PropTypes from "prop-types";
-import React, { useEffect } from "react";
+import React from "react";
 import { GroupField } from "react-invenio-forms";
 import { useSelector } from "react-redux";
-import { Button, Dropdown, Form, Icon, Label } from "semantic-ui-react";
+import { Button, Form, Icon, Label } from "semantic-ui-react";
 import { i18next } from "@translations/invenio_app_rdm/i18next";
 
-// TODO: htmlFor on <label>s and <FieldLabel>s
-//       className="field-label-class invenio-field-label" for <label>s
-// TODO: i18next.t
-// TODO: prop-types
+// TODO: consider changing invenio `GroupField`s for `Form.Group`
+// TODO: move id for author/publisher from contributor.1 to contributor.1.something
+//       - errors can't be applied to both it (requires error[contributor.1] is string)
+//         and name (requires error[contributor.1] = {name: String}) otherwise...
+//       - add errors to field while at it...
+// TODO: data within [...] needs be objects to be handled correctly by invenio's `ArrayField`s
+//       tags achieve this by setting fieldPath to `path.{index}.value`
+//       DropdownField implicitly adds `.value` internally
+//         ~> look into whether {value: String} vs String is really necessary
+// TODO: validationSchema for instant error-feedback
+// TODO: prop-types and/or doc-strings
+//       doc-string: put above function:
+//           /**
+//             * General function description.
+//             *
+//             * @param {Object} props
+//             * @param {String} props.subValue - Description of param
+//             * @returns
+//             */
+//       prop-types: put below React-function:
+//           ReactComp.propTypes = {
+//             fieldPath: PropTypes.string.isrequired,
+//             label: PropTypes.oneOfType(PropTypes.string, PropTypes.node),
+//           }
+// TODO: some fields aren't disabled while submitting...
+// TODO: translations are registered by i18n, but not yet done
+// TODO: fix includesPaths of `ArrayField`s
+// TODO: stop using DebugAPIClient
 
 export const DebugInfo = ({ fieldPath }) => {
   const { values } = useFormikContext();
@@ -40,11 +63,14 @@ const CloseButton = ({ closeAction }) => {
   ) : null;
 };
 
-const FieldLabel = ({ fieldPath, iconName, label, required }) => {
+const FieldLabel = ({ htmlFor, iconName, label, required }) => {
   const icon = iconName ? <Icon name={iconName} /> : null;
   const requiredIcon = required ? <Icon color="red" name="asterisk" /> : null;
   return label || icon ? (
-    <label htmlFor={fieldPath || null}>
+    <label
+      className="field-label-class invenio-field-label"
+      htmlFor={htmlFor || null}
+    >
       {requiredIcon}
       {icon}
       {label}
@@ -52,96 +78,86 @@ const FieldLabel = ({ fieldPath, iconName, label, required }) => {
   ) : null;
 };
 
-export class LeftLabeledTextField extends React.Component {
-  renderFormField = (formikBag) => {
-    let { className, debug, fieldPath, label, placeholder, required, rows } =
-      this.props;
-    const {
-      form: {
-        errors,
-        handleChange,
-        handleBlur,
-        initialErrors,
-        isSubmitting,
-        values,
-      },
-    } = formikBag;
-    const error =
-      getIn(errors, fieldPath, null) || getIn(initialErrors, fieldPath, null);
-    rows = rows && Number(rows);
-    const InputTag = rows && rows > 1 ? "textarea" : "input";
-    return (
-      <Form.Field
-        error={error}
-        className={className}
-        id={fieldPath}
-        required={required}
-      >
-        <div className="ui labeled input">
-          {label && (
-            <div className={`ui label${error ? " error" : ""}`}>{label}</div>
-          )}
-          <InputTag
-            disabled={isSubmitting}
-            fluid="true"
-            id={fieldPath}
-            label={label}
-            name={fieldPath}
-            onBlur={handleBlur}
-            onChange={handleChange}
-            placeholder={placeholder}
-            rows={rows}
-            type="text"
-            value={getIn(values, fieldPath, "")}
-          />
-          {required && (
-            <div className="ui corner label">
-              <i className="red asterisk icon" />
-            </div>
-          )}
-        </div>
-        {error && (
-          <Label pointing prompt>
-            {error}
-          </Label>
-        )}
-        {debug && <DebugInfo fieldPath={fieldPath} />}
-      </Form.Field>
-    );
-  };
+export const LeftLabeledTextField = ({
+  className,
+  debug,
+  fieldPath,
+  label,
+  placeholder,
+  required,
+  rows,
+}) => {
+  // register field and get field-specific formik-context
+  // NOTE: in function react-components this needs be called for its internal
+  //       useEffect, which registers the field with formik
+  const [fieldProps, fieldMeta] = useField(fieldPath);
 
-  render() {
-    const { fieldPath } = this.props;
-    return <FormikField component={this.renderFormField} name={fieldPath} />;
-  }
-}
+  // get general formik-context shared by all fields
+  const { isSubmitting } = useFormikContext();
 
-export const TitledTextField = (props) => {
-  const {
-    closeAction,
-    debug,
-    fieldPath,
-    iconName,
-    label,
-    placeholder,
-    required,
-    rows,
-    title,
-  } = props;
-  const icon = iconName ? <Icon name={iconName} /> : null;
-  const requiredIcon = required ? <Icon color="red" name="asterisk" /> : null;
-  const labelElement =
-    title || icon ? (
-      <label htmlFor={fieldPath}>
-        {requiredIcon}
-        {icon}
-        {title}
-      </label>
-    ) : null;
+  const error = fieldMeta.error || fieldMeta.initialError || null;
+  rows = rows && Number(rows);
+  const InputTag = rows && rows > 1 ? "textarea" : "input";
 
   return (
+    <Form.Field error={error} className={className} required={required}>
+      <div className="ui labeled input">
+        {label && (
+          <label
+            className={`ui label${error ? " error" : ""}`}
+            htmlFor={fieldPath}
+          >
+            {label}
+          </label>
+        )}
+        <InputTag
+          disabled={isSubmitting}
+          fluid="true"
+          id={fieldPath}
+          label={label}
+          name={fieldPath}
+          onBlur={fieldProps.onBlur}
+          onChange={fieldProps.onChange}
+          placeholder={placeholder}
+          rows={rows}
+          type="text"
+          value={fieldMeta.value}
+        />
+        {required && (
+          <div className="ui corner label">
+            <i className="red asterisk icon" />
+          </div>
+        )}
+      </div>
+      {error && (
+        <Label pointing prompt>
+          {error}
+        </Label>
+      )}
+      {debug && <DebugInfo fieldPath={fieldPath} />}
+    </Form.Field>
+  );
+};
+
+export const TitledTextField = ({
+  closeAction,
+  debug,
+  fieldPath,
+  iconName,
+  label,
+  placeholder,
+  required,
+  rows,
+  title,
+}) => {
+  return (
     <div className="field">
-      {labelElement}
+      <FieldLabel
+        htmlFor={fieldPath}
+        iconName={iconName}
+        label={title}
+        required={required}
+      />
       <GroupField fieldPath={fieldPath}>
         <LeftLabeledTextField
           className="sixteen wide"
@@ -158,268 +174,118 @@ export const TitledTextField = (props) => {
   );
 };
 
-export class DropdownField extends React.Component {
-  renderFormField = (formikBag) => {
-    const {
-      closeAction,
-      debug,
-      fieldPath,
-      iconName,
-      placeholder,
-      required,
-      title,
-      vocabularyName,
-    } = this.props;
-    const {
-      form: {
-        errors,
-        handleBlur,
-        intitalErrors,
-        isSubmitting,
-        setFieldValue,
-        values,
-      },
-    } = formikBag;
-    const vocabulary = useSelector((state) =>
-      _get(state, `deposit.config.vocabularies.${vocabularyName}`, {})
-    );
-    const error =
-      getIn(errors, fieldPath, null) || getIn(intitalErrors, fieldPath, null);
+const InnerDropdownField = ({
+  className,
+  clearable,
+  fieldPath,
+  placeholder,
+  vocabularyName,
+}) => {
+  // register field and get field-specific formik-context
+  // NOTE: in function react-components this needs be called for its internal
+  //       useEffect, which registers the field with formik
+  const [fieldProps, fieldMeta, fieldHelpers] = useField(`${fieldPath}.value`);
 
-    // `vocabulary` is {1: {name: "NATURAL SCIENCES"}, 101: {name: "Mathematics"}, ...}
-    // Form.Dropdown needs [{key: "1", value: "1", text: "1 - NATURAL SCIENCES"}, ...]
-    const options = Object.entries(vocabulary).map(([key, { name }]) => ({
-      key,
-      value: key,
-      text: name,
-    }));
-    options.sort((lhs, rhs) => String(lhs.key).localeCompare(rhs.key));
+  // get general formik-context shared by all fields
+  const { isSubmitting } = useFormikContext();
 
-    return (
-      <Form.Field>
-        <FieldLabel iconName={iconName} label={title} required={required} />
-        <GroupField fieldPath={fieldPath}>
-          <Form.Dropdown
-            className="sixteen wide"
-            defaultValue={getIn(values, `${fieldPath}.value`, null)}
-            disabled={isSubmitting}
-            error={error}
-            fluid
-            id={fieldPath}
-            name={fieldPath}
-            onBlur={handleBlur}
-            onChange={(e, { name, value }) =>
-              setFieldValue(`${name}.value`, value)
-            }
-            options={options}
-            placeholder={placeholder}
-            search
-            selection
-          />
-          <CloseButton closeAction={closeAction} />
-        </GroupField>
-        {debug && <DebugInfo fieldPath={fieldPath} />}
-      </Form.Field>
-    );
-  };
-  render() {
-    const { fieldPath } = this.props;
-    return <FormikField component={this.renderFormField} name={fieldPath} />;
-  }
-}
+  // get associated vocabulary from redux
+  const vocabulary = useSelector((state) =>
+    _get(state, `deposit.config.vocabularies.${vocabularyName}`, {})
+  );
 
-export class ContributorField extends React.Component {
-  renderFormField = (formikBag) => {
-    const { closeAction, fieldPath, vocabularyName } = this.props;
-    const {
-      form: { handleBlur, isSubmitting, setFieldValue, values },
-    } = formikBag;
-    const vocabulary = useSelector((state) =>
-      _get(state, `deposit.config.vocabularies.${vocabularyName}`, {})
-    );
-
-    const options = Object.entries(vocabulary).map(([key, { name }]) => ({
-      key,
-      value: key,
-      text: name,
-    }));
-    return (
-      <Form.Field>
-        <GroupField fieldPath={fieldPath}>
-          <Form.Dropdown
-            className="four wide"
-            defaultValue={getIn(values, `${fieldPath}.role.value`, null)}
-            disabled={isSubmitting}
-            fluid
-            id={`${fieldPath}.role`}
-            name={`${fieldPath}.role`}
-            onBlur={handleBlur}
-            onChange={(e, { name, value }) =>
-              setFieldValue(`${name}.value`, value)
-            }
-            options={options}
-            placeholder={i18next.t("Select Role")}
-            search
-            selection
-          />
-          <LeftLabeledTextField
-            className="twelve wide"
-            fieldPath={`${fieldPath}.name`}
-            label={i18next.t("Name")}
-            placeholder={i18next.t("Enter name here")}
-          />
-          <CloseButton closeAction={closeAction} />
-        </GroupField>
-      </Form.Field>
-    );
-  };
-  render() {
-    const { fieldPath } = this.props;
-    return <FormikField component={this.renderFormField} name={fieldPath} />;
-  }
-}
-
-export const LangstringGroupField = (props) => {
-  const {
-    closeAction,
-    debug,
-    fieldPath,
-    iconName,
-    label,
-    placeholder,
-    required,
-    rows,
-    title,
-  } = props;
-  const icon = iconName ? <Icon name={iconName} /> : null;
-  const requiredIcon = required ? <Icon color="red" name="asterisk" /> : null;
-  const labelElement =
-    title || icon ? (
-      <label htmlFor={`${fieldPath}.langstring.#text`}>
-        {requiredIcon}
-        {icon}
-        {title}
-      </label>
-    ) : null;
+  const error = fieldMeta.error || fieldMeta.initialError || null;
+  // `vocabulary` is {1: {name: "NATURAL SCIENCES"}, 101: {name: "Mathematics"}, ...}
+  // Dropdown needs [{key: "1", value: "1", text: "NATURAL SCIENCES"}, ...]
+  const options = Object.entries(vocabulary).map(([key, { name }]) => ({
+    key,
+    value: key,
+    text: name,
+  }));
+  options.sort((lhs, rhs) => String(lhs.key).localeCompare(rhs.key));
 
   return (
-    <div className="field">
-      {labelElement}
+    // For correct placement within a web-form, `Form.Dropdown` is used here,
+    // which differs from `Dropdown` in that it's wrapped in an additional <div class="field" />
+    <Form.Dropdown
+      className={className || "sixteen wide"}
+      clearable={clearable}
+      defaultValue={fieldMeta.value || null}
+      disabled={isSubmitting}
+      error={error}
+      fluid
+      name={fieldPath}
+      noResultsMessage={i18next.t("No results found.")}
+      onBlur={fieldProps.onBlur}
+      onChange={(e, { value }) => fieldHelpers.setValue(value)}
+      options={options}
+      placeholder={placeholder}
+      search
+      searchInput={{ id: fieldPath }}
+      selection
+      value={fieldMeta.value || null}
+    />
+  );
+};
+
+export const DropdownField = ({
+  clearable,
+  closeAction,
+  debug,
+  fieldPath,
+  iconName,
+  placeholder,
+  required,
+  title,
+  vocabularyName,
+}) => {
+  return (
+    <Form.Field>
+      <FieldLabel
+        htmlFor={fieldPath}
+        iconName={iconName}
+        label={title}
+        required={required}
+      />
       <GroupField fieldPath={fieldPath}>
+        <InnerDropdownField
+          clearable={clearable}
+          fieldPath={fieldPath}
+          placeholder={placeholder}
+          vocabularyName={vocabularyName}
+        />
+        <CloseButton closeAction={closeAction} />
+      </GroupField>
+      {debug && <DebugInfo fieldPath={fieldPath} />}
+    </Form.Field>
+  );
+};
+
+export const ContributorField = ({
+  closeAction,
+  debug,
+  fieldPath,
+  vocabularyName,
+}) => {
+  return (
+    <Form.Field>
+      <GroupField fieldPath={fieldPath}>
+        <InnerDropdownField
+          className={"four wide"}
+          fieldPath={`${fieldPath}.role`}
+          placeholder={i18next.t("Select role")}
+          vocabularyName={vocabularyName}
+        />
         <LeftLabeledTextField
           className="twelve wide"
           debug={debug}
-          fieldPath={`${fieldPath}.langstring.#text`}
-          label={label}
-          placeholder={placeholder}
-          required={required}
-          rows={rows}
-        />
-        <LeftLabeledTextField
-          className="four wide"
-          debug={debug}
-          fieldPath={`${fieldPath}.langstring.lang`}
-          label="Language"
-          placeholder="e.g. en, de"
-          required={required}
+          fieldPath={`${fieldPath}.name`}
+          label={i18next.t("Name")}
+          placeholder={i18next.t("Enter name here")}
         />
         <CloseButton closeAction={closeAction} />
       </GroupField>
       {debug && <DebugInfo fieldPath={fieldPath} />}
-    </div>
+    </Form.Field>
   );
 };
-
-export const LangstringSingleField = (props) => {
-  const {
-    closeAction,
-    debug,
-    fieldPath,
-    iconName,
-    label,
-    placeholder,
-    required,
-    rows,
-    title,
-  } = props;
-  const icon = iconName ? <Icon name={iconName} /> : null;
-  const requiredIcon = required ? <Icon color="red" name="asterisk" /> : null;
-  const labelElement =
-    title || icon ? (
-      <label htmlFor={`${fieldPath}.langstring.#text`}>
-        {requiredIcon}
-        {icon}
-        {title}
-      </label>
-    ) : null;
-
-  return (
-    <div className="field">
-      {labelElement}
-      <GroupField fieldPath={fieldPath}>
-        <LeftLabeledTextField
-          className="sixteen wide"
-          debug={debug}
-          fieldPath={`${fieldPath}.langstring.#text`}
-          label={label}
-          placeholder={placeholder}
-          required={required}
-          rows={rows}
-        />
-        <CloseButton closeAction={closeAction} />
-      </GroupField>
-      {debug && <DebugInfo fieldPath={fieldPath} />}
-    </div>
-  );
-};
-
-export class VocabularyGroupField extends React.Component {
-  render() {
-    const {
-      closeAction,
-      debug,
-      fieldPath,
-      icon,
-      label,
-      placeholder,
-      required,
-      title,
-    } = this.props;
-
-    const requiredIcon = required ? <Icon color="red" name="asterisk" /> : null;
-    const labelElement =
-      title || icon ? (
-        <label>
-          {requiredIcon}
-          {icon}
-          {title}
-        </label>
-      ) : null;
-
-    return (
-      <div className="field">
-        {labelElement}
-        <GroupField fieldPath={fieldPath}>
-          <LeftLabeledTextField
-            className="twelve wide"
-            debug={debug}
-            fieldPath={`${fieldPath}.entry.langstring.#text`}
-            label={label}
-            placeholder={placeholder}
-            required={required}
-          />
-          <LeftLabeledTextField
-            className="four wide"
-            debug={debug}
-            fieldPath={`${fieldPath}.catalog`}
-            label="Catalog"
-            placeholder='e.g. "ISBN", "DOI"'
-            required={required}
-          />
-          <CloseButton closeAction={closeAction} />
-        </GroupField>
-        {debug && <DebugInfo fieldPath={fieldPath} />}
-      </div>
-    );
-  }
-}
