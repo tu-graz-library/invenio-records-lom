@@ -1,21 +1,19 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2022 Graz University of Technology.
+# Copyright (C) 2022-2023 Graz University of Technology.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
 """Utilities for creation of LOM-compliant metadata."""
 
-# allow `list[str]` annotation, PEP585 makes this unnecessary for python>=3.9
-from __future__ import annotations
 
-import copy
-import csv
-import json
-import typing as t
 from collections.abc import MutableMapping
+from copy import deepcopy
+from csv import reader
 from importlib import resources
+from json import load
+from typing import Any, Iterator, Optional, Union
 
 
 class DotAccessWrapper(MutableMapping):
@@ -29,24 +27,31 @@ class DotAccessWrapper(MutableMapping):
 
     When setting, non-existing submappings are created:
     >> wrapper = DotAccessWrapper(data:={})
-    >> wrapper["a.b"] = 3  # same as `data["a"]["b"] = 3`, data["a"] is created as a dict
+
+    same as `data["a"]["b"] = 3`, data["a"] is created as a dict
+    >> wrapper["a.b"] = 3
+
     Note that this changes the mapping passed on initialization (if any).
 
     When setting, you can also create a new list-entry on the fly, using `[]` as subkey:
     >> wrapper = DotAccessWrapper(data:={})
-    >> wrapper["c.[]"] = 4  # same as `data["c"].append(4)`, data["c"] is created as a list
+
+    same as `data["c"].append(4)`, data["c"] is created as a list
+    >> wrapper["c.[]"] = 4
 
     To be unambiguous, int-castable keys may not appear in dicts within passed-in data.
     """
 
     def __init__(
-        self, data: t.Union[dict, list, None] = None, overwritable: bool = True
+        self,
+        data: Union[dict, list, None] = None,
+        overwritable: bool = True,
     ) -> None:
         """Constructor."""
         self.data = data if (data is not None) else {}
-        self.overwritable = bool(overwritable)
+        self.overwritable = overwritable
 
-    def __getitem__(self, dotted_key: str) -> t.Any:
+    def __getitem__(self, dotted_key: str) -> Any:
         """Get."""
         cursor = self.data
         for subkey in self.split(dotted_key):
@@ -58,7 +63,7 @@ class DotAccessWrapper(MutableMapping):
                 raise KeyError(dotted_key) from exc
         return cursor
 
-    def __setitem__(self, dotted_key: str, value: t.Any) -> None:
+    def __setitem__(self, dotted_key: str, value: Any) -> None:
         """Set."""
         if not self.overwritable:
             if "[]" not in self.split(dotted_key) and dotted_key in self:
@@ -89,7 +94,7 @@ class DotAccessWrapper(MutableMapping):
         self.ascertain_unambiguity(parent, last_key)
         del parent[last_key]  # pylint: disable=unsupported-delete-operation
 
-    def __iter__(self) -> t.Iterator:
+    def __iter__(self) -> Iterator:
         """Iter."""
         return iter(self.data)
 
@@ -102,7 +107,7 @@ class DotAccessWrapper(MutableMapping):
         return f"<{type(self).__qualname__}({self.data!r}) at {hex(id(self))}>"
 
     @staticmethod
-    def ascertain_unambiguity(container: t.Union[dict, list], key: str) -> None:
+    def ascertain_unambiguity(container: Union[dict, list], key: str) -> None:
         """Check whether `key` is unambiguous within `container`."""
         try:
             int(key)  # try to int-cast key
@@ -111,12 +116,13 @@ class DotAccessWrapper(MutableMapping):
             key_is_int_castable = False  # int-casting attempt failed
 
         if key_is_int_castable and isinstance(container, dict):
-            # it's not clear whether key is supposed to be int-casted or not since dicts take both
-            # when using an int-castable key, you probably meant to use it with a list anyway...
+            # it's not clear whether key is supposed to be int-casted or not
+            # since dicts take both when using an int-castable key, you probably
+            # meant to use it with a list anyway...
             raise ValueError("For unambiguity, dict-keys may not be int-castable.")
 
     @staticmethod
-    def split(dotted_key: str) -> list[t.Union[str, int]]:
+    def split(dotted_key: str) -> list[Union[str, int]]:
         """Split `dotted_key` into its subkeys."""
         res = []
         for subkey in dotted_key.split("."):
@@ -134,7 +140,7 @@ def get_learningresourcetypedict() -> dict[str, dict[str, str]]:
     where labels_by_language maps (language_code -> label).
     """
     with resources.open_text(__package__, "learning_resource_types.json") as file_like:
-        return json.load(file_like)
+        return load(file_like)
 
 
 def get_oefosdict(language_code: str = "de") -> dict[str, str]:
@@ -149,16 +155,19 @@ def get_oefosdict(language_code: str = "de") -> dict[str, str]:
         raise ValueError(f"OEFOS aren't available for language_code {language_code!r}.")
     filename = filenames_by_language[language_code.lower()]
 
-    with resources.open_text(__package__, filename) as file_like:
-        reader = csv.reader(file_like, delimiter=";")
-        __ = next(reader)  # discard header
+    with resources.open_text(__package__, filename) as file_pointer:
+        file_reader = reader(file_pointer, delimiter=";")
+
+        # discard header
+        next(file_reader)
+
         for __, edv_code, __, name, __ in reader:
             oefosdict[edv_code] = name
 
     return oefosdict
 
 
-def langstringify(text: str, lang: t.Optional[str] = "x-none") -> dict:
+def langstringify(text: str, lang: Optional[str] = "x-none") -> dict:
     """Wraps `text` and `lang` into a langstring-dict as per LOM-standard.
 
     If `lang` is falsy, the output won't have a "lang"-field.
@@ -220,20 +229,20 @@ class LOMMetadata:  # pylint: disable=too-many-public-methods
 
     def __init__(
         self,
-        record_json: t.Optional[dict] = None,
+        record_json: Optional[dict] = None,
         overwritable: bool = False,
     ) -> None:
         """Init."""
-        record_json = copy.deepcopy(record_json or {})
+        record_json = deepcopy(record_json or {})
         self.record = DotAccessWrapper(record_json, overwritable=overwritable)
 
     @classmethod
     def create(
         cls,
         resource_type: str,
-        metadata: t.Optional[dict] = None,
+        metadata: Optional[dict] = None,
         access: str = "public",
-        pids: t.Optional[dict] = None,
+        pids: Optional[dict] = None,
         overwritable=False,
     ):
         """Create `cls` with a json that is compatible with invenio-databases.
@@ -244,7 +253,6 @@ class LOMMetadata:  # pylint: disable=too-many-public-methods
         :param dict pids: For adding external pids
         """
         files_enabled = resource_type in ["file", "upload"]
-        pids = pids or {}
         access_dict = {
             "embargo": {},
             "files": access,
@@ -264,7 +272,7 @@ class LOMMetadata:  # pylint: disable=too-many-public-methods
         """Pipe-through for convenient access of underlying json."""
         return self.record.data
 
-    def deduped_append(self, parent_key: str, value: t.Any):
+    def deduped_append(self, parent_key: str, value: Any):
         """Append `value` to `self.record[key]` if not already appended."""
         self.record.setdefault(parent_key, [])
         parent = self.record[parent_key]
@@ -362,7 +370,7 @@ class LOMMetadata:  # pylint: disable=too-many-public-methods
         """Append format."""
         self.deduped_append("metadata.technical.format", mimetype)
 
-    def set_size(self, size: t.Union[str, int]) -> None:
+    def set_size(self, size: Union[str, int]) -> None:
         """Set size.
 
         :param str|int size: size in bytes (octets)
@@ -459,7 +467,7 @@ class LOMMetadata:  # pylint: disable=too-many-public-methods
         return oefos_classification
 
     def create_oefos_taxonpath(
-        self, oefos_id: t.Union[str, int], language_code: str = "de"
+        self, oefos_id: Union[str, int], language_code: str = "de"
     ) -> dict:
         """Create the full OEFOS taxon-path that ends in `oefos_id`.
 
@@ -492,11 +500,12 @@ class LOMMetadata:  # pylint: disable=too-many-public-methods
         }
 
     def append_oefos_id(
-        self, oefos_id: t.Union[str, int], language_code: str = "de"
+        self, oefos_id: Union[str, int], language_code: str = "de"
     ) -> None:
         """Append a taxonpath corresponding to `oefos_id` to the oefos-classification.
 
-        (The oefos-classification is the unique `classification` whose `purpose` is "discipline".)
+        (The oefos-classification is the unique `classification` whose `purpose`
+        is "discipline".)
         """
         taxonpaths = self.get_oefos_classification()["taxonpath"]
         new_taxonpath = self.create_oefos_taxonpath(oefos_id, language_code)
@@ -506,7 +515,8 @@ class LOMMetadata:  # pylint: disable=too-many-public-methods
             old_taxons = old_taxonpath["taxon"]
             new_taxons = new_taxonpath["taxon"]
             if all(taxon in old_taxons for taxon in new_taxons):
-                # found previously existing taxonpath which holds a superset of new taxons
+                # found previously existing taxonpath which holds a superset of
+                # new taxons
                 return
 
         # delete less comprehensive taxonpaths (if any)
