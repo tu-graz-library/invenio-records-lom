@@ -7,12 +7,8 @@
 
 """Utilities for creation of LOM-compliant metadata."""
 
-from .util import (
-    DotAccessWrapper,
-    LOMMetadata,
-    get_learningresourcetypedict,
-    get_oefosdict,
-)
+from .metadata import LOMCourseMetadata, LOMMetadata
+from .util import DotAccessWrapper, get_learningresourcetypedict, get_oefosdict
 from .vcard import make_lom_vcard
 
 __all__ = (
@@ -20,5 +16,6 @@ __all__ = (
     "get_learningresourcetypedict",
     "get_oefosdict",
     "LOMMetadata",
+    "LOMCourseMetadata",
     "make_lom_vcard",
 )
