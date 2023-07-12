@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2020-2022 Graz University of Technology.
+# Copyright (C) 2020-2023 Graz University of Technology.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -12,6 +12,7 @@ from flask_babelex import gettext as _
 from invenio_rdm_records.services.pids import providers
 
 from .resources.serializers import LOMToDataCite44Serializer
+from .services import facets
 from .services.permissions import LOMRecordPermissionPolicy
 from .services.pids import LOMDataCitePIDProvider
 
@@ -25,12 +26,21 @@ LOM_PERMISSION_POLICY = LOMRecordPermissionPolicy
 #
 # Search Configuration
 #
-LOM_FACETS = {}
+LOM_FACETS = {
+    "rights_license": {
+        "facet": facets.rights_license,
+        "ui": {
+            # these fields will be available to the React search-app
+            # namely, the overridable `BucketAggregation` component gets these
+            "field": "metadata.rights.url",
+        },
+    }
+}
 
 LOM_SORT_OPTIONS = {
     "bestmatch": {
         "title": _("Best match"),
-        "fields": ["_score"],  # ES defaults to desc on `_score` field
+        "fields": ["_score"],  # opensearch defaults to desc on `_score` field
     },
     "newest": {
         "title": _("Newest"),
@@ -40,6 +50,9 @@ LOM_SORT_OPTIONS = {
 
 LOM_SEARCH = {
     "sort": ["bestmatch", "newest"],
+    "facets": [  # which facets to activate, see `LOM_FACETS` for facet-configuration
+        "rights_license"
+    ],
 }
 """Record search configuration."""
 
