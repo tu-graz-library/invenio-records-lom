@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2021-2022 Graz University of Technology.
+# Copyright (C) 2021-2023 Graz University of Technology.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -14,6 +14,7 @@ from invenio_drafts_resources.services.records.components import (
 )
 from invenio_drafts_resources.services.records.config import (
     RecordServiceConfig,
+    SearchOptions,
     is_draft,
     is_record,
 )
@@ -30,9 +31,15 @@ from invenio_records_resources.services import (
     Link,
     RecordLink,
 )
-from invenio_records_resources.services.base.config import ConfiguratorMixin, FromConfig
+from invenio_records_resources.services.base.config import (
+    ConfiguratorMixin,
+    FromConfig,
+    FromConfigSearchOptions,
+    SearchOptionsMixin,
+)
 
 from ..records import LOMDraft, LOMRecord
+from . import facets
 from .components import LOMPIDsComponent, ResourceTypeComponent
 from .permissions import LOMRecordPermissionPolicy
 from .schemas import LOMRecordSchema
@@ -83,6 +90,13 @@ class FromConfigLOMRequiredPIDs:
         ]
 
 
+class LOMSearchOptions(SearchOptions, SearchOptionsMixin):
+    """Search options applied when calling `.search` on the corresponding LOM-Service."""
+
+    # defaults, `FromConfigSearchOptions` overwrites these with values from current_app.config
+    facets = {"right_license": facets.rights_license}
+
+
 class LOMRecordServiceConfig(RecordServiceConfig, ConfiguratorMixin):
     """Config for LOM record service."""
 
@@ -93,10 +107,20 @@ class LOMRecordServiceConfig(RecordServiceConfig, ConfiguratorMixin):
     # Schemas
     schema = LOMRecordSchema
 
+    # Permission Policy
     permission_policy_cls = FromConfig(
         "LOM_PERMISSION_POLICY", default=LOMRecordPermissionPolicy, import_string=True
     )
-    # PIDConfiguration
+
+    # Search
+    search = FromConfigSearchOptions(
+        "LOM_SEARCH",
+        "LOM_SORT_OPTIONS",
+        "LOM_FACETS",
+        search_option_cls=LOMSearchOptions,
+    )
+
+    # PIDs
     pids_providers = FromConfigLOMPIDsProviders()
     pids_required = FromConfigLOMRequiredPIDs()
 
