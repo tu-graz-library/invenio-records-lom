@@ -184,7 +184,15 @@ class LOMMetadata(BaseLOMMetadata):  # pylint: disable=too-many-public-methods
 
     def append_course(self, course: LOMCourseMetadata) -> None:
         """Append course."""
-        self.deduped_append("metadata.courses", course)
+        if "courses" not in self.record["metadata"]:
+            self.record["metadata.courses"] = []
+
+        courses = self.record["metadata.courses"]
+
+        versions = [course["course"]["version"] for course in courses]
+
+        if course.record["course.version"] not in versions:
+            self.record["metadata.courses"].append(course.record.data)
 
     ###############
     #
