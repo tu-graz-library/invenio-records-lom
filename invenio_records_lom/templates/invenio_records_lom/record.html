@@ -131,6 +131,26 @@
       </p>
     </section>
   {% endif %}
+  {% if record.ui.courses %}
+    <section id="course-content" aria-label="" class="ui segment rdm-sidebar">
+      <h2 class="ui small header">{{_("Is Part of Cousers")}}</h2>
+      <ul>
+        {% for course in record.ui.courses %}
+        <li>{{course.title}} ({{course.version}})</li>
+        {% endfor %}
+      </ul>
+    </section>
+  {% endif %}
+  {% if record.ui.classifications %}
+    <section id="classification-content" aria-label="" class="ui segment rdm-sidebar">
+      <h2 class="ui small header">{{_("Classifications")}}</h2>
+      <ul>
+        {% for classification in record.ui.classifications %}
+        <li>{{classification}}</li>
+        {% endfor %}
+      </ul>
+    </section>
+  {% endif %}
   {% if config.get("LOM_RECORD_EXPORTERS") %}
     {# if no export formats are specified, don't bother showing the box #}
     <section id="export-record" aria-label="{{ _('Export') }}" class="ui segment rdm-sidebar exports">

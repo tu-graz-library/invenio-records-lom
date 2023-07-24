@@ -130,6 +130,10 @@ class LOMUIBaseSchema(BaseObjectSchema):
 
     educationalDescriptions = fields.Method("get_educational_descriptions")
 
+    courses = fields.Method("get_courses")
+
+    classifications = fields.Method("get_classifications")
+
     def get_contributors(self, obj: dict):
         """Get contributors."""
         ui_contributors = []
@@ -160,6 +164,29 @@ class LOMUIBaseSchema(BaseObjectSchema):
             # TODO: sometimes `metadata.educational.description` is made :list[langstring], other times :langstring, unify this!
             descriptions = [descriptions]
         return [get_text(desc) for desc in descriptions if get_text(desc)]
+
+    def get_courses(self, obj: dict):
+        """Get courses."""
+        courses = obj["metadata"].get("courses", [])
+        out = []
+        for course in courses:
+            out.append(
+                {
+                    "title": get_text(course["course"]["title"]),
+                    "version": get_text(course["course"]["version"]),
+                }
+            )
+        return out
+
+    def get_classifications(self, obj: dict):
+        """Get classifications."""
+        out = []
+
+        for classification in obj["metadata"].get("classification", []):
+            for taxon in classification["taxonpath"]:
+                out.append(get_text(taxon["taxon"][-1]["entry"]))
+
+        return out
 
 
 class LOMUILinkSchema(LOMUIBaseSchema):
