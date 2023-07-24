@@ -184,11 +184,13 @@ class LOMMetadata(BaseLOMMetadata):  # pylint: disable=too-many-public-methods
 
     def append_course(self, course: LOMCourseMetadata) -> None:
         """Append course."""
+        # pylint: disable-next=unsupported-membership-test
         if "courses" not in self.record["metadata"]:
             self.record["metadata.courses"] = []
 
         courses = self.record["metadata.courses"]
 
+        # pylint: disable-next=not-an-iterable
         versions = [course["course"]["version"] for course in courses]
 
         if course.record["course.version"] not in versions:
