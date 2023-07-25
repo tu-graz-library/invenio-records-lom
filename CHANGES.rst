@@ -7,6 +7,22 @@
 Changes
 =======
 
+Version v0.10.0 (release 2023-07-25)
+
+- translation: update
+- refactor:
+- ui: add doi to sidemenu
+- tests: add pylint disable statements
+- setup: use pytest-black-ng instead of pytest-black
+- ui: add classification and course to landing page
+- metadata: reimplement dedup for append_course
+- metadata: change metadata a little bit
+- refactor: remove python3.8 compatibility
+- implement and configure facets (=search-filters)
+- clean up various upload-page related things
+- implement vcard and use it for OAI-PMH-output
+
+
 Version v0.9.0 (release 2023-06-01)
 
 - add `format` and `resource-type` to upload-page
