@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: invenio_records_lom 0.1.0\n"
 "Report-Msgid-Bugs-To: info@tugraz.at\n"
-"POT-Creation-Date: 2023-05-09 10:59+0200\n"
-"PO-Revision-Date: 2023-05-09 11:01+0200\n"
+"POT-Creation-Date: 2023-07-25 10:13+0200\n"
+"PO-Revision-Date: 2023-07-25 10:21+0200\n"
 "Last-Translator: christoph.ladurner@tugraz.at\n"
 "Language-Team: Deutsch\n"
 "Language: de_AT\n"
@@ -18,32 +18,61 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Generated-By: Babel 2.9.1\n"
-"X-Generator: Poedit 3.2.2\n"
+"X-Generator: Poedit 2.3.1\n"
 
-#: invenio_records_lom/config.py:23
+#: invenio_records_lom/config.py:42
 msgid "Best match"
 msgstr ""
 
-#: invenio_records_lom/config.py:27
+#: invenio_records_lom/config.py:46
 msgid "Newest"
 msgstr ""
 
-#: invenio_records_lom/config.py:53
+#: invenio_records_lom/config.py:78
 msgid "JSON"
 msgstr "JSON"
 
-#: invenio_records_lom/config.py:82 invenio_records_lom/config.py:89
-#: invenio_records_lom/config.py:113
+#: invenio_records_lom/config.py:110 invenio_records_lom/config.py:117
+#: invenio_records_lom/config.py:141
+#: invenio_records_lom/templates/invenio_records_lom/record.html:156
 msgid "DOI"
 msgstr "DOI"
 
-#: invenio_records_lom/config.py:94
+#: invenio_records_lom/config.py:122
 msgid "OAI ID"
 msgstr "OAI ID"
 
-#: invenio_records_lom/config.py:120
+#: invenio_records_lom/config.py:148
 msgid "OAI"
 msgstr "OAI"
+
+#: invenio_records_lom/services/facets.py:17
+msgid "License"
+msgstr ""
+
+#: invenio_records_lom/services/facets.py:19
+msgid "CC BY 4.0"
+msgstr ""
+
+#: invenio_records_lom/services/facets.py:20
+msgid "CC BY-SA 4.0"
+msgstr ""
+
+#: invenio_records_lom/services/facets.py:21
+msgid "CC BY-ND 4.0"
+msgstr ""
+
+#: invenio_records_lom/services/facets.py:22
+msgid "CC BY-NC 4.0"
+msgstr ""
+
+#: invenio_records_lom/services/facets.py:23
+msgid "CC BY-NC-SA 4.0"
+msgstr ""
+
+#: invenio_records_lom/services/facets.py:24
+msgid "CC BY-NC-ND 4.0"
+msgstr ""
 
 #: invenio_records_lom/services/pids.py:53
 msgid "Missing publisher."
@@ -176,28 +205,68 @@ msgstr ""
 "        +43(316)873-8577 oder E-Mail-Adresse <a href=\"mailto:"
 "telucation@tugraz.at\">telucation@tugraz.at</a>."
 
-#: invenio_records_lom/templates/invenio_records_lom/record.html:57
-#, fuzzy
-msgid "General Information"
-msgstr "Allgemeine Informationen"
+#: invenio_records_lom/templates/invenio_records_lom/record.html:21
+msgid "Back-navigation"
+msgstr ""
 
-#: invenio_records_lom/templates/invenio_records_lom/record.html:73
+#: invenio_records_lom/templates/invenio_records_lom/record.html:23
 #, fuzzy
-#| msgid "Educational Informations"
-msgid "Educational Information"
-msgstr "Lernziele"
+#| msgid "Back to details"
+msgid "Back to edit"
+msgstr "Zurück zu den Details"
 
-#: invenio_records_lom/templates/invenio_records_lom/record.html:110
+#: invenio_records_lom/templates/invenio_records_lom/record.html:33
+msgid "Labels for version, resource-type, access-status"
+msgstr ""
+
+#: invenio_records_lom/templates/invenio_records_lom/record.html:51
+msgid "Resource type"
+msgstr "Resource Typ"
+
+#: invenio_records_lom/templates/invenio_records_lom/record.html:54
+msgid "Access status"
+msgstr "Zugriffstatus"
+
+#: invenio_records_lom/templates/invenio_records_lom/record.html:72
+msgid "Record title and creators"
+msgstr "Datensatztitel und Erzeugende"
+
+#: invenio_records_lom/templates/invenio_records_lom/record.html:74
+msgid "Contributors"
+msgstr "Mitwirkende"
+
+#: invenio_records_lom/templates/invenio_records_lom/record.html:89
+msgid "Record Description"
+msgstr "Record Beschreibung"
+
+#: invenio_records_lom/templates/invenio_records_lom/record.html:90
+msgid "Description"
+msgstr "Beschreibung"
+
+#: invenio_records_lom/templates/invenio_records_lom/record.html:128
 msgid "Original Content"
 msgstr "Quelle"
 
-#: invenio_records_lom/templates/invenio_records_lom/record.html:120
+#: invenio_records_lom/templates/invenio_records_lom/record.html:136
+msgid "Is Part of Courses"
+msgstr "Ist Teil der Kurse"
+
+#: invenio_records_lom/templates/invenio_records_lom/record.html:146
+msgid "Classifications"
+msgstr "Klassifikationen"
+
+#: invenio_records_lom/templates/invenio_records_lom/record.html:162
+#: invenio_records_lom/templates/invenio_records_lom/record.html:163
 msgid "Export"
 msgstr "Export"
 
+#: invenio_records_lom/templates/invenio_records_lom/search.html:8
+msgid "OER Search Results"
+msgstr "OER Suchergebnisse"
+
 #: invenio_records_lom/templates/invenio_records_lom/uploads.html:36
 msgid "Type query then press enter for search"
-msgstr ""
+msgstr "Geben Sie ihre Suchanfrage ein"
 
 #: invenio_records_lom/templates/invenio_records_lom/uploads.html:47
 msgid "New OER-Upload"
@@ -219,25 +288,33 @@ msgstr ""
 msgid "Back to details"
 msgstr "Zurück zu den Details"
 
-#: invenio_records_lom/templates/invenio_records_lom/records/files.html:35
-#: invenio_records_lom/templates/invenio_records_lom/records/macros/files.html:108
+#: invenio_records_lom/templates/invenio_records_lom/records/files.html:22
+#: invenio_records_lom/templates/invenio_records_lom/records/files.html:25
+#: invenio_records_lom/templates/invenio_records_lom/records/files.html:37
+#: invenio_records_lom/templates/invenio_records_lom/records/macros/files.html:118
 msgid "Files"
 msgstr "Dateien"
 
-#: invenio_records_lom/templates/invenio_records_lom/records/files.html:43
-#: invenio_records_lom/templates/invenio_records_lom/records/macros/files.html:118
+#: invenio_records_lom/templates/invenio_records_lom/records/files.html:45
+#: invenio_records_lom/templates/invenio_records_lom/records/macros/files.html:133
 msgid "Reason"
 msgstr "Reason"
 
-#: invenio_records_lom/templates/invenio_records_lom/records/macros/files.html:57
+#: invenio_records_lom/templates/invenio_records_lom/records/macros/files.html:39
+#, fuzzy
+#| msgid "Preview"
+msgid "File preview"
+msgstr "Vorschau"
+
+#: invenio_records_lom/templates/invenio_records_lom/records/macros/files.html:64
 msgid "Name"
 msgstr "Name"
 
-#: invenio_records_lom/templates/invenio_records_lom/records/macros/files.html:58
+#: invenio_records_lom/templates/invenio_records_lom/records/macros/files.html:65
 msgid "Size"
 msgstr "Größe"
 
-#: invenio_records_lom/templates/invenio_records_lom/records/macros/files.html:78
+#: invenio_records_lom/templates/invenio_records_lom/records/macros/files.html:87
 msgid ""
 "This is the file fingerprint (checksum), which can be used to verify the "
 "file integrity."
@@ -245,14 +322,23 @@ msgstr ""
 "Das ist die Prüfsumme der Datei, die dafür verwendet werden kann die "
 "Dateiintegrität zu prüfen."
 
-#: invenio_records_lom/templates/invenio_records_lom/records/macros/files.html:88
+#: invenio_records_lom/templates/invenio_records_lom/records/macros/files.html:98
 msgid "Preview"
 msgstr "Vorschau"
 
-#: invenio_records_lom/templates/invenio_records_lom/records/macros/files.html:93
+#: invenio_records_lom/templates/invenio_records_lom/records/macros/files.html:103
 msgid "Download"
 msgstr "Download"
 
 #: invenio_records_lom/ui/records/__init__.py:100
 msgid "OER-Uploads"
 msgstr ""
+
+#, fuzzy
+#~ msgid "General Information"
+#~ msgstr "Allgemeine Informationen"
+
+#, fuzzy
+#~| msgid "Educational Informations"
+#~ msgid "Educational Information"
+#~ msgstr "Lernziele"
