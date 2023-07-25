@@ -7,6 +7,11 @@
 Changes
 =======
 
+Version v0.10.1 (release 2023-07-25)
+
+- fix: use save key access
+
+
 Version v0.10.0 (release 2023-07-25)
 
 - translation: update
