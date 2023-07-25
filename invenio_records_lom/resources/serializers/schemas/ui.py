@@ -185,7 +185,7 @@ class LOMUIBaseSchema(BaseObjectSchema):
         out = []
 
         for classification in obj["metadata"].get("classification", []):
-            for taxon in classification["taxonpath"]:
+            for taxon in classification.get("taxonpath", []):
                 out.append(get_text(taxon["taxon"][-1]["entry"]))
 
         return out
