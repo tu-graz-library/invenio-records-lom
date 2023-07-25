@@ -7,9 +7,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: invenio-records-lom 0.8.1\n"
+"Project-Id-Version: invenio-records-lom 0.9.0\n"
 "Report-Msgid-Bugs-To: info@tugraz.at\n"
-"POT-Creation-Date: 2023-05-09 09:45+0200\n"
+"POT-Creation-Date: 2023-07-25 10:13+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,29 +18,58 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.12.1\n"
 
-#: invenio_records_lom/config.py:23
+#: invenio_records_lom/config.py:42
 msgid "Best match"
 msgstr ""
 
-#: invenio_records_lom/config.py:27
+#: invenio_records_lom/config.py:46
 msgid "Newest"
 msgstr ""
 
-#: invenio_records_lom/config.py:53
+#: invenio_records_lom/config.py:78
 msgid "JSON"
 msgstr ""
 
-#: invenio_records_lom/config.py:82 invenio_records_lom/config.py:89
-#: invenio_records_lom/config.py:113
+#: invenio_records_lom/config.py:110 invenio_records_lom/config.py:117
+#: invenio_records_lom/config.py:141
+#: invenio_records_lom/templates/invenio_records_lom/record.html:156
 msgid "DOI"
 msgstr ""
 
-#: invenio_records_lom/config.py:94
+#: invenio_records_lom/config.py:122
 msgid "OAI ID"
 msgstr ""
 
-#: invenio_records_lom/config.py:120
+#: invenio_records_lom/config.py:148
 msgid "OAI"
+msgstr ""
+
+#: invenio_records_lom/services/facets.py:17
+msgid "License"
+msgstr ""
+
+#: invenio_records_lom/services/facets.py:19
+msgid "CC BY 4.0"
+msgstr ""
+
+#: invenio_records_lom/services/facets.py:20
+msgid "CC BY-SA 4.0"
+msgstr ""
+
+#: invenio_records_lom/services/facets.py:21
+msgid "CC BY-ND 4.0"
+msgstr ""
+
+#: invenio_records_lom/services/facets.py:22
+msgid "CC BY-NC 4.0"
+msgstr ""
+
+#: invenio_records_lom/services/facets.py:23
+msgid "CC BY-NC-SA 4.0"
+msgstr ""
+
+#: invenio_records_lom/services/facets.py:24
+msgid "CC BY-NC-ND 4.0"
 msgstr ""
 
 #: invenio_records_lom/services/pids.py:53
@@ -124,20 +153,61 @@ msgid ""
 "href=\"mailto:telucation@tugraz.at\">telucation@tugraz.at</a>."
 msgstr ""
 
-#: invenio_records_lom/templates/invenio_records_lom/record.html:57
-msgid "General Information"
+#: invenio_records_lom/templates/invenio_records_lom/record.html:21
+msgid "Back-navigation"
 msgstr ""
 
-#: invenio_records_lom/templates/invenio_records_lom/record.html:73
-msgid "Educational Information"
+#: invenio_records_lom/templates/invenio_records_lom/record.html:23
+msgid "Back to edit"
 msgstr ""
 
-#: invenio_records_lom/templates/invenio_records_lom/record.html:110
+#: invenio_records_lom/templates/invenio_records_lom/record.html:33
+msgid "Labels for version, resource-type, access-status"
+msgstr ""
+
+#: invenio_records_lom/templates/invenio_records_lom/record.html:51
+msgid "Resource type"
+msgstr ""
+
+#: invenio_records_lom/templates/invenio_records_lom/record.html:54
+msgid "Access status"
+msgstr ""
+
+#: invenio_records_lom/templates/invenio_records_lom/record.html:72
+msgid "Record title and creators"
+msgstr ""
+
+#: invenio_records_lom/templates/invenio_records_lom/record.html:74
+msgid "Contributors"
+msgstr ""
+
+#: invenio_records_lom/templates/invenio_records_lom/record.html:89
+msgid "Record Description"
+msgstr ""
+
+#: invenio_records_lom/templates/invenio_records_lom/record.html:90
+msgid "Description"
+msgstr ""
+
+#: invenio_records_lom/templates/invenio_records_lom/record.html:128
 msgid "Original Content"
 msgstr ""
 
-#: invenio_records_lom/templates/invenio_records_lom/record.html:120
+#: invenio_records_lom/templates/invenio_records_lom/record.html:136
+msgid "Is Part of Courses"
+msgstr ""
+
+#: invenio_records_lom/templates/invenio_records_lom/record.html:146
+msgid "Classifications"
+msgstr ""
+
+#: invenio_records_lom/templates/invenio_records_lom/record.html:162
+#: invenio_records_lom/templates/invenio_records_lom/record.html:163
 msgid "Export"
+msgstr ""
+
+#: invenio_records_lom/templates/invenio_records_lom/search.html:8
+msgid "OER Search Results"
 msgstr ""
 
 #: invenio_records_lom/templates/invenio_records_lom/uploads.html:36
@@ -164,35 +234,41 @@ msgstr ""
 msgid "Back to details"
 msgstr ""
 
-#: invenio_records_lom/templates/invenio_records_lom/records/files.html:35
-#: invenio_records_lom/templates/invenio_records_lom/records/macros/files.html:108
+#: invenio_records_lom/templates/invenio_records_lom/records/files.html:22
+#: invenio_records_lom/templates/invenio_records_lom/records/files.html:25
+#: invenio_records_lom/templates/invenio_records_lom/records/files.html:37
+#: invenio_records_lom/templates/invenio_records_lom/records/macros/files.html:118
 msgid "Files"
 msgstr ""
 
-#: invenio_records_lom/templates/invenio_records_lom/records/files.html:43
-#: invenio_records_lom/templates/invenio_records_lom/records/macros/files.html:118
+#: invenio_records_lom/templates/invenio_records_lom/records/files.html:45
+#: invenio_records_lom/templates/invenio_records_lom/records/macros/files.html:133
 msgid "Reason"
 msgstr ""
 
-#: invenio_records_lom/templates/invenio_records_lom/records/macros/files.html:57
+#: invenio_records_lom/templates/invenio_records_lom/records/macros/files.html:39
+msgid "File preview"
+msgstr ""
+
+#: invenio_records_lom/templates/invenio_records_lom/records/macros/files.html:64
 msgid "Name"
 msgstr ""
 
-#: invenio_records_lom/templates/invenio_records_lom/records/macros/files.html:58
+#: invenio_records_lom/templates/invenio_records_lom/records/macros/files.html:65
 msgid "Size"
 msgstr ""
 
-#: invenio_records_lom/templates/invenio_records_lom/records/macros/files.html:78
+#: invenio_records_lom/templates/invenio_records_lom/records/macros/files.html:87
 msgid ""
 "This is the file fingerprint (checksum), which can be used to verify the "
 "file integrity."
 msgstr ""
 
-#: invenio_records_lom/templates/invenio_records_lom/records/macros/files.html:88
+#: invenio_records_lom/templates/invenio_records_lom/records/macros/files.html:98
 msgid "Preview"
 msgstr ""
 
-#: invenio_records_lom/templates/invenio_records_lom/records/macros/files.html:93
+#: invenio_records_lom/templates/invenio_records_lom/records/macros/files.html:103
 msgid "Download"
 msgstr ""
 
