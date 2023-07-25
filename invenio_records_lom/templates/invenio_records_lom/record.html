@@ -151,6 +151,12 @@
       </ul>
     </section>
   {% endif %}
+  {% if record.ui.doi %}
+    <section id="doi-content" aria-label="" class="ui segment rdm-sidebar">
+      <h2 class="ui small header">{{_("DOI")}}</h2>
+      <span>{{record.ui.doi}}</span>
+    </section>
+  {% endif %}
   {% if config.get("LOM_RECORD_EXPORTERS") %}
     {# if no export formats are specified, don't bother showing the box #}
     <section id="export-record" aria-label="{{ _('Export') }}" class="ui segment rdm-sidebar exports">

@@ -134,6 +134,8 @@ class LOMUIBaseSchema(BaseObjectSchema):
 
     classifications = fields.Method("get_classifications")
 
+    doi = fields.Method("get_doi")
+
     def get_contributors(self, obj: dict):
         """Get contributors."""
         ui_contributors = []
@@ -187,6 +189,12 @@ class LOMUIBaseSchema(BaseObjectSchema):
                 out.append(get_text(taxon["taxon"][-1]["entry"]))
 
         return out
+
+    def get_doi(self, obj: dict):
+        """Get DOI."""
+        prefix = current_app.config["DATACITE_PREFIX"]
+        pid = obj["id"]
+        return f"https://dx.doi.org/{prefix}/{pid}"
 
 
 class LOMUILinkSchema(LOMUIBaseSchema):
