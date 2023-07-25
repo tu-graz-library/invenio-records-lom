@@ -31,37 +31,6 @@ class BaseLOMMetadata:
         record_json = deepcopy(record_json or {})
         self.record = DotAccessWrapper(record_json, overwritable=overwritable)
 
-    @classmethod
-    def create(
-        cls,
-        resource_type: str,
-        metadata: Optional[dict] = None,
-        access: str = "public",
-        pids: Optional[dict] = None,
-        overwritable=False,
-    ):
-        """Create `cls` with a json that is compatible with invenio-databases.
-
-        :param str resource_type: One of `current_app.config["LOM_RESOURCE_TYPES"]`
-        :param dict metadata: The metadata to be wrapped
-        :param str access: One of "public", "restricted"
-        :param dict pids: For adding external pids
-        """
-        files_enabled = resource_type in ["file", "upload"]
-        access_dict = {
-            "embargo": {},
-            "files": access,
-            "record": access,
-        }
-        record_json = {
-            "access": access_dict,
-            "files": {"enabled": files_enabled},
-            "metadata": metadata or {},
-            "pids": pids or {},
-            "resource_type": resource_type,
-        }
-        return cls(record_json, overwritable=overwritable)
-
     @property
     def json(self):
         """Pipe-through for convenient access of underlying json."""
@@ -175,6 +144,37 @@ class LOMMetadata(BaseLOMMetadata):  # pylint: disable=too-many-public-methods
         "de": get_oefosdict("de"),
         "en": get_oefosdict("en"),
     }
+
+    @classmethod
+    def create(
+        cls,
+        resource_type: str,
+        metadata: Optional[dict] = None,
+        access: str = "public",
+        pids: Optional[dict] = None,
+        overwritable=False,
+    ):
+        """Create `cls` with a json that is compatible with invenio-databases.
+
+        :param str resource_type: One of `current_app.config["LOM_RESOURCE_TYPES"]`
+        :param dict metadata: The metadata to be wrapped
+        :param str access: One of "public", "restricted"
+        :param dict pids: For adding external pids
+        """
+        files_enabled = resource_type in ["file", "upload"]
+        access_dict = {
+            "embargo": {},
+            "files": access,
+            "record": access,
+        }
+        record_json = {
+            "access": access_dict,
+            "files": {"enabled": files_enabled},
+            "metadata": metadata or {},
+            "pids": pids or {},
+            "resource_type": resource_type,
+        }
+        return cls(record_json, overwritable=overwritable)
 
     ###############
     #
