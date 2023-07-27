@@ -22,6 +22,7 @@ theme = WebpackThemeBundle(
             "aliases": {},
             "entry": {
                 "invenio-records-lom-deposit": "./js/invenio_records_lom/deposit/index.js",
+                "invenio-records-lom-landing-page": "./js/invenio_records_lom/landing_page/index.js",
                 "invenio-records-lom-search": "./js/invenio_records_lom/search/index.js",
                 "invenio-records-lom-theme": "./less/invenio_records_lom/theme.less",
             },

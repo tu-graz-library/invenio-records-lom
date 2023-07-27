@@ -10,6 +10,11 @@
 
 {%- from "invenio_records_lom/records/macros/tree.html" import make_dep_tree %}
 
+{% block javascript %}
+  {{ super() }}
+  {{ webpack['invenio-records-lom-landing-page.js'] }}
+{% endblock javascript %}
+
 {% block head_title %}
   <title>{{ record.ui.title }}</title>
 {% endblock head_title %}
@@ -121,7 +126,29 @@
 {% endblock record_details %}
 
 {% block record_sidebar %}
-  {# TODO: invenio's sidebar also has manage-menu, versions, keywords (OEFOS), details, and fancier export card #}
+  {# TODO: invenio's sidebar also has versions, keywords (OEFOS), details, and fancier export card #}
+  <section id="record-manage-menu" aria-label="{{ _('Record Management') }}" class="ui grid segment rdm-sidebar">
+    {# invenio also includes data-is-preview-submission-request and data-access-links-search-config#}
+    <div
+      class="column"
+      id="lomRecordManagement"
+      data-record='{{ record | tojson }}'
+      data-permissions='{{ permissions | tojson }}'
+      data-is-draft='{{ is_draft | tojson }}'
+      data-current-user-id="{{ current_user.id }}"
+    >
+      <!-- React-controlled -->
+      {# the following is a placeholder while waiting for React to kick in #}
+      <div class="ui placeholder">
+        <div class="header">
+          <div class="short line"></div>
+        </div>
+        <div class="paragraph">
+          <div class="full line"></div>
+        </div>
+      </div>
+    </div>
+  </section>
   {% include "invenio_app_rdm/records/details/side_bar/licenses.html" %}
   {% if record.ui.location %}
     <section id="original-content" aria-label="" class="ui segment rdm-sidebar">
