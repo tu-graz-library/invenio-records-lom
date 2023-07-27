@@ -21,6 +21,9 @@
   <input id="lom-deposit-config" type="hidden" name="lom-deposit-config" value='{{forms_config | tojson}}'>
   <input id="lom-deposit-files"  type="hidden" name="lom-deposit-files"  value='{{files | tojson }}'>
   <input id="lom-deposit-record" type="hidden" name="lom-deposit-record" value='{{record | tojson}}'>
+  {%- if permissions %}
+  <input id="lom-deposit-record-permissions" type="hidden" name="lom-deposit-record-permissions" value='{{ permissions | tojson }}'></input>
+  {%- endif %}
   <div id="lom-deposit-form"><!-- content is react-controlled --></div>
 {%- endblock page_body %}
 
