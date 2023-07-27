@@ -14,6 +14,7 @@ ReactDOM.render(
     config={getInputFromDOM("lom-deposit-config")}
     files={getInputFromDOM("lom-deposit-files")}
     record={getInputFromDOM("lom-deposit-record")}
+    permissions={getInputFromDOM("lom-deposit-record-permissions")}
   />,
   document.getElementById("lom-deposit-form")
 );

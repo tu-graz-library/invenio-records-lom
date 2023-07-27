@@ -63,7 +63,7 @@ export default class LOMDepositForm extends React.Component {
       <DepositFormApp
         config={this.config}
         files={this.props.files}
-        permissions={undefined}
+        permissions={this.props.permissions}
         preselectedCommunity={undefined}
         record={this.props.record}
         // below arguments overwrite default-behavior
