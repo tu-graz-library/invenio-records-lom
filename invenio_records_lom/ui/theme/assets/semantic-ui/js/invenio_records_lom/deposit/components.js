@@ -9,7 +9,7 @@ import { AccordionField, ArrayField, FieldLabel } from "react-invenio-forms";
 import { PIDField } from "react-invenio-deposit";
 import { useSelector } from "react-redux";
 import { Form, Icon } from "semantic-ui-react";
-import { i18next } from "@translations/invenio_app_rdm/i18next";
+import { i18next } from "@translations/invenio_records_lom/i18next";
 
 import {
   ContributorField,
