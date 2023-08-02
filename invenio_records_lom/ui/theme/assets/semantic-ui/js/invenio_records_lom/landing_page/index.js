@@ -17,7 +17,6 @@ if (recordManagementElement) {
       record={JSON.parse(recordManagementElement.dataset.record)}
       permissions={JSON.parse(recordManagementElement.dataset.permissions)}
       isDraft={JSON.parse(recordManagementElement.dataset.isDraft)}
-      currentUserId={recordManagementElement.dataset.currentUserId}
     />,
     recordManagementElement
   );
