@@ -40,12 +40,7 @@ const EditButton = ({ recid, onError }) => {
   );
 };
 
-export const LOMRecordManagement = ({
-  currentUserId,
-  isDraft,
-  permissions,
-  record,
-}) => {
+export const LOMRecordManagement = ({ isDraft, permissions, record }) => {
   const [error, setError] = useState("");
 
   return (
