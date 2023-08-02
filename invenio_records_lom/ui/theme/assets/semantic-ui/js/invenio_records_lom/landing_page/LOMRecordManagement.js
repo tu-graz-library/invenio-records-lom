@@ -6,9 +6,7 @@
 import React, { useState } from "react";
 import { http } from "react-invenio-forms";
 import { Button, Grid, Icon, Message } from "semantic-ui-react";
-
-// TODO: figure out where to import i18next from...
-const i18next = { t: (text) => text };
+import { i18next } from "@translations/invenio_records_lom/i18next";
 
 const EditButton = ({ recid, onError }) => {
   const [loading, setLoading] = useState(false);

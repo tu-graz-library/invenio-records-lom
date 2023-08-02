@@ -26,7 +26,7 @@ import {
   Ref,
   Sticky,
 } from "semantic-ui-react";
-import { i18next } from "@translations/invenio_app_rdm/i18next";
+import { i18next } from "@translations/invenio_records_lom/i18next";
 
 import {
   OptionalAccordion,

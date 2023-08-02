@@ -10,7 +10,7 @@ import React from "react";
 import { GroupField } from "react-invenio-forms";
 import { useSelector } from "react-redux";
 import { Button, Form, Icon, Label } from "semantic-ui-react";
-import { i18next } from "@translations/invenio_app_rdm/i18next";
+import { i18next } from "@translations/invenio_records_lom/i18next";
 
 // TODO: consider changing invenio `GroupField`s for `Form.Group`
 // TODO: move id for author/publisher from contributor.1 to contributor.1.something

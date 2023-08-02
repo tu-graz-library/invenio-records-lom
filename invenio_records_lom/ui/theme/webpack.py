@@ -19,7 +19,9 @@ theme = WebpackThemeBundle(
     themes={
         # theme-name ~> kwargs_for_WebpackBundle
         "semantic-ui": {
-            "aliases": {},
+            "aliases": {
+                "@translations/invenio_records_lom": "translations/invenio_records_lom",
+            },
             "entry": {
                 "invenio-records-lom-deposit": "./js/invenio_records_lom/deposit/index.js",
                 "invenio-records-lom-landing-page": "./js/invenio_records_lom/landing_page/index.js",

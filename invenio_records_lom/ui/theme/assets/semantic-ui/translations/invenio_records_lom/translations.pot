@@ -1,0 +1,140 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: i18next-conv\n"
+"mime-version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"POT-Creation-Date: 2023-08-02T10:48:03.114Z\n"
+"PO-Revision-Date: 2023-08-02T10:48:03.115Z\n"
+"Language: en\n"
+
+msgid "Required Fields"
+msgstr "Required Fields"
+
+msgid "Cancel DOI reservation."
+msgstr "Cancel DOI reservation."
+
+msgid "Reserve a DOI."
+msgstr "Reserve a DOI."
+
+msgid "Digital Object Identifier"
+msgstr "Digital Object Identifier"
+
+msgid "Reserved DOIs are registered when publishing your upload."
+msgstr "Reserved DOIs are registered when publishing your upload."
+
+msgid "DOI"
+msgstr "DOI"
+
+msgid "Enter your existing DOI here."
+msgstr "Enter your existing DOI here."
+
+msgid ""
+"A DOI allows your upload to be unambiguously cited. It is of form "
+"`10.1234/foo.bar`."
+msgstr ""
+"A DOI allows your upload to be unambiguously cited. It is of form "
+"`10.1234/foo.bar`."
+
+msgid "Enter your title here."
+msgstr "Enter your title here."
+
+msgid "Title"
+msgstr "Title"
+
+msgid "Select License"
+msgstr "Select License"
+
+msgid "License"
+msgstr "License"
+
+msgid "Select Format"
+msgstr "Select Format"
+
+msgid "Format"
+msgstr "Format"
+
+msgid "Select Resource Type"
+msgstr "Select Resource Type"
+
+msgid "Resource Type"
+msgstr "Resource Type"
+
+msgid "Add Contributor"
+msgstr "Add Contributor"
+
+msgid "Contributors"
+msgstr "Contributors"
+
+msgid "Add OEFOS"
+msgstr "Add OEFOS"
+
+msgid "OEFOS"
+msgstr "OEFOS"
+
+msgid "Select OEFOS"
+msgstr "Select OEFOS"
+
+msgid "Optional Fields"
+msgstr "Optional Fields"
+
+msgid "Enter your description here."
+msgstr "Enter your description here."
+
+msgid "Description"
+msgstr "Description"
+
+msgid "Add Tag"
+msgstr "Add Tag"
+
+msgid "Tags"
+msgstr "Tags"
+
+msgid "Tag"
+msgstr "Tag"
+
+msgid "Enter your tag here"
+msgstr "Enter your tag here"
+
+msgid "Select Language"
+msgstr "Select Language"
+
+msgid "Language"
+msgstr "Language"
+
+msgid "Remove Field"
+msgstr "Remove Field"
+
+msgid "No results found."
+msgstr "No results found."
+
+msgid "Select role"
+msgstr "Select role"
+
+msgid "Name"
+msgstr "Name"
+
+msgid "Enter name here"
+msgstr "Enter name here"
+
+msgid "Files"
+msgstr "Files"
+
+msgid "The record has no files."
+msgstr "The record has no files."
+
+msgid "Visibility"
+msgstr "Visibility"
+
+msgid "OER-uploads are always public."
+msgstr "OER-uploads are always public."
+
+msgid "Public"
+msgstr "Public"
+
+msgid "The record and files are publicly accessible."
+msgstr "The record and files are publicly accessible."
+
+msgid "Edit"
+msgstr "Edit"
