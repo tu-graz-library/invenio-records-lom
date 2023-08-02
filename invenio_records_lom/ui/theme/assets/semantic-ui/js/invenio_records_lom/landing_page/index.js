@@ -11,12 +11,14 @@ import { LOMRecordManagement } from "./LOMRecordManagement";
 const recordManagementElement = document.getElementById("lomRecordManagement");
 
 // TODO: use invenio's management React-component instead once they implement configurable API-urls
-ReactDOM.render(
-  <LOMRecordManagement
-    record={JSON.parse(recordManagementElement.dataset.record)}
-    permissions={JSON.parse(recordManagementElement.dataset.permissions)}
-    isDraft={JSON.parse(recordManagementElement.dataset.isDraft)}
-    currentUserId={JSON.parse(recordManagementElement.dataset.currentUserId)}
-  />,
-  recordManagementElement
-);
+if (recordManagementElement) {
+  ReactDOM.render(
+    <LOMRecordManagement
+      record={JSON.parse(recordManagementElement.dataset.record)}
+      permissions={JSON.parse(recordManagementElement.dataset.permissions)}
+      isDraft={JSON.parse(recordManagementElement.dataset.isDraft)}
+      currentUserId={recordManagementElement.dataset.currentUserId}
+    />,
+    recordManagementElement
+  );
+}
