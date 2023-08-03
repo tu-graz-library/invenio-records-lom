@@ -14,20 +14,25 @@ from invenio_records_resources.services.records.facets import TermsFacet
 
 
 def license_labels(keys):
-    """Label licenses."""
+    """Label licenses.
+
+    ATTENTION:
+    this should be a temporary solution. the real solution should be to fix the
+    metadata within the database.
+    """
     license_mapping = {
-        "https://creativecommons.org/licenses/by/4.0": _("CC BY 4.0"),
-        "https://creativecommons.org/licenses/by-sa/4.0": _("CC BY-SA 4.0"),
-        "https://creativecommons.org/licenses/by-nd/4.0": _("CC BY-ND 4.0"),
-        "https://creativecommons.org/licenses/by-nc/4.0": _("CC BY-NC 4.0"),
-        "https://creativecommons.org/licenses/by-nc-sa/4.0": _("CC BY-NC-SA 4.0"),
-        "https://creativecommons.org/licenses/by-nc-nd/4.0": _("CC BY-NC-ND 4.0"),
+        "https://creativecommons.org/licenses/by/4.0/": _("CC BY 4.0"),
+        "https://creativecommons.org/licenses/by-sa/4.0/": _("CC BY-SA 4.0"),
+        "https://creativecommons.org/licenses/by-nd/4.0/": _("CC BY-ND 4.0"),
+        "https://creativecommons.org/licenses/by-nc/4.0/": _("CC BY-NC 4.0"),
+        "https://creativecommons.org/licenses/by-nc-sa/4.0/": _("CC BY-NC-SA 4.0"),
+        "https://creativecommons.org/licenses/by-nc-nd/4.0/": _("CC BY-NC-ND 4.0"),
     }
     out = {}
     for key in keys:
         search_key = key
-        if search_key[-1] == "/":
-            search_key = search_key[:-1]
+        if search_key[-1] != "/":
+            search_key += "/"
         if search_key[0:5] == "http:":
             search_key = f"https{search_key[4:]}"
 
