@@ -7,6 +7,16 @@
 Changes
 =======
 
+Version v0.11.0 (release 2023-08-03)
+
+- fix: license facets trailing slash
+- fix: translation was configured wrong
+- ui: remove current_user.id, not used
+- ui: show management only if allowed
+- fix: deposit edit needs permissions
+- ui: add edit-button of records
+
+
 Version v0.10.1 (release 2023-07-25)
 
 - fix: use save key access
