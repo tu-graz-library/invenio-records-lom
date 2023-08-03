@@ -37,22 +37,22 @@ def get_deposit_template_context(**extra_form_config_kwargs) -> dict:
     }
     # TODO: dont hardcode vocabularies here...
     license_vocabulary = {
-        "https://creativecommons.org/licenses/by/4.0": {
+        "https://creativecommons.org/licenses/by/4.0/": {
             "name": "CC BY 4.0 - Creative Commons Attribution 4.0 International",
         },
-        "https://creativecommons.org/licenses/by-nc/4.0": {
+        "https://creativecommons.org/licenses/by-nc/4.0/": {
             "name": "CC BY-NC 4.0 - Creative Commons Attribution Non-Commercial 4.0 International",
         },
-        "https://creativecommons.org/licenses/by-nc-nd/4.0": {
+        "https://creativecommons.org/licenses/by-nc-nd/4.0/": {
             "name": "CC BY-NC-ND 4.0 - Creative Commons Attribution Non-Commercial No-Derivatives 4.0 International",
         },
-        "https://creativecommons.org/licenses/by-nc-sa/4.0": {
+        "https://creativecommons.org/licenses/by-nc-sa/4.0/": {
             "name": "CC BY-NC-SA 4.0 - Creative Commons Attribution Non-Commercial Share-Alike 4.0 International",
         },
-        "https://creativecommons.org/licenses/by-nd/4.0": {
+        "https://creativecommons.org/licenses/by-nd/4.0/": {
             "name": "CC BY-ND 4.0 - Creative Commons Attribution No-Derivatives 4.0 International",
         },
-        "https://creativecommons.org/licenses/by-sa/4.0": {
+        "https://creativecommons.org/licenses/by-sa/4.0/": {
             "name": "CC BY-SA 4.0 - Creative Commons Attribution Share-Alike 4.0 International",
         },
     }
