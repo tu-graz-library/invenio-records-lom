@@ -7,6 +7,11 @@
 Changes
 =======
 
+Version v0.11.1 (release 2023-08-03)
+
+- fix: licenses url with slash as last character
+
+
 Version v0.11.0 (release 2023-08-03)
 
 - fix: license facets trailing slash
