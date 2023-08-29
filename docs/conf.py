@@ -46,7 +46,7 @@ master_doc = "index"
 
 # General information about the project.
 project = "invenio-records-lom"
-copyright = f"{datetime.now(timezone.utc).year}, Graz University of Technology"
+project_copyright = f"{datetime.now(timezone.utc).year}, Graz University of Technology"
 author = "Graz University of Technology"
 
 # The version info for the project you're documenting, acts as replacement for
@@ -321,8 +321,8 @@ texinfo_documents = [
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {
     "python": ("https://docs.python.org/", None),
-    # TODO: Configure external documentation references, eg:
-    # 'Flask-Admin': ('https://flask-admin.readthedocs.io/en/latest/', None),
+    "flask": ("https://flask.palletsprojects.com/", None),
+    "werkzeug": ("https://werkzeug.palletsprojects.com/", None),
 }
 
 # Autodoc configuraton.
