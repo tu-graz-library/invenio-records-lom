@@ -3,11 +3,10 @@
 #
 # Copyright (C) 2019-2020 CERN.
 # Copyright (C) 2019-2020 Northwestern University.
-# Copyright (C) 2020-2022 Graz University of Technology.
+# Copyright (C) 2020-2023 Graz University of Technology.
 #
-# invenio-theme-tugraz is free software; you can redistribute it and/or
-# modify it under the terms of the MIT License; see LICENSE file for more
-# details.
+# invenio-records-lom is free software; you can redistribute it and/or modify it
+# under the terms of the MIT License; see LICENSE file for more details.
 
 
 # Quit on errors
