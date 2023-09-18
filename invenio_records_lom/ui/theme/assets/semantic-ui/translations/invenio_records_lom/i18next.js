@@ -1,7 +1,6 @@
-// This file is part of React-Invenio-Deposit
-// Copyright (C) 2021 Graz University of Technology.
+// Copyright (C) 2023 Graz University of Technology.
 //
-// Invenio-app-rdm is free software; you can redistribute it and/or modify it
+// invenio-records-lom is free software; you can redistribute it and/or modify it
 // under the terms of the MIT License; see LICENSE file for more details.
 
 import i18n from "i18next";

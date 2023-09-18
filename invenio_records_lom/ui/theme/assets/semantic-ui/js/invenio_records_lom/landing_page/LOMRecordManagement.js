@@ -1,8 +1,8 @@
-// This file is part of invenio-records-lom
 // Copyright (C) 2023 Graz University of Technology.
 //
 // invenio-records-lom is free software; you can redistribute it and/or modify it
 // under the terms of the MIT License; see LICENSE file for more details.
+
 import React, { useState } from "react";
 import { http } from "react-invenio-forms";
 import { Button, Grid, Icon, Message } from "semantic-ui-react";

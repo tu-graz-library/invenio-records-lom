@@ -1,12 +1,9 @@
 # -*- coding: utf-8 -*-
 #
-# This file is part of Invenio.
-#
 # Copyright (C) 2021-2023 Graz University of Technology.
 #
-# invenio-records-lom is free software; you can redistribute it and/or
-# modify it under the terms of the MIT License; see LICENSE file for
-# more details.
+# invenio-records-lom is free software; you can redistribute it and/or modify it
+# under the terms of the MIT License; see LICENSE file for more details.
 
 """JS/CSS Webpack bundles for theme."""
 
