@@ -95,7 +95,7 @@ class LOMToDataCite44Schema(Schema):
         contributes = obj["metadata"].get("lifecycle", {}).get("contribute", [])
         publish_dates = []
         for contribute in contributes:
-            role = (
+            role = (  # pylint: disable=duplicate-code
                 contribute.get("role", {})
                 .get("value", {})
                 .get("langstring", {})

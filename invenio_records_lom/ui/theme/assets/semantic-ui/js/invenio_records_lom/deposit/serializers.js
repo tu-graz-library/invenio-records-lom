@@ -5,7 +5,6 @@
 
 import _cloneDeep from "lodash/cloneDeep";
 import _get from "lodash/get";
-import _groupBy from "lodash/groupBy";
 import _pick from "lodash/pick";
 import _set from "lodash/set";
 import _sortBy from "lodash/sortBy";
@@ -75,23 +74,23 @@ export class LOMDepositRecordSerializer extends DepositRecordSerializer {
   }
 
   serializeContributor(recordToSerialize) {
-    // contributes need be grouped by role
-    // of form [ {role: {value: <role:str>}, name: <name:str>}, ... ]
+    // contribution metadata is stored in frontend at `metadata.form.contributor`
+    // it is of form [ {role: {value: String}, name: String}, ... ]
+    //   in the above: role, name need not exist
+    // it needs to be serialized to `metadata.lifecycle.contribute`
+    // serialized data is of form [{role: <LOM-vocabulary with value=role>, entity: [String]}]
     const metadata = recordToSerialize?.metadata || {};
     const formContributors = _get(metadata, "form.contributor", []);
-    const groupedContributors = _groupBy(formContributors, "role.value");
-    const metadataContributors = Object.entries(groupedContributors).map(
-      ([role, contributorList]) => {
-        // _groupBy converts role.value to string, unchosen role becomes "undefined"
-        role = role !== "undefined" ? role : "";
-        return {
-          role: {
-            source: { langstring: { "#text": "LOMv1.0", lang: "x-none" } },
-            value: { langstring: { "#text": role || "", lang: "x-none" } },
+    const metadataContributors = formContributors.map(
+      ({ role: maybeRoleDict, name: maybeName }) => ({
+        role: {
+          source: { langstring: { "#text": "LOMv1.0", lang: "x-none" } },
+          value: {
+            langstring: { "#text": maybeRoleDict?.value || "", lang: "x-none" },
           },
-          entity: contributorList.map(({ name }) => name || ""),
-        };
-      }
+        },
+        entity: [maybeName || ""],
+      })
     );
     _set(metadata, "lifecycle.contribute", metadataContributors);
   }

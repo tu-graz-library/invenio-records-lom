@@ -7,9 +7,12 @@
 
 """Schemas for OAI."""
 
-from marshmallow import EXCLUDE, Schema, fields, validate
+from copy import copy
+
+from marshmallow import EXCLUDE, Schema, fields, pre_load, validate
 
 from ....utils import make_lom_vcard
+from ....utils.util import vocabularify
 
 
 class ExcludeUnknownOrderedSchema(Schema):
@@ -173,6 +176,37 @@ class LifecycleSchema(ExcludeUnknownOrderedSchema):
     version = fields.Field()
     status = fields.Field()
     contribute = fields.List(fields.Nested(ContributeSchema()))
+
+    @pre_load
+    def group_contributes_by_role(self, data, **__):
+        """Group contributes by role."""
+        contributions_by_role = {}
+        for contribute in data.get("contribute", []):
+            role = (  # pylint: disable=duplicate-code
+                contribute.get("role", {})
+                .get("value", {})
+                .get("langstring", {})
+                .get("#text")
+            )
+            if not role:
+                continue
+
+            if role not in contributions_by_role:
+                contributions_by_role[role] = {"role": vocabularify(role), "entity": []}
+            entities_of_role = contributions_by_role[role]["entity"]
+
+            entities_from_contribute = contribute.get("entity", [])
+            if not isinstance(entities_from_contribute, list):
+                entities_from_contribute = [entities_from_contribute]
+
+            for entity in entities_from_contribute:
+                if entity not in entities_of_role:
+                    entities_of_role.append(entity)
+
+        result_data = copy(data)
+        result_data["contribute"] = list(contributions_by_role.values())
+
+        return result_data
 
 
 #

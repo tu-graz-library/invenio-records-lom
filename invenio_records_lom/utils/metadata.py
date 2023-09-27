@@ -49,27 +49,11 @@ class BaseLOMMetadata:
         :param str name: The name of the contributing person/organisation
         :param str role: One of values LOM recommends for `lifecycle.contribute.role`
         """
-        role = role.title()
-
-        # contributes are grouped by role
-        # try to find dict for passed-in `role`, create it if non-existent
-        corresponding_contribute = None  # to be the contribute corresponding to `role`
-        for contribute in self.record.get(path, []):
-            contribute_role = contribute["role"]["value"]["langstring"]["#text"]
-            if contribute_role == role:
-                corresponding_contribute = contribute
-                break
-        else:
-            corresponding_contribute = {
-                "role": vocabularify(role),
-                "entity": [],
-            }
-            self.record[f"{path}.[]"] = corresponding_contribute
-
-        # append entity
-        entities = corresponding_contribute["entity"]
-        if name not in entities:
-            entities.append(name)
+        contribute = {
+            "role": vocabularify(role.title()),
+            "entity": [name],
+        }
+        self.deduped_append(path, contribute)
 
 
 class LOMCourseMetadata(BaseLOMMetadata):
