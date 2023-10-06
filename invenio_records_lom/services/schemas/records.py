@@ -10,7 +10,8 @@
 
 from flask import current_app
 from invenio_i18n import lazy_gettext as _
-from invenio_rdm_records.services.schemas import PIDSchema, RDMRecordSchema
+from invenio_rdm_records.services.schemas import RDMRecordSchema
+from invenio_rdm_records.services.schemas.pids import PIDSchema
 from marshmallow import (
     ValidationError,
     fields,
