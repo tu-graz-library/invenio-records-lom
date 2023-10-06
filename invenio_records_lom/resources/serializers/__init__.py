@@ -9,8 +9,7 @@
 from collections.abc import Mapping
 from copy import deepcopy
 
-from flask_resources import BaseListSchema, MarshmallowSerializer
-from flask_resources.serializers import JSONSerializer, MarshmallowJSONSerializer
+from flask_resources import BaseListSchema, JSONSerializer, MarshmallowSerializer
 from lxml.builder import ElementMaker  # pylint: disable=no-name-in-module
 
 from .schemas import LOMMetadataToOAISchema, LOMToDataCite44Schema, LOMUIRecordSchema
@@ -29,12 +28,16 @@ class LOMUIJSONSerializer(MarshmallowSerializer):
         )
 
 
-class LOMToDataCite44Serializer(MarshmallowJSONSerializer):
+class LOMToDataCite44Serializer(MarshmallowSerializer):
     """Marshmallow-based DataCite-serializer for LOM records."""
 
     def __init__(self, **kwargs):
         """Constructor."""
-        super().__init__(schema_cls=LOMToDataCite44Schema, **kwargs)
+        super().__init__(
+            format_serializer_cls=JSONSerializer,
+            object_schema_cls=LOMToDataCite44Schema,
+            **kwargs,
+        )
 
 
 class LOMToLOMXMLSerializer:
