@@ -7,9 +7,7 @@
 
 """LOM facets (`facet` is opensearch-lingo for `search-query filter`)."""
 
-# TODO: replace with `from invenio_i18n import gettext as _` after updating to new version
-#       this also need be done in some other places...
-from flask_babelex import gettext as _
+from invenio_i18n import gettext as _
 from invenio_records_resources.services.records.facets import TermsFacet
 
 
