@@ -7,7 +7,7 @@
 
 """Customized classes used by pids-service."""
 
-from flask_babelex import lazy_gettext as _
+from invenio_i18n import lazy_gettext as _
 from invenio_rdm_records.services.pids.providers import DataCitePIDProvider
 
 

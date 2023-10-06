@@ -9,7 +9,7 @@
 
 
 from flask import current_app
-from flask_babelex import lazy_gettext as _
+from invenio_i18n import lazy_gettext as _
 from invenio_rdm_records.services.schemas import PIDSchema, RDMRecordSchema
 from marshmallow import (
     ValidationError,
