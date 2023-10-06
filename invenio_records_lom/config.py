@@ -8,7 +8,7 @@
 """Default configuration."""
 
 import idutils
-from flask_babelex import gettext as _
+from invenio_i18n import gettext as _
 from invenio_rdm_records.services.pids import providers
 
 from .resources.serializers import LOMToDataCite44Serializer
