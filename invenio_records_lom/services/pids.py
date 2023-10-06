@@ -40,8 +40,7 @@ class LOMDataCitePIDProvider(DataCitePIDProvider):
                 self._insert_pid_type_error_msg(errors, str(e))
 
         # validate record
-        serializer = self.serializer
-        schema = serializer.object_schema_cls(context=serializer.schema_context)
+        schema = self.serializer.object_schema
         try:
             publisher = schema.fields["publisher"].serialize(None, record)
             if not publisher:

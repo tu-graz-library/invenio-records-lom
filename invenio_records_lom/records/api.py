@@ -24,10 +24,14 @@ Use flask.current_app['invenio-records-lom'].records_service to interact with.
 # relations =  # validate then clean assigned relations
 # schema =  # add second validation via jsonschema
 
+from invenio_communities.records.records.systemfields import CommunitiesField
 from invenio_drafts_resources.records import Draft, Record
 from invenio_drafts_resources.records.api import ParentRecord
 from invenio_pidstore.models import PIDStatus
-from invenio_rdm_records.records.systemfields import DraftStatus
+from invenio_rdm_records.records.systemfields import (
+    DraftStatus,
+    RecordDeletionStatusField,
+)
 from invenio_records.systemfields import (
     ConstantField,
     DictField,
@@ -72,6 +76,7 @@ class LOMParent(ParentRecord):
     )
     access = ParentRecordAccessField()
     review = RelatedRecord(Request, keys=["type", "receiver", "status"])
+    communities = CommunitiesField(models.LOMParentCommunity)
 
 
 class LOMFileDraft(FileRecord):
@@ -190,6 +195,7 @@ class LOMRecord(Record, metaclass=LOMRecordMeta):
     resource_type = DictField()
     schema = ConstantField("$schema", "local://lomrecords/records/record-v1.0.0.json")
     status = DraftStatus()
+    deletion_status = RecordDeletionStatusField()
 
 
 LOMFileRecord.record_cls = LOMRecord
