@@ -11,8 +11,17 @@ from copy import copy
 
 from flask_principal import Identity
 from invenio_drafts_resources.records import Record
-from invenio_drafts_resources.services.records.components import ServiceComponent
-from invenio_rdm_records.services.components import PIDsComponent
+from invenio_drafts_resources.services.records.components import (
+    DraftFilesComponent,
+    PIDComponent,
+    RelationsComponent,
+    ServiceComponent,
+)
+from invenio_rdm_records.services.components import (
+    AccessComponent,
+    MetadataComponent,
+    PIDsComponent,
+)
 from invenio_records_resources.services.uow import TaskOp
 
 from .tasks import register_or_update_pid
@@ -134,3 +143,14 @@ class LOMPIDsComponent(PIDsComponent):
         # Async register/update tasks after transaction commit.
         for scheme in pids.keys():
             self.uow.register(TaskOp(register_or_update_pid, record["id"], scheme))
+
+
+DefaultRecordsComponents = [
+    MetadataComponent,
+    AccessComponent,
+    DraftFilesComponent,
+    PIDComponent,
+    LOMPIDsComponent,
+    RelationsComponent,
+    ResourceTypeComponent,
+]

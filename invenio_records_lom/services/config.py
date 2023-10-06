@@ -7,18 +7,12 @@
 
 """Config classes for LOMRecordService-objects."""
 
-from invenio_drafts_resources.services.records.components import (
-    DraftFilesComponent,
-    PIDComponent,
-    RelationsComponent,
-)
 from invenio_drafts_resources.services.records.config import (
     RecordServiceConfig,
     SearchOptions,
     is_draft,
     is_record,
 )
-from invenio_rdm_records.services.components import AccessComponent, MetadataComponent
 from invenio_rdm_records.services.config import (
     has_doi,
     is_iiif_compatible,
@@ -40,7 +34,7 @@ from invenio_records_resources.services.base.config import (
 
 from ..records import LOMDraft, LOMRecord
 from . import facets
-from .components import LOMPIDsComponent, ResourceTypeComponent
+from .components import DefaultRecordsComponents
 from .permissions import LOMRecordPermissionPolicy
 from .schemas import LOMRecordSchema
 
@@ -167,15 +161,9 @@ class LOMRecordServiceConfig(RecordServiceConfig, ConfiguratorMixin):
         ),
     }
 
-    components = [
-        MetadataComponent,
-        AccessComponent,
-        DraftFilesComponent,
-        PIDComponent,
-        LOMPIDsComponent,
-        RelationsComponent,
-        ResourceTypeComponent,
-    ]
+    components = FromConfig(
+        "LOM_RECORDS_SERVICE_COMPONENTS", default=DefaultRecordsComponents
+    )
 
 
 class LOMDraftFilesServiceConfig(FileServiceConfig, ConfiguratorMixin):
