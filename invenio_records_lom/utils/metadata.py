@@ -36,6 +36,13 @@ class BaseLOMMetadata:
         """Pipe-through for convenient access of underlying json."""
         return self.record.data
 
+    def get_identifier(self, catalog: str) -> str:
+        """Get identifier by catalog."""
+        for identifier in self.record["metadata.general.identifier"]:
+            if identifier["catalog"] == catalog:
+                return identifier["entry"]["langstring"]["#text"]
+        return ""
+
     def deduped_append(self, parent_key: str, value: Any):
         """Append `value` to `self.record[key]` if not already appended."""
         self.record.setdefault(parent_key, [])
@@ -43,7 +50,13 @@ class BaseLOMMetadata:
         if value not in parent:
             parent.append(value)
 
-    def append_contribute(self, name: str, role: str, path: str = None) -> None:
+    def append_contribute(
+        self,
+        name: str,
+        role: str,
+        path: str = None,
+        description: str = None,  # pylint: disable=unused-argument
+    ) -> None:
         """Append contribute.
 
         :param str name: The name of the contributing person/organisation
@@ -109,9 +122,16 @@ class LOMCourseMetadata(BaseLOMMetadata):
             langstringify(description, lang=language_code),
         )
 
-    def append_contribute(self, name: str, role: str, path: str = None) -> None:
+    def append_contribute(
+        self,
+        name: str,
+        role: str,
+        path: str = None,
+        description=None,
+    ) -> None:
         """Append contribute."""
-        super().append_contribute(name, role, path=path or "course.contribute")
+        path = path or "course.contribute"
+        super().append_contribute(name, role, path=path, description=description)
 
 
 class LOMMetadata(BaseLOMMetadata):  # pylint: disable=too-many-public-methods
@@ -182,7 +202,7 @@ class LOMMetadata(BaseLOMMetadata):  # pylint: disable=too-many-public-methods
 
     ###############
     #
-    # methods for manipulating LOM's `general` category
+    # methods for manipulating LOM's `general` (1) category
     #
     ###############
 
@@ -221,7 +241,7 @@ class LOMMetadata(BaseLOMMetadata):  # pylint: disable=too-many-public-methods
 
     ###############
     #
-    # methods for manipulating LOM's `lifeCycle` category
+    # methods for manipulating LOM's `lifeCycle` (2) category
     #
     ###############
 
@@ -235,14 +255,23 @@ class LOMMetadata(BaseLOMMetadata):  # pylint: disable=too-many-public-methods
         version_dict["datetime"] = datetime
         self.record["metadata.lifecycle.version"] = version_dict
 
-    def append_contribute(self, name: str, role: str, path: str = None) -> None:
+    def append_contribute(
+        self,
+        name: str,
+        role: str,
+        path: str = None,
+        description: str = None,
+    ) -> None:
         """Append contribute.
 
         :param str name: The name of the contributing person/organisation
         :param str role: One of values LOM recommends for `lifecycle.contribute.role`
         """
         super().append_contribute(
-            name, role, path=path or "metadata.lifecycle.contribute"
+            name,
+            role,
+            path=path or "metadata.lifecycle.contribute",
+            description=description,
         )
 
     def set_datetime(self, datetime: str) -> None:
@@ -254,7 +283,30 @@ class LOMMetadata(BaseLOMMetadata):  # pylint: disable=too-many-public-methods
 
     ###############
     #
-    # methods for manipulating LOM's `technical` category
+    # methods for manipulating LOM's `metametadata` (3) category
+    #
+    ###############
+
+    def append_metametadata_contribute(
+        self,
+        name: str,
+        url: str,
+        logo: str,
+        role: str,
+    ) -> None:
+        """Append metametadata contribute."""
+        contribute = {
+            "role": vocabularify(role),
+            "entity": [name],
+            "url": url,
+            "logo": logo,
+        }
+
+        self.deduped_append("metadata.metametadata.contribute", contribute)
+
+    ###############
+    #
+    # methods for manipulating LOM's `technical` (4) category
     #
     ###############
 
@@ -269,9 +321,23 @@ class LOMMetadata(BaseLOMMetadata):  # pylint: disable=too-many-public-methods
         """
         self.record["metadata.technical.size"] = str(size)
 
+    def set_thumbnail(self, value: dict) -> None:
+        """Set thumbnail."""
+        self.record["metadata.technical.thumbnail"] = value
+
+    def set_duration(self, value: str, language: str) -> None:
+        """Set duration."""
+        self.record["metadata.technical.duration"] = {
+            "description": langstringify(value, lang=language),
+        }
+
+    def set_location(self, value: str) -> None:
+        """Set location."""
+        self.record["metadata.technical.location"] = {"type": "URI", "#text": value}
+
     ###############
     #
-    # methods for manipulating LOM's `educational` category
+    # methods for manipulating LOM's `educational` (5) category
     #
     ###############
 
@@ -310,9 +376,18 @@ class LOMMetadata(BaseLOMMetadata):  # pylint: disable=too-many-public-methods
             langstringify(description, lang=language_code),
         )
 
+    def set_typical_learning_time(self, value: str, description: str = None) -> None:
+        """Set typical learning time."""
+        self.record["metadata.educational.typicallearningtime"] = {
+            "duration": {
+                "datetime": value,
+                "description": description,
+            },
+        }
+
     ###############
     #
-    # methods for manipulating LOM's `rights` category
+    # methods for manipulating LOM's `rights` (6) category
     #
     ###############
 
@@ -322,18 +397,15 @@ class LOMMetadata(BaseLOMMetadata):  # pylint: disable=too-many-public-methods
         :param str url: The url of the copyright license
                         (e.g. "https://creativecommons.org/licenses/by/4.0/")
         """
-        self.record["metadata.rights.copyrightandotherrestrictions"] = vocabularify(
-            "yes"
-        )
-        self.record["metadata.rights.url"] = url
-        self.record["metadata.rights.description"] = langstringify(
-            url,
-            lang="x-t-cc-url",
-        )
+        self.record["metadata.rights"] = {
+            "copyrightandotherrestrictions": vocabularify("yes"),
+            "url": url,
+            "description": langstringify(url, lang="x-t-cc-url"),
+        }
 
     ###############
     #
-    # methods for manipulating LOM's `relation` category
+    # methods for manipulating LOM's `relation` (7) category
     #
     ###############
 
@@ -349,7 +421,7 @@ class LOMMetadata(BaseLOMMetadata):  # pylint: disable=too-many-public-methods
 
     ###############
     #
-    # methods for manipulating LOM's `classification` category
+    # methods for manipulating LOM's `classification` (9) category
     #
     ###############
 
