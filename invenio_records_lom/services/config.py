@@ -162,7 +162,8 @@ class LOMRecordServiceConfig(RecordServiceConfig, ConfiguratorMixin):
     }
 
     components = FromConfig(
-        "LOM_RECORDS_SERVICE_COMPONENTS", default=DefaultRecordsComponents
+        "LOM_RECORDS_SERVICE_COMPONENTS",
+        default=DefaultRecordsComponents,
     )
 
 
