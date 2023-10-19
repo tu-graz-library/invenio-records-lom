@@ -20,7 +20,7 @@ def create_blueprint(app: Flask):
         __name__,
         template_folder="../templates",
         static_folder="../static",
-        url_prefix="/lom",
+        url_prefix="/oer",
     )
 
     init_records_views(blueprint, app)
