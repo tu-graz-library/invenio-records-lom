@@ -8,6 +8,7 @@
 """Utilities for creation of LOM-compliant metadata."""
 
 
+import re
 from collections.abc import MutableMapping
 from csv import reader
 from importlib import resources
@@ -209,3 +210,16 @@ def durationify(datetime: str, description: str):
         inner["decription"] = description
 
     return {"duration": inner}
+
+
+def standardize_url(url: str) -> str:
+    """Return standardized version of `url`.
+
+    If `url`'s scheme is "http" or "https", make it "https".
+    Also ensure existence of a trailing "/".
+    """
+    pattern = re.compile("^https?://(.*?)/?$")
+    if m := pattern.match(url):
+        middle = m.group(1)  # excludes initial "https://", excludes trailing "/"
+        return f"https://{middle}/"
+    return url
