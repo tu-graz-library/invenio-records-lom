@@ -15,6 +15,7 @@ from .util import (
     get_learningresourcetypedict,
     get_oefosdict,
     langstringify,
+    standardize_url,
     vocabularify,
 )
 
@@ -397,6 +398,7 @@ class LOMMetadata(BaseLOMMetadata):  # pylint: disable=too-many-public-methods
         :param str url: The url of the copyright license
                         (e.g. "https://creativecommons.org/licenses/by/4.0/")
         """
+        url = standardize_url(url)
         self.record["metadata.rights"] = {
             "copyrightandotherrestrictions": vocabularify("yes"),
             "url": url,
