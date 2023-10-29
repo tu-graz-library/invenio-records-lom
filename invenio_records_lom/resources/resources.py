@@ -17,6 +17,10 @@ class LOMRecordResource(RDMRecordResource):
     def create_url_rules(self):
         """Create the URL rules for the record resource."""
 
+        def s(route):
+            """Suffix a route with the URL prefix."""
+            return f"{route}{self.config.url_prefix}"
+
         def prefix(route_str):
             """Prefix a route with `self.config.prefix`."""
             return f"{self.config.url_prefix}{route_str}"
@@ -32,4 +36,6 @@ class LOMRecordResource(RDMRecordResource):
             route("POST", prefix(routes["item-publish"]), self.publish),
             route("POST", prefix(routes["item-pids-reserve"]), self.pids_reserve),
             route("PUT", prefix(routes["item-draft"]), self.update_draft),
+            # User Dashboard routes
+            route("GET", s(routes["user-prefix"]), self.search_user_records),
         ]

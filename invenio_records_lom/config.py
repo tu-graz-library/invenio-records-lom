@@ -56,11 +56,18 @@ LOM_SEARCH = {
 }
 """Record search configuration."""
 
+LOM_SEARCH_DRAFTS = {
+    "sort": ["bestmatch", "newest"],
+    "facets": [  # which facets to activate, see `LOM_FACETS` for facet-configuration
+        "rights_license"
+    ],
+}
+
 #
 # HTML-Request Configuration
 #
 LOM_ROUTES = {
-    # the blueprint prefixes `/lom` to these routes
+    # the blueprint prefixes `/oer` to these routes
     "uploads": "/uploads",
     "deposit_create": "/uploads/new",
     "deposit_edit": "/uploads/<pid_value>",
