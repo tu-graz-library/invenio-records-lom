@@ -20,12 +20,14 @@ record_serializer = {
     "application/vnd.inveniolom.v1+json": ResponseHandler(LOMUIJSONSerializer()),
 }
 
+url_prefix = "/oer"
+
 
 class LOMDraftFilesResourceConfig(FileResourceConfig):
     """LOM Draft Files Resource configuration."""
 
     blueprint_name = "lom_draft_files"
-    url_prefix = "/lom/<pid_value>/draft"
+    url_prefix = f"{url_prefix}/<pid_value>/draft"
 
 
 class LOMRecordFilesResourceConfig(FileResourceConfig):
@@ -33,14 +35,14 @@ class LOMRecordFilesResourceConfig(FileResourceConfig):
 
     allow_upload = False
     blueprint_name = "lom_record_files"
-    url_prefix = "/lom/<pid_value>"
+    url_prefix = f"{url_prefix}/<pid_value>"
 
 
 class LOMRecordResourceConfig(RecordResourceConfig):
     """LOM Record Resource configuration."""
 
     blueprint_name = "lom_records"
-    url_prefix = "/lom"
+    url_prefix = url_prefix
 
     default_accept_mimetype = "application/json"
 
@@ -50,6 +52,7 @@ class LOMRecordResourceConfig(RecordResourceConfig):
         "item-draft": "/<pid_value>/draft",
         "item-publish": "/<pid_value>/draft/actions/publish",
         "item-pids-reserve": "/<pid_value>/draft/pids/<scheme>",
+        "user-prefix": "/user",
     }
 
     request_view_args = {
@@ -64,4 +67,4 @@ class LOMIIIFResourceConfig(IIIFResourceConfig):
     """LOM IIIF Resource Config."""
 
     blueprint_name = "lom_iiif"
-    url_prefix = "/lom/iiif"
+    url_prefix = f"{url_prefix}/iiif"

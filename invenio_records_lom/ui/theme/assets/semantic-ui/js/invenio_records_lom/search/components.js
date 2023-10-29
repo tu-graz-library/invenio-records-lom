@@ -50,7 +50,7 @@ export const LOMRecordResultsListItem = ({ result, index }) => {
 
   const subjects = [];
 
-  const viewLink = `/lom/${result.id}`;
+  const viewLink = `/oer/${result.id}`;
 
   return (
     <Item key={index}>
@@ -107,7 +107,7 @@ export const LOMRecordResultsGridItem = ({ result, index }) => {
     "No description"
   );
   return (
-    <Card fluid key={index} href={`/lom/${result.pid}`}>
+    <Card fluid key={index} href={`/oer/${result.pid}`}>
       <Card.Content>
         <Card.Header>{result.metadata.json.title_statement.title}</Card.Header>
         <Card.Description>

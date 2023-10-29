@@ -14,8 +14,8 @@ const EditButton = ({ recid, onError }) => {
   const editThenRedirect = async () => {
     setLoading(true);
     try {
-      await http.post(`/api/lom/${recid}/draft`);
-      window.location = `/lom/uploads/${recid}`;
+      await http.post(`/api/oer/${recid}/draft`);
+      window.location = `/oer/uploads/${recid}`;
     } catch (error) {
       setLoading(false);
       onError(error.response.data.message);

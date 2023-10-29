@@ -15,7 +15,7 @@
 
 {%- block javascript %}
   {{ super() }}
-  {# TODO: search-.js here #}
+  {{ webpack['invenio-records-lom-user-dashboard.js'] }}
 {%- endblock javascript %}
 
 {%- block page_body %}
@@ -23,37 +23,9 @@
     {% include "invenio_app_rdm/users/header.html" %}
   {%- endblock user_dashboard_header %}
 
-  {%- block frontpage_form %}
-    <div class="ui container rel-mt-2">
-      <div class="ui center aligned grid">
-        <div class="right floated eight wide computer fourteen wide mobile ten wide tablet column">
-          <form action="{{ url_for('invenio_records_lom.uploads') }}" class="ui form" role="search">
-            <div class="ui fluid big action icon input">
-              <input
-                type="text"
-                name="q"
-                autofocus="autofocus"
-                placeholder="{{ _('Type query then press enter for search') }}"
-              >
-              <button aria-label="Search" class="ui icon button search">
-                <i aria-hidden="true" class="search icon"></i>
-              </button>
-            </div>
-          </form>
-        </div>
-        <div class="four wide computer sixteen wide mobile five wide tablet column" align="right">
-          <a href="{{ url_for('invenio_records_lom.deposit_create') }}" class="ui positive right floated button" role="button">
-            <i aria-hidden="true" class="upload icon"></i>
-            {{ _("New OER-Upload") }}
-          </a>
-        </div>
-      </div>
-    </div>
-    <div class="ui divider hidden"></div>
-  {%- endblock frontpage_form %}
-  <div id="invenio-lom-search-config" data-invenio-search-config="{{ search_app_lom_config() | tojson }}">
-    <div class="ui center aligned grid">
-      Your uploads will show here once this behavior is implemented...
+  <div class="ui container rel-mt-2">
+    <div id="invenio-search-lom-config"
+         data-invenio-search-config='{{ search_app_lom_user_uploads_config() | tojson }}'>
     </div>
   </div>
 {% endblock page_body %}

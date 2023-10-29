@@ -22,8 +22,17 @@ def search_app_context():
             "LOM_SEARCH",
             current_app.config["LOM_FACETS"],
             current_app.config["LOM_SORT_OPTIONS"],
-            "/api/lom",
+            "/api/oer",
             {"Accept": "application/vnd.inveniolom.v1+json"},
             app_id="InvenioRecordsLom.Search",  # unique id to distinguish amongst search-apps
-        )
+        ),
+        "search_app_lom_user_uploads_config": partial(
+            search_app_config,
+            "LOM_SEARCH_DRAFTS",
+            current_app.config["LOM_FACETS"],
+            current_app.config["LOM_SORT_OPTIONS"],
+            "/api/user/oer",
+            {"Accept": "application/vnd.inveniolom.v1+json"},
+            app_id="InvenioRecordsLom.Search",  # unique id to distinguish amongst search-apps
+        ),
     }
