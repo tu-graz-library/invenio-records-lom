@@ -161,7 +161,7 @@ def get_deposit_template_context(**extra_form_config_kwargs) -> dict:
             **extra_form_config_kwargs,
         },
         # can't get the following from `app_config`, as that ignores blueprint-prefix...
-        "searchbar_config": {"searchUrl": "/lom/search"},
+        "searchbar_config": {"searchUrl": "/oer/search"},
     }
 
 
@@ -188,7 +188,7 @@ def deposit_create() -> str:
     if default_publisher := app_config.get("LOM_PUBLISHER"):
         empty_metadata.append_contribute(default_publisher, role="publisher")
 
-    template_context: dict = get_deposit_template_context(createUrl="/api/lom")
+    template_context: dict = get_deposit_template_context(createUrl="/api/oer")
     return render_template(
         "invenio_records_lom/records/deposit.html",
         files=template_context["files"],
@@ -211,7 +211,7 @@ def deposit_edit(
     record = draft.to_dict()
 
     template_context = get_deposit_template_context(
-        createUrl=f"/api/lom/records/{pid_value}/draft"
+        createUrl=f"/api/oer/records/{pid_value}/draft"
     )
     return render_template(
         "invenio_records_lom/records/deposit.html",

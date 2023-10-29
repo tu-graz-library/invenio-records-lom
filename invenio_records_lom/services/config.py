@@ -132,20 +132,20 @@ class LOMRecordServiceConfig(RecordServiceConfig, ConfiguratorMixin):
         ),
         "files": ConditionalLink(
             cond=is_record,
-            if_=RecordLink("{+api}/lom/{id}/files"),
-            else_=RecordLink("{+api}/lom/{id}/draft/files"),
+            if_=RecordLink("{+api}/oer/{id}/files"),
+            else_=RecordLink("{+api}/oer/{id}/draft/files"),
         ),
-        "latest_html": RecordLink("{+ui}/lom/id/latest", when=is_record),
-        "publish": RecordLink("{+api}/lom/{id}/draft/actions/publish", when=is_draft),
-        "record_html": RecordLink("{+ui}/lom/{id}", when=is_draft),
-        "reserve_doi": RecordLink("{+api}/lom/{id}/draft/pids/doi"),
+        "latest_html": RecordLink("{+ui}/oer/id/latest", when=is_record),
+        "publish": RecordLink("{+api}/oer/{id}/draft/actions/publish", when=is_draft),
+        "record_html": RecordLink("{+ui}/oer/{id}", when=is_draft),
+        "reserve_doi": RecordLink("{+api}/oer/{id}/draft/pids/doi"),
         "self": ConditionalLink(
             cond=is_record,
-            if_=RecordLink("{+api}/lom/{id}"),
-            else_=RecordLink("{+api}/lom/{id}/draft"),
+            if_=RecordLink("{+api}/oer/{id}"),
+            else_=RecordLink("{+api}/oer/{id}/draft"),
         ),
         "self_doi": Link(
-            "{+ui}/lom/doi/{+pid_doi}",
+            "{+ui}/oer/doi/{+pid_doi}",
             when=is_record_and_has_doi,
             vars=lambda record, vars: vars.update(
                 {
@@ -156,8 +156,8 @@ class LOMRecordServiceConfig(RecordServiceConfig, ConfiguratorMixin):
         ),
         "self_html": ConditionalLink(
             cond=is_record,
-            if_=RecordLink("{+ui}/lom/{id}"),
-            else_=RecordLink("{+ui}/lom/uploads/{id}"),
+            if_=RecordLink("{+ui}/oer/{id}"),
+            else_=RecordLink("{+ui}/oer/uploads/{id}"),
         ),
     }
 
@@ -178,18 +178,18 @@ class LOMDraftFilesServiceConfig(FileServiceConfig, ConfiguratorMixin):
 
     # links to appear within FileList-result:
     file_links_list = {
-        "self": RecordLink("{+api}/lom/{id}/draft/files"),
+        "self": RecordLink("{+api}/oer/{id}/draft/files"),
     }
 
     # links to appear within the items of FileList-results:
     # (note that, due to `Link.should_render`, some of these links may not appear on items)
     file_links_item = {
-        "commit": FileLink("{+api}/lom/{id}/draft/files/{key}/commit"),
-        "content": FileLink("{+api}/lom/{id}/draft/files/{key}/content"),
+        "commit": FileLink("{+api}/oer/{id}/draft/files/{key}/commit"),
+        "content": FileLink("{+api}/oer/{id}/draft/files/{key}/content"),
         "iiif_base": FileLink(
-            "{+api}/lom/iiif/draft:{id}:{key}", when=is_iiif_compatible
+            "{+api}/oer/iiif/draft:{id}:{key}", when=is_iiif_compatible
         ),
-        "self": FileLink("{+api}/lom/{id}/draft/files/{key}"),
+        "self": FileLink("{+api}/oer/{id}/draft/files/{key}"),
     }
 
 
@@ -204,6 +204,6 @@ class LOMRecordFilesServiceConfig(FileServiceConfig, ConfiguratorMixin):
     file_links_list = {}
     file_links_item = {
         "iiif_base": FileLink(
-            "{+api}/lom/iiif/record:{id}:{key}", when=is_iiif_compatible
+            "{+api}/oer/iiif/record:{id}:{key}", when=is_iiif_compatible
         ),
     }
