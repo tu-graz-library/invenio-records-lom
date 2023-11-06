@@ -3,23 +3,37 @@
 // invenio-records-lom is free software; you can redistribute it and/or modify it
 // under the terms of the MIT License; see LICENSE file for more details.
 
+import { get, truncate } from "lodash";
 import React, { useState } from "react";
-import ReactDOM from "react-dom";
-import { get, camelCase, truncate } from "lodash";
-import {
-  Button,
-  Card,
-  Checkbox,
-  Icon,
-  Input,
-  Item,
-  Label,
-  List,
-} from "semantic-ui-react";
-import { BucketAggregation } from "react-searchkit";
-import { loadComponents } from "@js/invenio_theme/templates";
-import Overridable from "react-overridable";
-import { SearchBar, SearchApp } from "@js/invenio_search_ui/components";
+import { Card, Icon, Item, Label } from "semantic-ui-react";
+
+export const LOMBucketAggregationElement = ({ title, containerCmp }) => {
+  const [active, setActive] = useState(true);
+  return (
+    <Card
+      // parent wraps this card in an extra <div />, making this think it's the last card
+      // last cards are CSS-styled to have no margin-bottom
+      // it is, however, definitely *not* the last card:
+      // - other LOMBucketAggregationElement for other configured facets come below
+      // - last card is guranteed to be "help"-card, which is handled separately
+      style={{ marginBottom: "1em" }}
+    >
+      <Card.Content
+        onClick={() => setActive((active) => !active)} // toggle active
+        style={{ cursor: "pointer" }} // mouse-cursor for clickable elements
+      >
+        <Card.Header
+          as="h2"
+          style={{ minHeight: 0 }} // overwrite facet-container
+        >
+          <Icon name={active ? "angle down" : "angle right"} />
+          {title}
+        </Card.Header>
+      </Card.Content>
+      {active ? <Card.Content>{containerCmp}</Card.Content> : null}
+    </Card>
+  );
+};
 
 export const LOMRecordResultsListItem = ({ result, index }) => {
   const ui = get(result, "ui", {});
