@@ -30,6 +30,7 @@ from invenio_drafts_resources.records.api import ParentRecord
 from invenio_pidstore.models import PIDStatus
 from invenio_rdm_records.records.systemfields import (
     DraftStatus,
+    HasDraftCheckField,
     RecordDeletionStatusField,
 )
 from invenio_records.systemfields import (
@@ -148,6 +149,7 @@ class LOMDraft(Draft, metaclass=LOMRecordMeta):
     pids = DictField()
     resource_type = DictField()
     schema = ConstantField("$schema", "local://lomrecords/records/record-v1.0.0.json")
+    has_draft = HasDraftCheckField()
     status = DraftStatus()
 
 
@@ -194,6 +196,7 @@ class LOMRecord(Record, metaclass=LOMRecordMeta):
     pids = DictField()
     resource_type = DictField()
     schema = ConstantField("$schema", "local://lomrecords/records/record-v1.0.0.json")
+    has_draft = HasDraftCheckField(LOMDraft)
     status = DraftStatus()
     deletion_status = RecordDeletionStatusField()
 
