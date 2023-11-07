@@ -17,6 +17,7 @@ from invenio_access.permissions import system_identity
 from invenio_records_resources.services.records.results import RecordItem
 
 from ..proxies import current_records_lom
+from .tasks import create_lom_record
 
 
 #
@@ -544,18 +545,14 @@ def link_up(whole_id: str, part_id: str):
 #
 def publish_fake_record(fake: Faker):
     """Enter fake records into the SQL-database."""
-    # course_data = create_fake_data(fake, resource_type="course")
-    # course_item = create_then_publish(fake=fake, data=course_data)
-
-    # for __ in range(2):
-    #     unit_data = create_fake_data(fake, resource_type="unit")
-    #     unit_item = create_then_publish(fake=fake, data=unit_data)
-    #     link_up(whole_id=course_item.id, part_id=unit_item.id)
-
-    #     for __ in range(2):
     file_data = create_fake_data(fake, resource_type="file", files_enabled=True)
     create_then_publish(fake=fake, data=file_data, create_fake_files=True)
-    #        link_up(whole_id=unit_item.id, part_id=file_item.id)
+
+
+def publish_fake_record_over_celery(fake: Faker):
+    """Create fake records via celery."""
+    data = create_fake_data(fake, resource_type="file", files_enabled=False)
+    create_lom_record.delay(data)
 
 
 def publish_fake_records(number: int, seed: int = 42) -> list:
