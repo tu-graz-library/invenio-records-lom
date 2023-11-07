@@ -24,6 +24,13 @@
   {%- endblock user_dashboard_header %}
 
   <div class="ui container rel-mt-2">
+    <a class="ui tiny button positive right floated labeled icon m-0" href="/oer/uploads/new" style="margin-top: 18px !important">
+      <i class="upload icon" aria-hidden="true"></i>
+      {{ _('New upload') }}
+    </a>
+  </div>
+
+  <div class="ui container rel-mt-2">
     <div id="invenio-search-lom-config"
          data-invenio-search-config='{{ search_app_lom_user_uploads_config() | tojson }}'>
     </div>
