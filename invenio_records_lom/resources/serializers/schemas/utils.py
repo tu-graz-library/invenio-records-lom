@@ -8,14 +8,20 @@
 """Common utilities for schemas."""
 
 
-def get_text(value):
+def get_text(value: dict) -> str:
     """Get text from langstring object."""
-    return value["langstring"]["#text"]
+    try:
+        return value["langstring"]["#text"]
+    except KeyError:
+        return ""
 
 
-def get_lang(value):
+def get_lang(value: dict) -> str:
     """Get lang from langstring object."""
-    return value["langstring"]["lang"]
+    try:
+        return value["langstring"]["lang"]
+    except KeyError:
+        return ""
 
 
 def get_related(obj: dict, relation_kind: str, catalog: str = "repo-pid") -> list:

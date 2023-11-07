@@ -9,6 +9,7 @@
 from copy import deepcopy
 from typing import Any, Optional, Union
 
+from ..resources.serializers.schemas.utils import get_text
 from .util import (
     DotAccessWrapper,
     catalogify,
@@ -24,11 +25,11 @@ class BaseLOMMetadata:
 
     def __init__(
         self,
-        record_json: Optional[dict] = None,
+        json: Optional[dict] = None,
         overwritable: bool = False,
     ) -> None:
         """Construct LOMMetadata."""
-        record_json = deepcopy(record_json or {})
+        record_json = deepcopy(json or {})
         self.record = DotAccessWrapper(record_json, overwritable=overwritable)
 
     @property
@@ -197,13 +198,49 @@ class LOMMetadata(BaseLOMMetadata):  # pylint: disable=too-many-public-methods
             catalogify(id_, catalog=catalog),
         )
 
+    def get_identifiers(self, text_only=False) -> list:
+        """Get identifiers."""
+        try:
+            identifiers = self.record["general.identifier"]
+        except KeyError:
+            return []
+
+        if text_only:
+            return [get_text(entry["entry"]) for entry in identifiers]
+
+        return identifiers
+
     def set_title(self, title: str, language_code: str) -> None:
         """Set title."""
         self.record["metadata.general.title"] = langstringify(title, lang=language_code)
 
+    def get_title(self, text_only=False) -> str:
+        """Get title."""
+        try:
+            title = self.record["general.title"]
+        except KeyError:
+            return ""
+
+        if text_only:
+            return get_text(title)
+
+        return title
+
     def append_language(self, language_code: str) -> None:
         """Append language."""
         self.deduped_append("metadata.general.language", language_code)
+
+    def get_languages(self) -> list:
+        """Get languages."""
+        try:
+            languages = self.record["general.language"]
+        except KeyError:
+            return []
+
+        if len(languages) > 0:
+            return languages
+
+        return []
 
     def append_description(self, description: str, language_code: str) -> None:
         """Append description."""
@@ -212,12 +249,36 @@ class LOMMetadata(BaseLOMMetadata):  # pylint: disable=too-many-public-methods
             langstringify(description, lang=language_code),
         )
 
+    def get_descriptions(self, text_only=False) -> list:
+        """Get descriptions."""
+        try:
+            descriptions = self.record["general.description"]
+        except KeyError:
+            return []
+
+        if text_only:
+            return [get_text(desc) for desc in descriptions]
+
+        return descriptions
+
     def append_keyword(self, keyword: str, language_code: str) -> None:
         """Append keyword."""
         self.deduped_append(
             "metadata.general.keyword",
             langstringify(keyword, lang=language_code),
         )
+
+    def get_keywords(self, text_only=False) -> list:
+        """Get keywords."""
+        try:
+            keywords = self.record["general.keyword"]
+        except KeyError:
+            return []
+
+        if text_only:
+            return [get_text(subject) for subject in keywords]
+
+        return self.record["general.keyword"]
 
     ###############
     #
@@ -245,6 +306,29 @@ class LOMMetadata(BaseLOMMetadata):  # pylint: disable=too-many-public-methods
             name, role, path=path or "metadata.lifecycle.contribute"
         )
 
+    def get_contributors(self, name_only=False, date_only=False) -> list:
+        """Get contributors."""
+        try:
+            contributes = self.record["lifecycle.contribute"]
+        except KeyError:
+            return []
+
+        if name_only:
+            contributors = []
+            for contribute in contributes:
+                if "entity" in contribute:
+                    contributors += contribute["entity"]
+            return contributors
+
+        if date_only:
+            dates = []
+            for contribute in contributes:
+                if "date" in contribute and "datetime" in contribute["date"]:
+                    dates += [contribute["date"]["datetime"]]
+            return dates
+
+        return contributes
+
     def set_datetime(self, datetime: str) -> None:
         """Set the datetime the learning object was created.
 
@@ -261,6 +345,18 @@ class LOMMetadata(BaseLOMMetadata):  # pylint: disable=too-many-public-methods
     def append_format(self, mimetype: str) -> None:
         """Append format."""
         self.deduped_append("metadata.technical.format", mimetype)
+
+    def get_formats(self) -> list:
+        """Get formats."""
+        try:
+            formats = self.record["technical.format"]
+        except KeyError:
+            return []
+
+        if len(formats) > 0:
+            return formats
+
+        return []
 
     def set_size(self, size: Union[str, int]) -> None:
         """Set size.
@@ -291,6 +387,18 @@ class LOMMetadata(BaseLOMMetadata):  # pylint: disable=too-many-public-methods
             "metadata.educational.learningresourcetype",
             learningresourcetype_dict,
         )
+
+    def get_learning_resource_type(self, text_only=False) -> str:
+        """Get learning resource type."""
+        try:
+            entry = self.record["educational.learningresourcetype.entry"]
+        except KeyError:
+            return ""
+
+        if text_only:
+            return get_text(entry)
+
+        return entry
 
     def append_context(self, context: str) -> None:
         """Append context.
@@ -331,6 +439,16 @@ class LOMMetadata(BaseLOMMetadata):  # pylint: disable=too-many-public-methods
             lang="x-t-cc-url",
         )
 
+    def get_rights(self, url_only=False) -> dict | str:
+        """Get rights."""
+        if "rights" not in self.record:
+            return {}
+
+        if url_only and "url" in self.record["rights"]:
+            return self.record["rights.url"]
+
+        return self.record["rights"]
+
     ###############
     #
     # methods for manipulating LOM's `relation` category
@@ -346,6 +464,22 @@ class LOMMetadata(BaseLOMMetadata):  # pylint: disable=too-many-public-methods
         resource = {"identifier": [catalogify(pid, catalog="repo-pid")]}
         relation = {"kind": vocabularify(kind), "resource": resource}
         self.deduped_append("metadata.relation", relation)
+
+    def get_relations(self, text_only=False) -> list:
+        """Get relations."""
+        if "relation" not in self.record:
+            return []
+
+        relations = []
+
+        for relation in self.record["relation"]:
+            if "resource" in relation and "description" in relation["resource"]:
+                if text_only:
+                    relations += [get_text(relation["resource"]["description"][0])]
+                else:
+                    relations += relation
+
+        return relations
 
     ###############
     #
