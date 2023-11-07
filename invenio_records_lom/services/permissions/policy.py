@@ -72,7 +72,7 @@ class LOMRecordPermissionPolicy(RDMRecordPermissionPolicy):
     # Allow ability to search drafts
     can_search_drafts = can_handle_oer
     # Allow reading metadata of a draft
-    can_read_draft = can_preview
+    can_read_draft = can_manage
     # Allow reading files of a draft
     can_draft_read_files = can_preview
     # Allow updating metadata of a draft
