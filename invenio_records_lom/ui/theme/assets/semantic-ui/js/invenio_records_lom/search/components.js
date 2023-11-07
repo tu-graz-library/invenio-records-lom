@@ -6,6 +6,7 @@
 import React, { useState } from "react";
 import { get, truncate } from "lodash";
 import { Card, Icon, Item, Label } from "semantic-ui-react";
+import { EditButton } from "@js/invenio_records_lom/components/EditButton";
 
 export const LOMBucketAggregationElement = ({ title, containerCmp }) => {
   const [active, setActive] = useState(true);
@@ -65,6 +66,11 @@ export const LOMRecordResultsListItem = ({ result, index }) => {
 
   const viewLink = `/oer/${result.id}`;
 
+  const [error, setError] = useState("");
+  const handleError = (errorMessage) => {
+    setError(errorMessage);
+  };
+
   return (
     <Item key={index}>
       <Item.Content>
@@ -77,6 +83,7 @@ export const LOMRecordResultsListItem = ({ result, index }) => {
               {access_icon && <i className={`icon ${access_icon}`}></i>}
               {access_status}
             </Label>
+            <EditButton recid={result.id} onError={handleError} />
           </div>
         </Item.Extra>
         <Item.Header as="h2">
