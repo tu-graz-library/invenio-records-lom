@@ -4,22 +4,31 @@
 // under the terms of the MIT License; see LICENSE file for more details.
 
 import React, { useState } from "react";
-import ReactDOM from "react-dom";
-import { get, camelCase, truncate } from "lodash";
-import {
-  Button,
-  Card,
-  Checkbox,
-  Icon,
-  Input,
-  Item,
-  Label,
-  List,
-} from "semantic-ui-react";
-import { BucketAggregation } from "react-searchkit";
-import { loadComponents } from "@js/invenio_theme/templates";
-import Overridable from "react-overridable";
-import { SearchBar, SearchApp } from "@js/invenio_search_ui/components";
+import { get, truncate } from "lodash";
+import { Card, Icon, Item, Label } from "semantic-ui-react";
+
+export const LOMBucketAggregationElement = ({ title, containerCmp }) => {
+  const [active, setActive] = useState(true);
+
+  return (
+    <Card className="borderless facet">
+      <Card.Content>
+        <Card.Header
+          as="h2"
+          style={{ float: "left", minHeight: 0, cursor: "pointer" }}
+          onClick={() => setActive((active) => !active)}
+        >
+          <Icon
+            style={{ "margin-top": "-4px" }}
+            name={active ? "angle down" : "angle right"}
+          />
+          {title}
+        </Card.Header>
+        {active ? containerCmp : null}
+      </Card.Content>
+    </Card>
+  );
+};
 
 export const LOMRecordResultsListItem = ({ result, index }) => {
   const ui = get(result, "ui", {});

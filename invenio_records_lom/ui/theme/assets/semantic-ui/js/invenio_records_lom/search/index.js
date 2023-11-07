@@ -13,10 +13,10 @@ import {
 } from "@js/invenio_app_rdm/search/components";
 import {
   ContribSearchAppFacets,
-  ContribBucketAggregationElement,
   ContribBucketAggregationValuesElement,
 } from "@js/invenio_search_ui/components";
 import {
+  LOMBucketAggregationElement,
   LOMRecordResultsGridItem,
   LOMRecordResultsListItem,
 } from "./components";
@@ -26,7 +26,7 @@ const ContribSearchAppFacetsWithConfig = parametrize(ContribSearchAppFacets, {
 });
 
 const initSearchApp = createSearchAppInit({
-  "BucketAggregation.element": ContribBucketAggregationElement,
+  "BucketAggregation.element": LOMBucketAggregationElement,
   "BucketAggregationValues.element": ContribBucketAggregationValuesElement,
   "ResultsGrid.item": LOMRecordResultsGridItem,
   "ResultsList.item": LOMRecordResultsListItem,
