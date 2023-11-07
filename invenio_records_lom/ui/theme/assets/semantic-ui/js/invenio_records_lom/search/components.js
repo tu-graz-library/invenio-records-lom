@@ -55,7 +55,11 @@ export const LOMRecordResultsListItem = ({ result, index }) => {
   const persons = get(ui, "contributors", []);
 
   const title = get(ui, "title", "No title");
-  const version = get(result, "metadata.lifecycle.version", null);
+  const version = get(
+    result,
+    "metadata.lifecycle.version.langstring.#text",
+    null
+  );
 
   const subjects = [];
 
