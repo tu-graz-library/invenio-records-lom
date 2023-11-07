@@ -101,6 +101,9 @@
           }
         }
       },
+      "deletion_status": {
+        "type": "keyword"
+      },
       "has_draft": {
         "type": "boolean"
       },
