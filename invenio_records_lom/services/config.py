@@ -9,6 +9,7 @@
 
 from invenio_drafts_resources.services.records.config import (
     RecordServiceConfig,
+    SearchDraftsOptions,
     SearchOptions,
     is_draft,
     is_record,
@@ -24,6 +25,7 @@ from invenio_records_resources.services import (
     FileServiceConfig,
     Link,
     RecordLink,
+    pagination_links,
 )
 from invenio_records_resources.services.base.config import (
     ConfiguratorMixin,
@@ -87,8 +89,17 @@ class FromConfigLOMRequiredPIDs:
 class LOMSearchOptions(SearchOptions, SearchOptionsMixin):
     """Search options applied when calling `.search` on the corresponding LOM-Service."""
 
-    # defaults, `FromConfigSearchOptions` overwrites these with values from current_app.config
-    facets = {"right_license": facets.rights_license}
+    facets = {
+        "right_license": facets.rights_license,
+    }
+
+
+class LOMSearchDraftsOptions(SearchDraftsOptions, SearchOptionsMixin):
+    """Search options for drafts search."""
+
+    facets = {
+        "right_license": facets.rights_license,
+    }
 
 
 class LOMRecordServiceConfig(RecordServiceConfig, ConfiguratorMixin):
@@ -112,6 +123,12 @@ class LOMRecordServiceConfig(RecordServiceConfig, ConfiguratorMixin):
         "LOM_SORT_OPTIONS",
         "LOM_FACETS",
         search_option_cls=LOMSearchOptions,
+    )
+    search_drafts = FromConfigSearchOptions(
+        "LOM_SEARCH_DRAFTS",
+        "LOM_SORT_OPTIONS",
+        "LOM_FACETS",
+        search_option_cls=LOMSearchDraftsOptions,
     )
 
     # PIDs
@@ -165,6 +182,10 @@ class LOMRecordServiceConfig(RecordServiceConfig, ConfiguratorMixin):
         "LOM_RECORDS_SERVICE_COMPONENTS",
         default=DefaultRecordsComponents,
     )
+
+    links_search = pagination_links("{+api}/lom{?args*}")
+
+    links_search_drafts = pagination_links("{+api}/lom/draft{?args*}")
 
 
 class LOMDraftFilesServiceConfig(FileServiceConfig, ConfiguratorMixin):
