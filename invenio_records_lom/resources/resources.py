@@ -17,9 +17,9 @@ class LOMRecordResource(RDMRecordResource):
     def create_url_rules(self):
         """Create the URL rules for the record resource."""
 
-        def s(route):
+        def s(route_str):
             """Suffix a route with the URL prefix."""
-            return f"{route}{self.config.url_prefix}"
+            return f"{route_str}{self.config.url_prefix}"
 
         def prefix(route_str):
             """Prefix a route with `self.config.prefix`."""

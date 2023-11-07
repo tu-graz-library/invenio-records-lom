@@ -11,7 +11,6 @@ from flask_resources.serializers import BaseSerializerSchema
 from marshmallow import fields
 
 from ....utils import LOMMetadata
-from .utils import get_text
 
 
 class LOMToDublinCoreRecordSchema(BaseSerializerSchema):
@@ -77,7 +76,7 @@ class LOMToDublinCoreRecordSchema(BaseSerializerSchema):
         """Get types."""
         return [lom.get_learning_resource_type(text_only=True)]
 
-    def get_sources(self, lom: LOMMetadata) -> list:
+    def get_sources(self, _: LOMMetadata) -> list:
         """Get soruces."""
         return []
 
@@ -85,7 +84,7 @@ class LOMToDublinCoreRecordSchema(BaseSerializerSchema):
         """Get languages."""
         return lom.get_languages()
 
-    def get_locations(self, lom: LOMMetadata) -> list:
+    def get_locations(self, _: LOMMetadata) -> list:
         """Get locations."""
         return []
 
