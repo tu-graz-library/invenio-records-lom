@@ -7,36 +7,7 @@ import React, { useState } from "react";
 import { http } from "react-invenio-forms";
 import { Button, Grid, Icon, Message } from "semantic-ui-react";
 import { i18next } from "@translations/invenio_records_lom/i18next";
-
-const EditButton = ({ recid, onError }) => {
-  const [loading, setLoading] = useState(false);
-
-  const editThenRedirect = async () => {
-    setLoading(true);
-    try {
-      await http.post(`/api/oer/${recid}/draft`);
-      window.location = `/oer/uploads/${recid}`;
-    } catch (error) {
-      setLoading(false);
-      onError(error.response.data.message);
-    }
-  };
-
-  return (
-    <Button
-      className="warning"
-      fluid
-      icon
-      labelPosition="left"
-      loading={loading}
-      onClick={editThenRedirect}
-      size="medium"
-    >
-      <Icon name="edit" />
-      {i18next.t("Edit")}
-    </Button>
-  );
-};
+import { EditButton } from "@js/invenio_records_lom/components/EditButton";
 
 export const LOMRecordManagement = ({ isDraft, permissions, record }) => {
   const [error, setError] = useState("");
@@ -46,6 +17,9 @@ export const LOMRecordManagement = ({ isDraft, permissions, record }) => {
       {permissions.can_edit && !isDraft && (
         <Grid.Column>
           <EditButton
+            fluid
+            className="warning"
+            size="medium"
             recid={record.id}
             onError={(message) => setError(message)}
           />

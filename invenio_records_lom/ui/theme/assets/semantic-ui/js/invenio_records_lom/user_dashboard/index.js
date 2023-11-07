@@ -8,7 +8,8 @@
 import React from "react";
 import { parametrize } from "react-overridable";
 import { createSearchAppInit } from "@js/invenio_search_ui";
-import { Button, Divider, Header, Segment } from "semantic-ui-react";
+import { Button, Divider, Header, Segment, Grid } from "semantic-ui-react";
+import { SearchBar, Sort } from "react-searchkit";
 import {
   RDMRecordSearchBarContainer,
   RDMRecordSearchBarElement,
@@ -36,16 +37,7 @@ const ContribSearchAppFacetsWithConfig = parametrize(ContribSearchAppFacets, {
 });
 
 export const LOMSearchLayout = DashboardSearchLayoutHOC({
-  searchBarPlaceholder: i18next.t("Search in publications..."),
-  newBtn: (
-    <Button
-      positive
-      icon="upload"
-      href="/oer/uploads/new/"
-      content={i18next.t("New upload")}
-      floated="right"
-    />
-  ),
+  searchBarPlaceholder: i18next.t("Search in Open Educational Resources..."),
 });
 
 export const LOMEmptyResults = (props) => {
