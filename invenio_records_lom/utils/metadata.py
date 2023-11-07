@@ -6,6 +6,9 @@
 # under the terms of the MIT License; see LICENSE file for more details.
 
 """LOMMetadata class for creation of LOM-compliant metadata."""
+
+from __future__ import annotations
+
 from copy import deepcopy
 from typing import Any, Optional, Union
 
@@ -206,6 +209,7 @@ class LOMMetadata(BaseLOMMetadata):  # pylint: disable=too-many-public-methods
             return []
 
         if text_only:
+            # pylint: disable-next=not-an-iterable
             return [get_text(entry["entry"]) for entry in identifiers]
 
         return identifiers
@@ -257,6 +261,7 @@ class LOMMetadata(BaseLOMMetadata):  # pylint: disable=too-many-public-methods
             return []
 
         if text_only:
+            # pylint: disable-next=not-an-iterable
             return [get_text(desc) for desc in descriptions]
 
         return descriptions
@@ -276,6 +281,7 @@ class LOMMetadata(BaseLOMMetadata):  # pylint: disable=too-many-public-methods
             return []
 
         if text_only:
+            # pylint: disable-next=not-an-iterable
             return [get_text(subject) for subject in keywords]
 
         return self.record["general.keyword"]
@@ -315,14 +321,14 @@ class LOMMetadata(BaseLOMMetadata):  # pylint: disable=too-many-public-methods
 
         if name_only:
             contributors = []
-            for contribute in contributes:
+            for contribute in contributes:  # pylint: disable=not-an-iterable
                 if "entity" in contribute:
                     contributors += contribute["entity"]
             return contributors
 
         if date_only:
             dates = []
-            for contribute in contributes:
+            for contribute in contributes:  # pylint: disable=not-an-iterable
                 if "date" in contribute and "datetime" in contribute["date"]:
                     dates += [contribute["date"]["datetime"]]
             return dates
@@ -444,8 +450,11 @@ class LOMMetadata(BaseLOMMetadata):  # pylint: disable=too-many-public-methods
         if "rights" not in self.record:
             return {}
 
-        if url_only and "url" in self.record["rights"]:
-            return self.record["rights.url"]
+        if url_only:
+            try:
+                return self.record["rights.url"]
+            except KeyError:
+                return ""
 
         return self.record["rights"]
 
@@ -472,7 +481,7 @@ class LOMMetadata(BaseLOMMetadata):  # pylint: disable=too-many-public-methods
 
         relations = []
 
-        for relation in self.record["relation"]:
+        for relation in self.record["relation"]:  # pylint: disable=not-an-iterable
             if "resource" in relation and "description" in relation["resource"]:
                 if text_only:
                     relations += [get_text(relation["resource"]["description"][0])]

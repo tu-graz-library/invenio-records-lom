@@ -39,6 +39,12 @@ class LOMToDataCite44Serializer(MarshmallowSerializer):
             **kwargs,
         )
 
+    # TODO: Remove when invenio_rdm_records.services.pids.providers.datacite.DataCitePIDProvider
+    # uses the new MarshmallowSerializer class
+    def dump_one(self, obj):
+        """Dump the object with extra information."""
+        return self.dump_obj(obj)
+
 
 class LOMToLOMXMLSerializer:
     """Marshmallow-based LOM-XML serializer for LOM records."""
