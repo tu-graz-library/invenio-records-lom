@@ -11,10 +11,11 @@ from __future__ import annotations
 from itertools import count
 
 import click
+from faker import Faker
 from flask.cli import with_appcontext
 from invenio_access.permissions import system_identity
 
-from .fixtures import publish_fake_records
+from .fixtures import publish_fake_record, publish_fake_record_over_celery
 from .proxies import current_records_lom
 from .records.models import LOMRecordMetadata
 from .resources.serializers.schemas import LOMMetadataToOAISchema
@@ -91,11 +92,27 @@ def check(pids_to_check: tuple[str]):
     help="Number of records to be created.",
 )
 @click.option("--seed", "-s", default=42, type=int, help="Seed for RNG.")
-def demo(number, seed):
+@click.option(
+    "--backend",
+    "-b",
+    default=False,
+    type=bool,
+    is_flag=True,
+    help="Create in backend for large datasets",
+)
+def demo(number, seed, backend):
     """Publish `number` fake LOM records to the database, for demo purposes."""
     click.secho(f"Creating {number} LOM demo records", fg="green")
-    for __ in publish_fake_records(number, seed):
-        pass
+
+    fake = Faker()
+    Faker.seed(seed)
+
+    for _ in range(number):
+        if backend:
+            publish_fake_record_over_celery(fake)
+        else:
+            publish_fake_record(fake)
+
     click.secho("Published fake LOM records to the database!", fg="green")
 
 
