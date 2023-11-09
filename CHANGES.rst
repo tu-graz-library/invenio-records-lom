@@ -7,6 +7,38 @@
 Changes
 =======
 
+Version v0.12.0 (release 2023-11-09)
+
+- setup: temporary remove python3.10
+- fix: errors (mostly pylint)
+- setup: remove test upper bounds
+- cli: add parameter to create demo in backend
+- ui: add new button to user dashboard
+- search: add configuration for dashboard search
+- permissions: change can_read_draft
+- ui: redesign EditButton
+- fix: version is an object
+- compatibility: add attributes for rdm-records
+- ui: add collapsable facets
+- resources: add dublin core schema
+- global: change prefix, add user_dashboard
+- ui: change route prefix
+- dashboard: change text
+- services: make components configurable
+- compatibility: change import paths
+- refactor: remove unused file
+- global: move jsonschemas to records
+- global: migrate to invenio_i18n (flask-babel)
+- setup: remove rdm-records boundary
+- metadata: add methods
+- stop grouping lifecycle.contributes by role
+- stop grouping for data from upload-page
+- stop grouping for data built with LOMMetadata
+- group on OAI-PMH output computation to retain compatibility
+- clean up file headers
+- clean up config files
+
+
 Version v0.11.1 (release 2023-08-03)
 
 - fix: licenses url with slash as last character
