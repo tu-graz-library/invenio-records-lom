@@ -7,6 +7,13 @@
 Changes
 =======
 
+Version v0.12.1 (release 2023-12-01)
+
+- standardize rights-URLs passed to `LOMMetadata`
+- alembic: add deletion_status field
+- modification: alembic scripts
+
+
 Version v0.12.0 (release 2023-11-09)
 
 - setup: temporary remove python3.10
