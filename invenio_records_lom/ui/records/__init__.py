@@ -97,7 +97,7 @@ def init_records_views(blueprint: Blueprint, app: Flask):
         user_dashboard_menu = current_menu.submenu("dashboard")
         user_dashboard_menu.submenu("OER").register(
             "invenio_records_lom.uploads",  # <blueprint-name>.<view-func-name>
-            text=_("OER"),
+            text=_("Educational Resources"),
             order=5,
             # visible_when=...,
             # :callable[[], bool], flask_login.current_user.is_authenticated and Permission(<perm>).can()
