@@ -19,13 +19,19 @@ def init(state: BlueprintSetupState):
     app = state.app
     # Register services - cannot be done in extension because
     # Invenio-Records-Resources might not have been initialized.
-    registry = app.extensions["invenio-records-resources"].registry
     ext = app.extensions["invenio-records-lom"]
 
-    registry.register(ext.records_service, service_id="lom-records")
-    registry.register(ext.records_service.files, service_id="lom-files")
-    registry.register(ext.records_service.draft_files, service_id="lom-draft-files")
-    registry.register(ext.iiif_service, service_id="lom-iiif")
+    sregistry = app.extensions["invenio-records-resources"].registry
+    sregistry.register(ext.records_service, service_id="lom-records")
+    sregistry.register(ext.records_service.files, service_id="lom-files")
+    sregistry.register(ext.records_service.draft_files, service_id="lom-draft-files")
+    sregistry.register(ext.iiif_service, service_id="lom-iiif")
+
+    iregistry = app.extensions["invenio-indexer"].registry
+    iregistry.register(ext.records_service.indexer, indexer_id="lom-records")
+    iregistry.register(
+        ext.records_service.draft_indexer, indexer_id="lom-records-drafts"
+    )
 
 
 def create_records_bp(app: Flask):
