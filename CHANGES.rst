@@ -7,6 +7,13 @@
 Changes
 =======
 
+Version v0.12.2 (release 2024-01-07)
+
+- fix: rebuild-index not working
+- setup: add support for python3.10 and 3.11
+- wording: change
+
+
 Version v0.12.1 (release 2023-12-01)
 
 - standardize rights-URLs passed to `LOMMetadata`
