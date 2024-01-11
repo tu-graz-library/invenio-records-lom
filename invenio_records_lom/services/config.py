@@ -14,6 +14,7 @@ from invenio_drafts_resources.services.records.config import (
     is_draft,
     is_record,
 )
+from invenio_indexer.api import RecordIndexer
 from invenio_rdm_records.services.config import (
     has_doi,
     is_iiif_compatible,
@@ -108,6 +109,11 @@ class LOMRecordServiceConfig(RecordServiceConfig, ConfiguratorMixin):
     # Record and draft class
     draft_cls = LOMDraft
     record_cls = LOMRecord
+
+    indexer_cls = RecordIndexer
+    indexer_queue_name = "lom-records"
+    draft_indexer_cls = RecordIndexer
+    draft_indexer_queue_name = "lom-records-drafts"
 
     # Schemas
     schema = LOMRecordSchema
