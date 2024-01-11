@@ -7,6 +7,11 @@
 Changes
 =======
 
+Version v0.12.3 (release 2024-01-11)
+
+- fix: indexer needs queue name
+
+
 Version v0.12.2 (release 2024-01-07)
 
 - fix: rebuild-index not working
