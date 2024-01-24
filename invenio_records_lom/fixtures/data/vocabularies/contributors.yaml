@@ -1,0 +1,6 @@
+- id: Author
+  title:
+    en: {name: Author}
+- id: Publisher
+  title:
+    en: {name: Publisher}

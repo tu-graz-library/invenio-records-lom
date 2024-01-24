@@ -135,3 +135,119 @@ def reindex():
         indexer.index(record_api_object)
 
     click.secho("Successfully reindexed LOM records!", fg="green")
+
+
+# TODO: might move this another file, hence imports are down here for the time...
+from collections import Counter
+
+import yaml
+from invenio_records_resources.services.uow import unit_of_work
+from invenio_vocabularies.proxies import current_service as vocabulary_service
+from invenio_vocabularies.records.models import VocabularyMetadata, VocabularyType
+from invenio_vocabularies.services import VocabulariesService
+from sqlalchemy.orm.exc import NoResultFound
+
+
+# TODO: type-annotations
+# TODO: use identity of current user vs system_identity?
+@lom.group()
+def vocabularies():
+    """CLI-group for `invenio_records_lom`'s flavor of vocabulary commands."""
+
+
+@vocabularies.command()
+@click.argument("type_id", required=False)
+@with_appcontext
+def ls(type_id=None):
+    """List vocabulary contents.
+
+    call without arguments to show all registered vocabulary-types
+    call with a vocabulary-type as argument to list metadata stored for that type
+
+    example calls:
+    invenio lom vocabularies ls
+    invenio lom vocabularies ls relationtypes | grep "comp*"
+    """
+    # TODO: put lom-specifc vocabulary-type into docstring-example
+    if type_id is None:
+        registered_type_ids = sorted(entry.id for entry in VocabularyType.query.all())
+        click.secho(f"number of types: {len(registered_type_ids)}", fg="green")
+        for registered_type_id in registered_type_ids:
+            click.secho(registered_type_id, bold=True, fg="blue")
+    else:
+        jsons = [entry.json for entry in VocabularyMetadata.query.all()]
+        relevant_jsons = [json_ for json_ in jsons if json_["type"]["id"] == type_id]
+        click.secho(f"number of '{type_id}' entries: {len(relevant_jsons)}", fg="green")
+        for json_ in relevant_jsons:
+            data = {k: v for k, v in json_.items() if k in ["title", "props", "tags"]}
+            click.echo(click.style(json_["id"], fg="cyan", bold=True) + " " + str(data))
+
+        # check whether requested `type_id` is registered in `vocabularies_types` table
+        # non-registration should still run above code, but output an error
+        # errors should be output last on CLIs (most recent line in terminal)
+        try:
+            VocabularyType.query.filter_by(id=type_id).one()
+        except NoResultFound:
+            msg = f"requested type-id `{type_id}` not found in vocabularies_types table"
+            click.secho(msg, fg="red", err=True)
+
+
+@unit_of_work()
+def import_vocabulary(data: list[dict], type_id, pid_type, overwrite: bool, uow=None):
+    # TODO: rename `data` (confusable with service-methods' kwarg of same name)
+    # TODO: can this be made independent of CLI? (no calling click.secho)
+
+    # if new type_id, register it
+    type_ids = {entry.id for entry in VocabularyType.query.all()}
+    if type_id not in type_ids:
+        vocabulary_service.create_type(
+            identity=system_identity, id=type_id, pid_type=pid_type, uow=uow
+        )
+        click.secho(f"added vocabulary-type {type_id}", fg="green")
+    else:
+        click.secho(f"vocabulary-type {type_id} already added")
+
+    # load
+    existing_entry_ids = {
+        e.id for e in VocabularyMetadata.query.all() if e.json["type"]["id"] == type_id
+    }
+    counter = Counter()
+    for entry in data:
+        if "id" not in entry:
+            # malformed entry, cannot be entered into database
+            # TODO: just immmediately raise?
+            click.secho()  # TODO
+            counter[""] += 1  # TODO
+            continue
+        entry = entry.copy()  # TODO: copy.copy(entry) ?
+        entry["type"] = type_id
+        if entry["id"] in existing_entry_ids and overwrite:
+            vocabulary_service.update(identity=system_identity, data=entry, uow=uow)
+            counter["updated"] += 1
+        elif entry["id"] in existing_entry_ids and not overwrite:
+            counter["passed"] += 1
+        else:
+            vocabulary_service.create(identity=system_identity, data=entry, uow=uow)
+            counter["added"] += 1
+    click.secho("<type>: <x-num> added, <y-num> updated, <z-num> ???")
+
+
+@vocabularies.command("import")
+# TODO: options
+@with_appcontext
+def import_command(type_id, pid_type, file, force):
+    with open(file, encoding="utf-8") as fh:
+        data = yaml.safe_load(fh)
+    import_vocabulary(data=data, type_id=type_id, pid_type=pid_type, overwrite=force)
+    # from file
+    # from fixtures folder (?)
+
+
+@vocabularies.command()
+def setup():
+    # get vocabularies.yaml file from entrypoint
+    # for each vocabulary as specified in file: call import_voabulary
+    pass
+
+
+# TODO: update, create, backup funcs

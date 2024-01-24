@@ -1,0 +1,29 @@
+# entrypoint "invenio_rdm_records.fixtures" loads vocabularies as specified here
+# this file needs to be named "vocabularies.yaml" for this to work
+#
+# example entry:
+# lomtest:  # name of vocabulary
+#   pid-type: lomtst  # length <= 6 chars to fit in pidstore_pid SQL-table's pid_type column
+#   data-file: vocabularies/lomtest.yaml  # path relative to directory this file is contained in
+
+# TODO: names of vocabularies/pid-types
+#   - `oer` instead of `lom`?
+#   - remove `lom` from some names as those vocabularies are more generally apllicable?
+lom_contributors:
+  pid-type: lomctr
+  data-file: vocabularies/contributors.yaml
+lom_languages:
+  pid-type: lomlng
+  data-file: vocabularies/languages.yaml
+lom_licenses:
+  pid-type: lomlic
+  data-file: vocabularies/licenses.yaml
+lom_mime:
+  pid-type: lomime
+  data-file: vocabularies/mime.yaml
+lom_oefos:
+  pid-type: oefos
+  data-file: vocabularies/oefos.yaml
+lom_resourcetypes:
+  pid-type: lomrsc
+  data-file: vocabularies/resource_types.yaml

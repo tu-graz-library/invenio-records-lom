@@ -1,0 +1,108 @@
+- id: application/epub+zip
+  props:
+    common_file_extensions: [.epub]
+  title: {en: Electronic Publication}
+- id: application/gzip
+  props:
+    common_file_extensions: [.gz]
+  title: {en: GZip Compressed Archive}
+- id: application/json
+  props:
+    common_file_extensions: [.json]
+  title: {en: JSON format}
+- id: application/msword
+  props:
+    common_file_extensions: [.doc]
+  title: {en: Microsoft Word}
+- id: application/octet-stream
+  props:
+    common_file_extensions: []
+  title: {en: Other Binary}
+- id: application/pdf
+  props:
+    common_file_extensions: [.pdf]
+  title: {en: Adobe Portable Document Format}
+- id: application/vnd.ms-excel
+  props:
+    common_file_extensions: [.xls]
+  title: {en: Microsoft Excel}
+- id: application/vnd.ms-powerpoint
+  props:
+    common_file_extensions: [.ppt]
+  title: {en: Microsoft PowerPoint}
+- id: application/xml
+  props:
+    common_file_extensions: [.xml]
+  title: {en: XML}
+- id: application/zip
+  props:
+    common_file_extensions: [.zip]
+  title: {en: ZIP Archive}
+- id: audio/aac
+  props:
+    common_file_extensions: [.aac]
+  title: {en: AAC Audio}
+- id: audio/midi
+  props:
+    common_file_extensions: [.midi, .mid]
+  title: {en: Musical Instrument Digital Interface}
+- id: audio/mpeg
+  props:
+    common_file_extensions: [.mp3]
+  title: {en: MP3 Audio}
+- id: audio/wav
+  props:
+    common_file_extensions: [.wav]
+  title: {en: Waveform Audio Format}
+- id: image/bmp
+  props:
+    common_file_extensions: [.bmp]
+  title: {en: Windows OS/2 Bitmap Graphics}
+- id: image/gif
+  props:
+    common_file_extensions: [.gif]
+  title: {en: Graphics Interchange Format}
+- id: image/jpeg
+  props:
+    common_file_extensions: [.jpg, .jpeg]
+  title: {en: JPEG images}
+- id: image/png
+  props:
+    common_file_extensions: [.png]
+  title: {en: Portable Network Graphics}
+- id: image/svg+xml
+  props:
+    common_file_extensions: [.svg]
+  title: {en: Scalable Vector Graphics}
+- id: image/tiff
+  props:
+    common_file_extensions: [.tif, .tiff]
+  title: {en: Tagged Image File Format}
+- id: image/webp
+  props:
+    common_file_extensions: [.webp]
+  title: {en: WEBP Image}
+- id: text/css
+  props:
+    common_file_extensions: [.css]
+  title: {en: Cascading Style Sheets}
+- id: text/csv
+  props:
+    common_file_extensions: [.csv]
+  title: {en: Comma-separated values}
+- id: text/html
+  props:
+    common_file_extensions: [.html]
+  title: {en: HyperText Markup Language}
+- id: text/plain
+  props:
+    common_file_extensions: [.txt]
+  title: {en: 'Other Text, ASCII'}
+- id: video/mp4
+  props:
+    common_file_extensions: [.mp4]
+  title: {en: MP4 Video}
+- id: video/x-msvideo
+  props:
+    common_file_extensions: [.avi]
+  title: {en: Audio Video Interleave}
