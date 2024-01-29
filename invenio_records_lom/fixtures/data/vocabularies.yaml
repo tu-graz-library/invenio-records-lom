@@ -6,16 +6,15 @@
 #   pid-type: lomtst  # length <= 6 chars to fit in pidstore_pid SQL-table's pid_type column
 #   data-file: vocabularies/lomtest.yaml  # path relative to directory this file is contained in
 
-# TODO: re-enable these after tests are finished...
-# lomroles:
-#   pid-type: lomrls
-#   data-file: vocabularies/lom_roles.yaml
-# oerlicenses:
-#   pid-type: oerlic
-#   data-file: vocabularies/oer_licenses.yaml
-# mimetype:
-#   pid-type: mime
-#   data-file: vocabularies/mime_types.yaml
+lomroles:
+  pid-type: lomrls
+  data-file: vocabularies/lom_roles.yaml
+oerlicenses:
+  pid-type: oerlic
+  data-file: vocabularies/oer_licenses.yaml
+mimetype:
+  pid-type: mime
+  data-file: vocabularies/mime_types.yaml
 oefos:
   pid-type: oefos
   data-file: vocabularies/oefos.yaml
