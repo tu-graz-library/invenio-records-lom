@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2021-2023 Graz University of Technology.
+# Copyright (C) 2021-2024 Graz University of Technology.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -16,7 +16,7 @@ from invenio_rdm_records.resources.serializers.datacite.schema import (
 from marshmallow import Schema, fields, missing
 
 from ....records import LOMRecord
-from .utils import get_lang, get_text
+from ..utils import get_lang, get_text
 
 
 class LOMToDataCite44Schema(Schema):

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2022-2023 Graz University of Technology.
+# Copyright (C) 2022-2024 Graz University of Technology.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -12,7 +12,7 @@ from __future__ import annotations
 from copy import deepcopy
 from typing import Any, Optional, Union
 
-from ..resources.serializers.schemas.utils import get_text
+from ..resources.serializers.utils import get_text
 from .util import (
     DotAccessWrapper,
     catalogify,

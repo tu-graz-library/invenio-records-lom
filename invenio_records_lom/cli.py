@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2020 Graz University of Technology.
+# Copyright (C) 2020-2024 Graz University of Technology.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -18,7 +18,7 @@ from invenio_access.permissions import system_identity
 from .fixtures import publish_fake_record, publish_fake_record_over_celery
 from .proxies import current_records_lom
 from .records.models import LOMRecordMetadata
-from .resources.serializers.schemas import LOMMetadataToOAISchema
+from .resources.serializers.oai.schema import LOMToOAISchema
 
 
 @click.group()
@@ -75,7 +75,7 @@ def check(pids_to_check: tuple[str]):
             continue
         try:
             json = json_by_pid[pid]
-            LOMMetadataToOAISchema().load(json.get("metadata", {}))
+            LOMToOAISchema().load(json.get("metadata", {}))
             click.secho(f"{pid}: Success", fg="green")
         except Exception as e:  # pylint: disable=broad-exception-caught
             click.secho(f"{pid}: {e!r}", fg="red")
