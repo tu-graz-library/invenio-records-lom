@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2022 Graz University of Technology.
+# Copyright (C) 2022-2024 Graz University of Technology.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -13,12 +13,12 @@ from invenio_pidstore.models import PersistentIdentifier
 from invenio_records_resources.services.errors import PermissionDeniedError
 
 from .proxies import current_records_lom
-from .resources.serializers import LOMToLOMXMLSerializer
+from .resources.serializers import LOMToOAIXMLSerializer
 
 
 def lom_etree(pid, record):  # pylint: disable=unused-argument
     """Get LOM XML for OAI-PMH."""
-    return LOMToLOMXMLSerializer(
+    return LOMToOAIXMLSerializer(
         metadata=record["_source"]["metadata"],
         lom_id=record["_source"]["id"],
         oaiserver_id_prefix=current_app.config.get("OAISERVER_ID_PREFIX"),

@@ -3,7 +3,7 @@
 # Copyright (C) 2019-2021 CERN.
 # Copyright (C) 2019-2021 Northwestern University.
 # Copyright (C)      2021 TU Wien.
-# Copyright (C) 2021-2022 Graz University of Technology.
+# Copyright (C) 2021-2024 Graz University of Technology.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -29,7 +29,7 @@ from invenio_records_resources.services.records.results import RecordItem
 from marshmallow import ValidationError
 
 from ...proxies import current_records_lom
-from ...resources.serializers import LOMUIJSONSerializer
+from ...resources.serializers import LOMToUIJSONSerializer
 from .decorators import (
     pass_file_item,
     pass_file_metadata,
@@ -92,7 +92,7 @@ def record_detail(
 ) -> str:
     """Record detail page (aka landing page)."""
     files_dict = {} if files is None else files.to_dict()
-    record_ui = LOMUIJSONSerializer().dump_obj(record.to_dict())
+    record_ui = LOMToUIJSONSerializer().dump_obj(record.to_dict())
 
     is_draft = record_ui["is_draft"]
     if is_preview and is_draft:
