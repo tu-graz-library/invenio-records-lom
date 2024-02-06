@@ -46,7 +46,7 @@ class LOMToOAIXMLSerializer:
             metadata["metametadata"] = metadata.pop("metaMetadata")
 
         try:
-            self.metadata = LOMToOAISchema().load(metadata)
+            self.metadata = LOMToOAISchema().dump(metadata)
         except Exception:  # pylint: disable=broad-exception-caught
             self.metadata = metadata
 
@@ -141,6 +141,6 @@ class LOMToOAIXMLSerializer:
             raise ValueError(f"Unexpected value of type {type(jsn)} when building XML.")
         return parent_tag
 
-    def serialize_object_xml(self):
+    def dump_obj(self):
         """Serialize a single record."""
         return self.build(self.metadata, self.element_maker.lom(**self.ELEMENT_ATTRIBS))
