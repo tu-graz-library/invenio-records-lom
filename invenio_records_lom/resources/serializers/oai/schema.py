@@ -14,6 +14,27 @@ from marshmallow import EXCLUDE, Schema, fields, pre_load, validate
 from ....utils import make_lom_vcard
 from ....utils.util import vocabularify
 
+LANGSTRING_LOM_V1 = {
+    "langstring": {
+        "#text": "LOMv1.0",
+        "lang": "x-none",
+    }
+}
+
+LANGSTRING_KIM_HCRT_SCHEME = {
+    "langstring": {
+        "#text": "https://w3id.org/kim/hcrt/scheme",
+        "lang": "x-none",
+    }
+}
+
+LANGSTRING_OEFOS = {
+    "langstring": {
+        "#text": "https://w3id.org/oerbase/vocabs/oefos2012",
+        "lang": "x-none",
+    }
+}
+
 
 class ExcludeUnknownOrderedSchema(Schema):
     """Schema configured to be ordered and exclude unknown."""
@@ -59,9 +80,7 @@ class LangstringRoleInnerSchema(ExcludeUnknownOrderedSchema):
     """Inner langstring-schema where `#text` is validated to be a LOM role."""
 
     lang = fields.Str(required=True)
-    text = fields.Function(
-        str.title,  # called on dump
-        str.title,  # called on load
+    text = fields.Str(
         attribute="#text",
         data_key="#text",
         required=True,
@@ -115,6 +134,24 @@ class IdentifierSchema(ExcludeUnknownOrderedSchema):
     entry = fields.Nested(LangstringXNoneSchema())
 
 
+class AggregationLevelSchema(ExcludeUnknownOrderedSchema):
+    """Schema for LOM-UIBK's `general.aggregationlevel`."""
+
+    source = fields.Field(
+        required=True,
+        validate=validate.Equal(LANGSTRING_LOM_V1),
+        dump_default=LANGSTRING_LOM_V1,
+    )
+    value = fields.Nested(LangstringXNoneSchema(), required=True)
+
+    @classmethod
+    def dump_default(cls):
+        """Dump default."""
+        aggregation_level = {"value": {"langstring": {"lang": "x-none", "#text": "4"}}}
+        aggregation_level |= {"source": LANGSTRING_LOM_V1}
+        return aggregation_level
+
+
 class GeneralSchema(ExcludeUnknownOrderedSchema):
     """Schema for LOM-UIBK's `general` category."""
 
@@ -124,10 +161,14 @@ class GeneralSchema(ExcludeUnknownOrderedSchema):
         validate=validate.Length(min=1),
     )
     title = fields.Nested(LangstringWithLangSchema(), required=True)
-    language = fields.List(fields.Str())
+    language = fields.List(fields.Str(), required=True, dump_default=["N/A"])
     description = fields.List(fields.Nested(LangstringWithLangSchema()))
     keyword = fields.List(fields.Nested(LangstringWithLangSchema()))
-    # TODO: optional field: aggregationlevel
+    aggregationlevel = fields.Nested(
+        AggregationLevelSchema(),
+        required=True,
+        dump_default=AggregationLevelSchema.dump_default,
+    )
 
 
 #
@@ -139,14 +180,8 @@ class RoleSchema(ExcludeUnknownOrderedSchema):
     # pylint: disable=duplicate-code
     source = fields.Field(
         required=True,
-        validate=validate.Equal(
-            {
-                "langstring": {
-                    "#text": "LOMv1.0",
-                    "lang": "x-none",
-                }
-            }
-        ),
+        validate=validate.Equal(LANGSTRING_LOM_V1),
+        dump_default=LANGSTRING_LOM_V1,
     )
     value = fields.Nested(LangstringRoleSchema(), required=True)
 
@@ -215,7 +250,17 @@ class LifecycleSchema(ExcludeUnknownOrderedSchema):
 class LocationSchema(ExcludeUnknownOrderedSchema):
     """Schema for LOM-UIBK's `technical.location`."""
 
-    text = fields.Str(attribute="#text", data_key="#text", required=True)
+    text = fields.Str(
+        attribute="#text",
+        data_key="#text",
+        # required=True,
+        dump_default="N/A",
+    )
+
+    @classmethod
+    def dump_default(cls):
+        """Dump default."""
+        return {"#text": "N/A"}
 
 
 class TechnicalSchema(ExcludeUnknownOrderedSchema):
@@ -228,9 +273,13 @@ class TechnicalSchema(ExcludeUnknownOrderedSchema):
         ),
         required=True,
         validate=validate.Length(min=1, max=1, error="Must have exactly one format."),
+        dump_default=["application/pdf"],
     )  # e.g. ['video/mp4']
     # TODO: optional field: size
-    location = fields.Nested(LocationSchema(), required=True)
+    location = fields.Nested(
+        LocationSchema(),
+        dump_default=LocationSchema.dump_default,
+    )
     # TODO: optional field: thumbnail
     # TODO: optional field: duration
 
@@ -244,22 +293,27 @@ class LearningResourceTypeSchema(ExcludeUnknownOrderedSchema):
     # pylint: disable=duplicate-code
     source = fields.Field(
         required=True,
-        validate=validate.Equal(
-            {
-                "langstring": {
-                    "#text": "https://w3id.org/kim/hcrt/scheme",
-                    "lang": "x-none",
-                }
-            }
-        ),
+        validate=validate.Equal(LANGSTRING_KIM_HCRT_SCHEME),
+        dump_default=LANGSTRING_KIM_HCRT_SCHEME,
     )
-    id = fields.Str(required=True)
+    id = fields.Str(required=True, dump_default="N/A")
+
+    @classmethod
+    def dump_default(cls):
+        """Dump default."""
+        obj = {"id": "N/A"}
+        obj |= {"source": LANGSTRING_KIM_HCRT_SCHEME}
+        return obj
 
 
 class EducationalSchema(ExcludeUnknownOrderedSchema):
     """Schema for LOM-UIBK's `educational` category."""
 
-    learningresourcetype = fields.Nested(LearningResourceTypeSchema(), required=True)
+    learningresourcetype = fields.Nested(
+        LearningResourceTypeSchema(),
+        required=True,
+        dump_default=LearningResourceTypeSchema.dump_default,
+    )
 
 
 #
@@ -287,14 +341,8 @@ class PurposeSchema(ExcludeUnknownOrderedSchema):
     # pylint: disable=duplicate-code
     source = fields.Field(
         required=True,
-        validate=validate.Equal(
-            {
-                "langstring": {
-                    "#text": "LOMv1.0",
-                    "lang": "x-none",
-                }
-            }
-        ),
+        validate=validate.Equal(LANGSTRING_LOM_V1),
+        dump_default=LANGSTRING_LOM_V1,
     )
     value = fields.Nested(LangstringXNoneSchema(), required=True)
 
@@ -312,14 +360,8 @@ class TaxonpathSchema(ExcludeUnknownOrderedSchema):
     # pylint: disable=duplicate-code
     source = fields.Field(
         required=True,
-        validate=validate.Equal(
-            {
-                "langstring": {
-                    "#text": "https://w3id.org/oerbase/vocabs/oefos2012",
-                    "lang": "x-none",
-                }
-            }
-        ),
+        validate=validate.Equal(LANGSTRING_OEFOS),
+        dump_default=LANGSTRING_OEFOS,
     )
     taxon = fields.Field()
 
