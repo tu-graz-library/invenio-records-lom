@@ -7,6 +7,14 @@
 Changes
 =======
 
+Version v0.13.0 (release 2024-02-12)
+
+- oai: rebuild schema to dump
+- tests: update run-tests to invenio standard
+- refactore: serializers to rdm-records structure
+- black: fix formating v24.1.1
+
+
 Version v0.12.3 (release 2024-01-11)
 
 - fix: indexer needs queue name
