@@ -7,10 +7,10 @@
 
 """OAI serializer."""
 
-
 from collections.abc import Mapping
 from copy import deepcopy
 
+from flask import current_app
 from lxml.builder import ElementMaker  # pylint: disable=no-name-in-module
 
 from .schema import LOMToOAISchema
@@ -91,13 +91,21 @@ class LOMToOAIXMLSerializer:
         `jsn` has to either be of form `{"lang": "lang-name", "#text": "any_text"}`,
         or be of form {"#text": "any_text"}.
         """
-        if "lang" in jsn:
+        if "lang" not in jsn:
+            jsn["lang"] = "x-none"
+
+        try:
             tag = self.element_maker.langstring(
                 jsn["#text"],
                 **{"{http://www.w3.org/XML/1998/namespace}lang": jsn["lang"]},
             )
-        else:
-            tag = self.element_maker.langstring(jsn["#text"])
+        except ValueError:
+            current_app.logger.error("ERROR LOM oai lom pid: %s", self.lom_id)
+            tag = self.element_maker.langstring(
+                "N/A",
+                **{"{http://www.w3.org/XML/1998/namespace}lang": "x-none"},
+            )
+
         parent_tag.append(tag)
 
     def build_location(self, jsn, parent_tag):
