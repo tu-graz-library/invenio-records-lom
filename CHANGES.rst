@@ -7,6 +7,11 @@
 Changes
 =======
 
+Version v0.13.1 (release 2024-02-13)
+
+- fix: method returns valid value
+
+
 Version v0.13.0 (release 2024-02-12)
 
 - oai: rebuild schema to dump
