@@ -513,10 +513,11 @@ class LOMMetadata(BaseLOMMetadata):  # pylint: disable=too-many-public-methods
                         (e.g. "https://creativecommons.org/licenses/by/4.0/")
         """
         url = standardize_url(url)
+        lang = "x-t-cc-url" if url.startswith("https://creativecommons.org/") else None
         self.record["metadata.rights"] = {
             "copyrightandotherrestrictions": vocabularify("yes"),
             "url": url,
-            "description": langstringify(url, lang="x-t-cc-url"),
+            "description": langstringify(url, lang=lang),
         }
 
     def get_rights(self, url_only=False) -> dict | str:
