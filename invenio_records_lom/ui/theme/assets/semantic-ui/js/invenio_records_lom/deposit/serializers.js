@@ -272,6 +272,10 @@ export class LOMDepositRecordSerializer extends DepositRecordSerializer {
 
     // serialize license
     const licenseUrl = _get(metadata, "form.license.value", "");
+    const licenseInnerLangstring = { "#text": licenseUrl };
+    if (licenseUrl.startsWith("https://creativecommons.org/")) {
+      licenseInnerLangstring["lang"] = "x-t-cc-url";
+    }
     _set(metadata, "rights", {
       copyrightandotherrestrictions: {
         source: { langstring: { "#text": "LOMv1.0", lang: "x-none" } },
@@ -279,10 +283,7 @@ export class LOMDepositRecordSerializer extends DepositRecordSerializer {
       },
       url: licenseUrl,
       description: {
-        langstring: {
-          "#text": licenseUrl,
-          lang: "x-t-cc-url",
-        },
+        langstring: licenseInnerLangstring,
       },
     });
 
@@ -371,7 +372,7 @@ export class LOMDepositRecordSerializer extends DepositRecordSerializer {
 
     // set single-field errors
     set_errors(/^metadata\.general\.title$/, "title");
-    set_errors(/^metadata\.rights/, "license.value");
+    set_errors(/^metadata\.rights\.url/, "license.value");
     set_errors(/^metadata\.technical\.format/, "format.value");
     set_errors(
       /^metadata\.educational\.learningresourcetype\.id$/,

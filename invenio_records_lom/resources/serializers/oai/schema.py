@@ -9,8 +9,9 @@
 
 from copy import copy
 
-from marshmallow import EXCLUDE, Schema, fields, pre_load, validate
+from marshmallow import EXCLUDE, Schema, fields, pre_load, validate, validates_schema
 
+from ....services.schemas.metadata import validate_cc_license_lang
 from ....utils import make_lom_vcard
 from ....utils.util import vocabularify
 
@@ -116,6 +117,11 @@ class LangstringLicenseInnerSchema(ExcludeUnknownOrderedSchema):
 
     lang = fields.Constant("x-t-cc-url")
     text = fields.Str(attribute="#text", data_key="#text", required=True)
+
+    @validates_schema
+    def validate_cc_license_text_fits_lang(self, obj, **__):
+        """Validate that license-url fits with `lang`."""
+        validate_cc_license_lang(obj)
 
 
 class LangstringLicenseSchema(ExcludeUnknownOrderedSchema):
