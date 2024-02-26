@@ -9,6 +9,7 @@
 
 import copy
 
+from invenio_i18n import lazy_gettext as _
 from marshmallow import (
     INCLUDE,
     Schema,
@@ -30,7 +31,7 @@ class NoValidationSchema(Schema):
 
         unknown = INCLUDE
 
-    def dump(self, obj, **_):
+    def dump(self, obj, **__):
         """Overwrite dump to return `obj`, bypassing validation as class name indicates."""
         return copy.copy(obj)
 
@@ -39,11 +40,15 @@ class LangstringField(fields.Field):
     """Verifies against form {"langstring": {"#text": str, "lang": str}}."""
 
     default_error_messages = {
+        # the following shouldn't really be shown to users, hence no translation:
         "extraneous_keys": "Extraneous keys in this langstring: {keys!r}.",
         "extraneous_lang": "This langstring must not have a 'lang'-field.",
         "invalid_inner_type": "Inner langstring must be a `dict`.",
         "invalid_outer_type": "Outer langstring must be a `dict`.",
+        "lang_required": "`lang` is falsy when its existence was required.",
         "missing_langstring_key": "No {keys!r}-key in this langstring.",
+        # the following overwrites default from parent-class with a translated version:
+        "required": _("Missing data for required field."),
     }
 
     def __init__(self, lang_exists=True, validate_lang_existence=True, **kwargs):
@@ -98,7 +103,7 @@ class LangstringField(fields.Field):
         if not text:
             raise self.make_error("required")
         if self.validate_lang_existence and self.lang_exists and not lang:
-            raise self.make_error("required")
+            raise self.make_error("lang_required")
 
         # validation succeded, rebuild langstring with sanitized text/lang
         result = {"langstring": {"#text": text}}
@@ -205,7 +210,7 @@ class ContributeSchema(Schema):
     role = fields.Nested(RoleSchema, required=True)
     entity = fields.List(
         SanitizedUnicode(
-            validate=validate.Length(min=1, error="Name cannot be empty.")
+            validate=validate.Length(min=1, error=_("Name cannot be empty."))
         ),
         required=True,
         validate=validate.Length(
@@ -244,11 +249,13 @@ class LifecycleSchema(Schema):
         ]
 
         if len(author_contributes) < 1 and len(publisher_contributes) < 1:
-            raise ValidationError("Must provide at least one author and one publisher.")
+            raise ValidationError(
+                _("Must provide at least one author and one publisher.")
+            )
         if len(author_contributes) < 1:
-            raise ValidationError("Must provide at least one author.")
+            raise ValidationError(_("Must provide at least one author."))
         if len(publisher_contributes) < 1:
-            raise ValidationError("Must provide at least one publisher.")
+            raise ValidationError(_("Must provide at least one publisher."))
 
 
 class LocationSchema(Schema):
@@ -263,10 +270,14 @@ class TechnicalSchema(Schema):
     format = fields.List(
         SanitizedUnicode(
             required=True,
-            validate=validate.Length(min=1, error="Missing data for required field."),
+            validate=validate.Length(
+                min=1, error=_("Missing data for required field.")
+            ),
         ),
         required=True,
-        validate=validate.Length(min=1, max=1, error="Must enter exactly one format."),
+        validate=validate.Length(
+            min=1, max=1, error="Format requires exactly one entry."
+        ),
     )
     location = fields.Nested(LocationSchema)
 
@@ -287,7 +298,7 @@ class LearningResourceTypeSchema(Schema):
     )
     id = SanitizedUnicode(
         required=True,
-        validate=validate.Length(min=1, error="Missing data for required field."),
+        validate=validate.Length(min=1, error=_("Missing data for required field.")),
     )
 
 
@@ -320,11 +331,11 @@ class RightsSchema(Schema):
         CopyrightAndOtherSchema, required=True
     )
     description = LangstringField(
-        lang_exists=None, required=True, validate=validate_cc_license_lang
+        validate_lang_existence=False, required=True, validate=validate_cc_license_lang
     )
     url = SanitizedUnicode(
         required=True,
-        validate=validate.Length(min=1, error="Missing data for required field."),
+        validate=validate.Length(min=1, error=_("Missing data for required field.")),
     )
 
 
@@ -335,7 +346,7 @@ class TaxonSchema(Schema):
         required=True,
         validate=validate.Regexp(
             r"https://w3id.org/oerbase/vocabs/oefos2012/\d+",
-            error="Not a valid OEFOS-url.",
+            error=_("Not a valid OEFOS-url."),
         ),
     )
     entry = LangstringField(lang_exists=False)
@@ -359,9 +370,7 @@ class TaxonpathSchema(Schema):
         TaxonSchema,
         many=True,
         required=True,
-        validate=validate.Length(
-            min=1, error="Must add at least one taxonomy to OEFOS taxonomy-path."
-        ),
+        validate=validate.Length(min=1, error="Taxon requires at least one entry."),
     )
 
 
@@ -381,7 +390,7 @@ class ClassificationSchema(Schema):
         TaxonpathSchema,
         many=True,
         required=True,
-        validate=validate.Length(min=1, error="Must add at least one OEFOS."),
+        validate=validate.Length(min=1, error=_("Must add at least one OEFOS.")),
     )
 
 
@@ -405,7 +414,9 @@ class MetadataSchema(Schema):
         ClassificationSchema,
         many=True,
         required=True,
-        validate=validate.Length(min=1, error="Must add OEFOS-classification."),
+        validate=validate.Length(
+            min=1, error="Classification requires at least one entry."
+        ),
     )
 
     def load(self, data, **kwargs):

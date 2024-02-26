@@ -299,7 +299,7 @@ export class LOMDepositRecordSerializer extends DepositRecordSerializer {
     );
 
     // serialize resource-type
-    const resourcetypeUrl = _get(metadata, "form.resourcetype.value");
+    const resourcetypeUrl = _get(metadata, "form.resourcetype.value", "");
     _set(metadata, "educational.learningresourcetype", {
       source: {
         langstring: {
