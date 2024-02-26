@@ -139,7 +139,8 @@ def get_learningresourcetypedict() -> dict[str, dict[str, str]]:
     Maps ((url-ending for "https://w3id.org/kim/hcrt/scheme/") -> labels_by_language),
     where labels_by_language maps (language_code -> label).
     """
-    with resources.open_text(__package__, "learning_resource_types.json") as file_like:
+    traversable = resources.files(__package__).joinpath("learning_resource_types.json")
+    with traversable.open("r", encoding="utf-8") as file_like:
         return load(file_like)
 
 
@@ -155,7 +156,8 @@ def get_oefosdict(language_code: str = "de") -> dict[str, str]:
         raise ValueError(f"OEFOS aren't available for language_code {language_code!r}.")
     filename = filenames_by_language[language_code.lower()]
 
-    with resources.open_text(__package__, filename) as file_pointer:
+    traversable = resources.files(__package__).joinpath(filename)
+    with traversable.open("r", encoding="utf-8") as file_pointer:
         file_reader = reader(file_pointer, delimiter=";")
 
         # discard header
