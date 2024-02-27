@@ -11,7 +11,7 @@
 from .ext import InvenioRecordsLOM
 from .proxies import current_records_lom
 
-__version__ = "0.13.1"
+__version__ = "0.13.2"
 
 __all__ = (
     "__version__",
