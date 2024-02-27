@@ -7,6 +7,13 @@
 Changes
 =======
 
+Version v0.13.2 (release 2024-02-27)
+
+- mark user-visible errors for translation
+- replace deprecated importlib.resources.open_text
+- sanitize data coming from upload-page
+
+
 Version v0.13.1 (release 2024-02-13)
 
 - fix: method returns valid value
