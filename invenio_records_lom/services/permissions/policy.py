@@ -9,6 +9,7 @@
 
 from invenio_rdm_records.services.generators import (
     IfFileIsLocal,
+    IfRecordDeleted,
     IfRestricted,
     RecordOwners,
 )
@@ -54,6 +55,16 @@ class LOMRecordPermissionPolicy(RDMRecordPermissionPolicy):
     can_read = [
         IfRestricted("record", then_=can_view, else_=can_all),
     ]
+    # `service.search` uses this instead of `can_read`
+    # see comment in parent-class for further info
+    can_read_deleted = [
+        IfRecordDeleted(
+            then_=[OERCurators(), SystemProcess()],
+            else_=can_read,
+        )
+    ]
+    can_read_deleted_files = can_read_deleted
+    can_media_read_deleted_files = []
     # Allow reading the files of a record
     can_read_files = [
         IfRestricted("files", then_=can_view, else_=can_all),
@@ -93,6 +104,15 @@ class LOMRecordPermissionPolicy(RDMRecordPermissionPolicy):
     ]
     can_draft_update_files = can_review
     can_draft_delete_files = can_review
+    # Allow enabling/disabling files
+    # files are always enabled
+    # to test publishing isolatedly from uploading files, test system-process is allowed
+    can_manage_files = [SystemProcess()]
+    # Allow access-management (i.e. set record/files to restricted/public)
+    # TODO: allow oer-curators to manage access
+    #       requires update of upload-page
+    # to test records with restricted access, test system-process is allowed
+    can_manage_record_access = [SystemProcess()]
 
     #
     # PIDs
@@ -116,3 +136,30 @@ class LOMRecordPermissionPolicy(RDMRecordPermissionPolicy):
     can_publish = can_review
     # Allow lifting a record or draft.
     can_lift_embargo = can_manage
+
+    #
+    # Communities
+    #
+    # Allow adding record to a community
+    can_add_community = []
+    # Allow removing community from a record
+    can_remove_community = []
+    # Allow removing records from a community
+    can_remove_record = []
+
+    #
+    # Media files - draft
+    #
+    can_draft_media_create_files = []
+    can_draft_media_read_files = []
+    can_draft_media_set_content_files = []
+    can_draft_media_get_content_files = []
+    can_draft_media_commit_files = []
+    can_draft_media_update_files = []
+    can_draft_media_delete_files = []
+
+    #
+    # Media files - record
+    #
+    can_media_read_files = []
+    can_media_get_content_files = []
