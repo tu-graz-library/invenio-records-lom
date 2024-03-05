@@ -197,8 +197,8 @@ class ContributeSchema(ExcludeUnknownOrderedSchema):
 
     role = fields.Nested(RoleSchema(), required=True)
     centity = fields.Method(
-        None,  # dump
-        "get_centity",  # load
+        "get_centity",  # dump
+        None,  # load
         data_key="entity",
         required=True,
     )
