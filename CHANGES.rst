@@ -7,6 +7,11 @@
 Changes
 =======
 
+Version v0.13.4 (release 2024-03-08)
+
+- deps: add missing dependency
+
+
 Version v0.13.3 (release 2024-03-08)
 
 - fix: oai-pmh no centity
