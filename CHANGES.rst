@@ -7,6 +7,12 @@
 Changes
 =======
 
+Version v0.13.3 (release 2024-03-08)
+
+- fix: oai-pmh no centity
+- configure permissions newly added to invenio
+
+
 Version v0.13.2 (release 2024-02-27)
 
 - mark user-visible errors for translation
