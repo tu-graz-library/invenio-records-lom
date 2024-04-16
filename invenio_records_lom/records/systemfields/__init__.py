@@ -20,6 +20,7 @@ from .context import LOMPIDFieldContext
 from .providers import LOMDraftRecordIdProvider, LOMRecordIdProvider
 from .relations import PIDLOMRelation
 from .resolver import LOMResolver
+from .statistics import LomRecordStatisticsField
 
 __all__ = (
     "LOMDraftRecordIdProvider",
@@ -29,4 +30,5 @@ __all__ = (
     "ParentRecordAccessField",
     "PIDLOMRelation",
     "RecordAccessField",
+    "LomRecordStatisticsField",
 )

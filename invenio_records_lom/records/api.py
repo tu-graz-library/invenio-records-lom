@@ -33,6 +33,7 @@ from invenio_rdm_records.records.systemfields import (
     HasDraftCheckField,
     RecordDeletionStatusField,
 )
+from invenio_records.dumpers import SearchDumper
 from invenio_records.systemfields import (
     ConstantField,
     DictField,
@@ -50,10 +51,12 @@ from invenio_requests.records.api import Request
 from invenio_requests.records.systemfields.relatedrecord import RelatedRecord
 
 from . import models
+from .dumpers import LomStatisticsDumperExt
 from .systemfields import (
     LOMDraftRecordIdProvider,
     LOMPIDFieldContext,
     LOMRecordIdProvider,
+    LomRecordStatisticsField,
     LOMResolver,
     ParentRecordAccessField,
     PIDLOMRelation,
@@ -127,6 +130,12 @@ class LOMDraft(Draft, metaclass=LOMRecordMeta):
     parent_record_cls = LOMParent
     versions_model_cls = models.LOMVersionsState
 
+    dumper = SearchDumper(
+        extensions=[
+            LomStatisticsDumperExt("stats"),
+        ]
+    )
+
     pid = PIDField(
         key="id",
         provider=LOMDraftRecordIdProvider,
@@ -198,6 +207,7 @@ class LOMRecord(Record, metaclass=LOMRecordMeta):
     schema = ConstantField("$schema", "local://lomrecords/records/record-v1.0.0.json")
     has_draft = HasDraftCheckField(LOMDraft)
     status = DraftStatus()
+    stats = LomRecordStatisticsField()
     deletion_status = RecordDeletionStatusField()
 
 

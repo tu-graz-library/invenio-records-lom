@@ -150,6 +150,9 @@
     </div>
   </section>
   {% endif %}
+  {%  if record.stats %}
+    {% include "invenio_records_lom/records/helpers/statistics.html" %}
+  {% endif %}
   {% include "invenio_app_rdm/records/details/side_bar/licenses.html" %}
   {% if record.ui.location %}
     <section id="original-content" aria-label="" class="ui segment rdm-sidebar">

@@ -1,11 +1,12 @@
-// Copyright (C) 2022-2023 Graz University of Technology.
+// Copyright (C) 2022-2024 Graz University of Technology.
 //
 // invenio-records-lom is free software; you can redistribute it and/or modify it
 // under the terms of the MIT License; see LICENSE file for more details.
 
+import PropTypes from "prop-types";
 import React, { useState } from "react";
 import { get, truncate } from "lodash";
-import { Card, Icon, Item, Label } from "semantic-ui-react";
+import { Card, Icon, Item, Label, Popup } from "semantic-ui-react";
 import { EditButton } from "@js/invenio_records_lom/components/EditButton";
 
 export const LOMBucketAggregationElement = ({ title, containerCmp }) => {
@@ -29,6 +30,48 @@ export const LOMBucketAggregationElement = ({ title, containerCmp }) => {
       </Card.Content>
     </Card>
   );
+};
+
+
+export const LomStats = ({ uniqueViews, uniqueDownloads }) => {
+  return (
+    <>
+      {uniqueViews != null && (
+        <Popup
+          size="tiny"
+          content={"Views"}
+          trigger={
+            <Label className="transparent">
+              <Icon name="eye" />
+              {uniqueViews}
+            </Label>
+          }
+        />
+      )}
+      {uniqueDownloads != null && (
+        <Popup
+          size="tiny"
+          content={"Downloads"}
+          trigger={
+            <Label className="transparent">
+              <Icon name="download" />
+              {uniqueDownloads}
+            </Label>
+          }
+        />
+      )}
+    </>
+  );
+};
+
+LomStats.propTypes = {
+  uniqueViews: PropTypes.number,
+  uniqueDownloads: PropTypes.number,
+};
+
+LomStats.defaultProps = {
+  uniqueViews: null,
+  uniqueDownloads: null,
 };
 
 export const LOMRecordResultsListItem = ({ result, index }) => {
@@ -63,6 +106,9 @@ export const LOMRecordResultsListItem = ({ result, index }) => {
   );
 
   const subjects = [];
+
+  const uniqueViews = get(result, "stats.all_versions.unique_views", 0);
+  const uniqueDownloads = get(result, "stats.all_versions.unique_downloads", 0);
 
   const viewLink = `/oer/${result.id}`;
 
@@ -107,9 +153,15 @@ export const LOMRecordResultsListItem = ({ result, index }) => {
             </Label>
           ))}
           {createdDate && (
-            <div>
+            <div className="flex justify-space-between align-items-end">
               <small>
                 Uploaded on <span>{createdDate}</span>
+              </small>
+              <small>
+                <LomStats
+                  uniqueViews={uniqueViews}
+                  uniqueDownloads={uniqueDownloads}
+                />
               </small>
             </div>
           )}

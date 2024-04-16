@@ -26,6 +26,7 @@ from invenio_previewer.extensions import default
 from invenio_previewer.proxies import current_previewer
 from invenio_records_resources.services.files.results import FileItem, FileList
 from invenio_records_resources.services.records.results import RecordItem
+from invenio_stats.proxies import current_stats
 from marshmallow import ValidationError
 
 from ...proxies import current_records_lom
@@ -100,6 +101,12 @@ def record_detail(
             current_records_lom.records_service.validate_draft(g.identity, record.id)
         except ValidationError:
             abort(404)
+
+    # emit a record view stats event
+    emitter = current_stats.get_event_emitter("lom-record-view")
+    if record is not None and emitter is not None:
+        # pylint: disable-next=protected-access
+        emitter(current_app, record=record._record, via_api=False)
 
     return render_template(
         "invenio_records_lom/record.html",
@@ -183,6 +190,14 @@ def record_file_download(
     **kwargs,  # pylint: disable=unused-argument
 ):
     """Download a file from a record."""
+    # emit a file download stats event
+    emitter = current_stats.get_event_emitter("lom-file-download")
+    if file_item is not None and emitter is not None:
+        # pylint: disable-next=protected-access
+        obj = file_item._file.object_version
+        # pylint: disable-next=protected-access
+        emitter(current_app, record=file_item._record, obj=obj, via_api=False)
+
     download = bool(request.args.get("download"))
     return file_item.send_file(as_attachment=download)
 
