@@ -25,6 +25,7 @@ from werkzeug.local import LocalProxy
 
 from .fields import ControlledVocabularyField
 from .metadata import MetadataSchema
+from .statistics import LomStatisticSchema
 
 
 def validate_lom_scheme(scheme: str):
@@ -50,6 +51,8 @@ class LOMRecordSchema(RDMRecordSchema):
     resource_type = ControlledVocabularyField(
         vocabulary=LocalProxy(lambda: current_app.config["LOM_RESOURCE_TYPES"]),
     )
+
+    stats = NestedAttribute(LomStatisticSchema, dump_only=True)
 
     @pre_dump
     @pre_load
