@@ -192,10 +192,18 @@ class RoleSchema(ExcludeUnknownOrderedSchema):
     value = fields.Nested(LangstringRoleSchema(), required=True)
 
 
+class DateSchema(ExcludeUnknownOrderedSchema):
+    """Schema for LOM-UIBK's `lifecycle.contribute.date` category."""
+
+    datetime = fields.Str()
+    description = fields.Nested(LangstringWithLangSchema(), required=True)
+
+
 class ContributeSchema(ExcludeUnknownOrderedSchema):
     """Schema for LOM-UIBK's `lifecycle.contribute`."""
 
     role = fields.Nested(RoleSchema(), required=True)
+    date = fields.Nested(DateSchema())
     centity = fields.Method(
         "get_centity",  # dump
         None,  # load
