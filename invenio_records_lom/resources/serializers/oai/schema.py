@@ -199,16 +199,15 @@ class ContributeSchema(ExcludeUnknownOrderedSchema):
     centity = fields.Method(
         "get_centity",  # dump
         None,  # load
-        data_key="entity",
-        required=True,
     )
 
-    def get_centity(self, entities):
+    def get_centity(self, contributors):
         """Get vcard."""
-        if not isinstance(entities, list):
-            entities = [entities]
+        role = contributors["role"]["value"]["langstring"]["#text"]
 
-        return [{"vcard": make_lom_vcard(fn=e)} for e in entities]
+        return [
+            {"vcard": make_lom_vcard(fn=e, role=role)} for e in contributors["entity"]
+        ]
 
 
 class LifecycleSchema(ExcludeUnknownOrderedSchema):

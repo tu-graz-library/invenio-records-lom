@@ -35,7 +35,7 @@ from dataclasses import dataclass
 class VCardProperty:
     """Holds configuration for a vcard property."""
 
-    compoundable: bool
+    compoundable: bool = False
     min: int = 0
     # just some sufficiently high number for properties that can appear arbitrarily often
     max: int = 255
@@ -44,7 +44,8 @@ class VCardProperty:
 DEFAULT_PROPERTIES_CONFIG: dict[str, VCardProperty] = {
     "fn": VCardProperty(compoundable=False, min=1),  # stands for `formatted name`
     "n": VCardProperty(compoundable=True, max=1),  # stands for `name`
-    "email": VCardProperty(compoundable=False),
+    "email": VCardProperty(),
+    "role": VCardProperty(),
 }
 
 
