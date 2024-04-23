@@ -7,6 +7,12 @@
 Changes
 =======
 
+Version v0.13.5 (release 2024-04-23)
+
+- oai: add date to contribute
+- fix: vcard-serialization
+
+
 Version v0.13.4 (release 2024-03-08)
 
 - deps: add missing dependency
