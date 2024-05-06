@@ -7,6 +7,11 @@
 Changes
 =======
 
+Version v0.14.0 (release 2024-05-06)
+
+- modification: add statistic for a record
+
+
 Version v0.13.5 (release 2024-04-23)
 
 - oai: add date to contribute
