@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2022-2023 Graz University of Technology.
+# Copyright (C) 2022-2024 Graz University of Technology.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -14,6 +14,9 @@ from csv import reader
 from importlib import resources
 from json import load
 from typing import Any, Iterator, Optional, Union
+
+from invenio_search import RecordsSearch
+from invenio_search.engine import dsl
 
 
 class DotAccessWrapper(MutableMapping):
@@ -225,3 +228,40 @@ def standardize_url(url: str) -> str:
         middle = m.group(1)  # excludes initial "https://", excludes trailing "/"
         return f"https://{middle}/"
     return url
+
+
+class LOMDuplicateRecordError(Exception):
+    """Duplicate Record Exception."""
+
+    def __init__(self, value, catalog, id_):
+        """Constructor for class DuplicateRecordException."""
+        msg = f"LOMDuplicateRecordError value: {value} with catalog: {catalog} already exists id={id_} in the database"
+        super().__init__(msg)
+
+
+def check_about_duplicate(identifier: str, catalog: str):
+    """Check if the record with the identifier is already within the database."""
+    search = RecordsSearch(index="lomrecords")
+
+    search.query = dsl.Q(
+        "bool",
+        must=[
+            dsl.Q(
+                "match",
+                **{"metadata.general.identifier.catalog.keyword": catalog},
+            ),
+            dsl.Q(
+                "match_phrase",
+                **{"metadata.general.identifier.entry.langstring.#text": identifier},
+            ),
+        ],
+    )
+
+    results = search.execute()
+
+    if len(results) > 0:
+        raise LOMDuplicateRecordError(
+            value=identifier,
+            catalog=catalog,
+            id_=results[0]["id"],
+        )
