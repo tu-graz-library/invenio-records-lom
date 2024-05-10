@@ -589,7 +589,9 @@ class LOMMetadata(BaseLOMMetadata):  # pylint: disable=too-many-public-methods
         return oefos_classification
 
     def create_oefos_taxonpath(
-        self, oefos_id: Union[str, int], language_code: str = "de"
+        self,
+        oefos_id: Union[str, int],
+        language_code: str = "de",
     ) -> dict:
         """Create the full OEFOS taxon-path that ends in `oefos_id`.
 
