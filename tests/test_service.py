@@ -8,6 +8,8 @@
 """Service tests."""
 
 import pytest
+from flask_principal import Identity
+from invenio_db.shared import SQLAlchemy, db
 from invenio_pidstore.models import PersistentIdentifier, PIDStatus
 
 from invenio_records_lom.records.models import (
@@ -16,6 +18,7 @@ from invenio_records_lom.records.models import (
     LOMRecordMetadata,
     LOMVersionsState,
 )
+from invenio_records_lom.services import LOMRecordService
 
 _ACCESS_CONFIGURATIONS = [
     {
@@ -49,12 +52,17 @@ _ACCESS_CONFIGURATIONS = [
 ]
 
 
-def _get_session_commits(db):
+def _get_session_commits(db: SQLAlchemy) -> set:
     """Get objects that have already been commited in this session."""
     return set(db.session.identity_map.values())
 
 
-def _pick_by_cls(iterable, cls, assert_unique=True):
+def _pick_by_cls(
+    iterable,  # noqa: ANN001
+    cls,  # noqa: ANN001
+    *,
+    assert_unique: bool = True,
+) -> db.Model:
     """Get first obj from `iterable` whose class is `cls`."""
     instances = [obj for obj in iterable if isinstance(obj, cls)]
     if assert_unique:
@@ -66,7 +74,12 @@ def _pick_by_cls(iterable, cls, assert_unique=True):
     "access",
     _ACCESS_CONFIGURATIONS,
 )
-def test_create_draft(service, db, identity, access):  # pylint: disable=too-many-locals
+def test_create_draft(
+    service: LOMRecordService,
+    db: SQLAlchemy,
+    identity: Identity,
+    access: dict,
+) -> None:
     """Test creating a draft, then test database changes."""
     title_langstring = {"langstring": {"#text": "Test", "lang": "en"}}
     data = {
@@ -86,7 +99,7 @@ def test_create_draft(service, db, identity, access):  # pylint: disable=too-man
     new_versions_state = _pick_by_cls(db_new_values, LOMVersionsState)
 
     new_pids = [new for new in db_new_values if isinstance(new, PersistentIdentifier)]
-    assert len(new_pids) == 2
+    assert len(new_pids) == 2  # noqa: PLR2004
     parent_pid = next(pid for pid in new_pids if pid.object_uuid == new_parent.id)
     draft_pid = next(pid for pid in new_pids if pid.object_uuid == new_draft.id)
 
@@ -105,7 +118,7 @@ def test_create_draft(service, db, identity, access):  # pylint: disable=too-man
     json_pid = general["identifier"][0]["entry"]["langstring"]["#text"]
     assert json_pid == draft_pid.pid_value
 
-    # TODO: check the necessity of this
+    # TODO: can't find where the type has been added
     del data["metadata"]["type"]
     del json["metadata"]["general"]["identifier"]
     assert json["metadata"] == data["metadata"]
@@ -121,7 +134,12 @@ def test_create_draft(service, db, identity, access):  # pylint: disable=too-man
     "access",
     _ACCESS_CONFIGURATIONS,
 )
-def test_publish(service, db, identity, access):  # pylint: disable=too-many-locals
+def test_publish(
+    service: LOMRecordService,
+    db: SQLAlchemy,
+    identity: Identity,
+    access: dict,
+) -> None:
     """Test publishing a record, then test database changes."""
     title_langstring = {"langstring": {"#text": "Test", "lang": "en"}}
     data = {
@@ -143,7 +161,7 @@ def test_publish(service, db, identity, access):  # pylint: disable=too-many-loc
     new_record = _pick_by_cls(db_new_values, LOMRecordMetadata)
 
     new_pids = [obj for obj in db_new_values if isinstance(obj, PersistentIdentifier)]
-    assert len(new_pids) == 2
+    assert len(new_pids) == 2  # noqa: PLR2004
     parent_pid = next(pid for pid in new_pids if pid.object_uuid == new_parent.id)
     draft_pid = next(pid for pid in new_pids if pid.object_uuid == new_draft.id)
     record_pid = next(pid for pid in new_pids if pid.object_uuid == new_record.id)

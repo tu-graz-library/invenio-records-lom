@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2021 Graz University of Technology.
+# Copyright (C) 2021-2024 Graz University of Technology.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
 """Resoler for LOM PID-fields."""
+
+from collections.abc import Callable
 
 from invenio_pidstore.resolver import Resolver
 
@@ -18,9 +20,13 @@ class LOMResolver(Resolver):
     def __init__(
         self,
         pid_type: str = "lomid",
-        object_type: str = None,
-        getter: callable = None,  # callable[[<LOMClass with ancestor Record>, uuid.UUID, bool], <instance of passed-in class>]
+        object_type: str | None = None,
+        getter: Callable | None = None,
+        *,
         registered_only: bool = True,
-    ):
-        """Initialize resolver."""
+    ) -> None:
+        """Initialize resolver.
+
+        callable[[<LOMClass with ancestor Record>, uuid.UUID, bool], <instance of passed-in class>]
+        """
         super().__init__(pid_type, object_type, getter, registered_only)

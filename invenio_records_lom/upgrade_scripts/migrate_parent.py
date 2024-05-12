@@ -16,7 +16,7 @@ from invenio_db import db
 from invenio_records_lom.records import LOMDraft, LOMRecord
 
 
-def update_parent(record):
+def update_parent(record: LOMRecord) -> None:
     """Update parent."""
     owned_by = record.parent["access"]["owned_by"]
 
@@ -26,7 +26,7 @@ def update_parent(record):
         }
 
 
-def update_record(record):
+def update_record(record: LOMRecord) -> str | None:
     """Update record."""
     if record.is_deleted:
         return None
@@ -39,14 +39,14 @@ def update_record(record):
 
         secho(f"> Updated parent: {record.parent.pid.pid_value}", fg="green")
         secho(f"> Updated record: {record.pid.pid_value}\n", fg="green")
-        return None
-    except Exception as e:  # pylint: disable=broad-exception-caught
+    except Exception as e:  # noqa: BLE001
         secho(f"> Error {e!r}", fg="red")
-        error = f"Record {record.pid.pid_value} failed to update"
-        return error
+        return f"Record {record.pid.pid_value} failed to update"
+    else:
+        return None
 
 
-def execute_upgrade():
+def execute_upgrade() -> None:
     """Execute upgrade."""
     errors = []
 

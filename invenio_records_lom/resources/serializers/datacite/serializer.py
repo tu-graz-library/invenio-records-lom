@@ -16,16 +16,17 @@ from .schema import LOMToDataCite44Schema
 class LOMToDataCite44Serializer(MarshmallowSerializer):
     """Marshmallow-based DataCite-serializer for LOM records."""
 
-    def __init__(self, **kwargs):
-        """Constructor."""
+    def __init__(self, **kwargs: dict) -> None:
+        """Construct."""
         super().__init__(
             format_serializer_cls=JSONSerializer,
             object_schema_cls=LOMToDataCite44Schema,
             **kwargs,
         )
 
-    # TODO: Remove when invenio_rdm_records.services.pids.providers.datacite.DataCitePIDProvider
+    # TODO: Remove when
+    # invenio_rdm_records.services.pids.providers.datacite.DataCitePIDProvider
     # uses the new MarshmallowSerializer class
-    def dump_one(self, obj):
+    def dump_one(self, obj: dict) -> dict:
         """Dump the object with extra information."""
         return self.dump_obj(obj)

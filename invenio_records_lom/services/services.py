@@ -7,9 +7,9 @@
 
 """Record services configured for LOM-use."""
 
+
 from invenio_rdm_records.services import RDMRecordService
 
 
-# pylint: disable-next=abstract-method
 class LOMRecordService(RDMRecordService):
     """RecordService configured for LOM-use."""
