@@ -43,7 +43,7 @@ class BaseLOMMetadata:
 
     def get_identifier(self, catalog: str) -> str:
         """Get identifier by catalog."""
-        for identifier in self.record["metadata.general.identifier"]:
+        for identifier in self.record["general.identifier"]:
             if identifier["catalog"] == catalog:
                 return identifier["entry"]["langstring"]["#text"]
         return ""
@@ -195,15 +195,15 @@ class LOMMetadata(BaseLOMMetadata):  # pylint: disable=too-many-public-methods
         """Append course."""
         # pylint: disable-next=unsupported-membership-test
         if "courses" not in self.record["metadata"]:
-            self.record["metadata.courses"] = []
+            self.record["courses"] = []
 
-        courses = self.record["metadata.courses"]
+        courses = self.record["courses"]
 
         # pylint: disable-next=not-an-iterable
         versions = [course["course"]["version"] for course in courses]
 
         if course.record["course.version"] not in versions:
-            self.record["metadata.courses"].append(course.record.data)
+            self.record["courses"].append(course.record.data)
 
     ###############
     #
@@ -218,7 +218,7 @@ class LOMMetadata(BaseLOMMetadata):  # pylint: disable=too-many-public-methods
         :param str id_: The value of the identifier within the cataloging scheme
         """
         self.deduped_append(
-            "metadata.general.identifier",
+            "general.identifier",
             catalogify(id_, catalog=catalog),
         )
 
@@ -237,7 +237,7 @@ class LOMMetadata(BaseLOMMetadata):  # pylint: disable=too-many-public-methods
 
     def set_title(self, title: str, language_code: str) -> None:
         """Set title."""
-        self.record["metadata.general.title"] = langstringify(title, lang=language_code)
+        self.record["general.title"] = langstringify(title, lang=language_code)
 
     def get_title(self, text_only=False) -> str:
         """Get title."""
@@ -253,7 +253,7 @@ class LOMMetadata(BaseLOMMetadata):  # pylint: disable=too-many-public-methods
 
     def append_language(self, language_code: str) -> None:
         """Append language."""
-        self.deduped_append("metadata.general.language", language_code)
+        self.deduped_append("general.language", language_code)
 
     def get_languages(self) -> list:
         """Get languages."""
@@ -270,7 +270,7 @@ class LOMMetadata(BaseLOMMetadata):  # pylint: disable=too-many-public-methods
     def append_description(self, description: str, language_code: str) -> None:
         """Append description."""
         self.deduped_append(
-            "metadata.general.description",
+            "general.description",
             langstringify(description, lang=language_code),
         )
 
@@ -290,7 +290,7 @@ class LOMMetadata(BaseLOMMetadata):  # pylint: disable=too-many-public-methods
     def append_keyword(self, keyword: str, language_code: str) -> None:
         """Append keyword."""
         self.deduped_append(
-            "metadata.general.keyword",
+            "general.keyword",
             langstringify(keyword, lang=language_code),
         )
 
@@ -321,7 +321,7 @@ class LOMMetadata(BaseLOMMetadata):  # pylint: disable=too-many-public-methods
         """
         version_dict = langstringify(version)
         version_dict["datetime"] = datetime
-        self.record["metadata.lifecycle.version"] = version_dict
+        self.record["lifecycle.version"] = version_dict
 
     def append_contribute(
         self,
@@ -338,7 +338,7 @@ class LOMMetadata(BaseLOMMetadata):  # pylint: disable=too-many-public-methods
         super().append_contribute(
             name,
             role,
-            path=path or "metadata.lifecycle.contribute",
+            path=path or "lifecycle.contribute",
             description=description,
         )
 
@@ -370,7 +370,7 @@ class LOMMetadata(BaseLOMMetadata):  # pylint: disable=too-many-public-methods
 
         :param str datetime: The datetime-string in isoformat
         """
-        self.record["metadata.lifecycle.datetime"] = datetime
+        self.record["lifecycle.datetime"] = datetime
 
     ###############
     #
@@ -393,7 +393,7 @@ class LOMMetadata(BaseLOMMetadata):  # pylint: disable=too-many-public-methods
             "logo": logo,
         }
 
-        self.deduped_append("metadata.metametadata.contribute", contribute)
+        self.deduped_append("metametadata.contribute", contribute)
 
     ###############
     #
@@ -403,7 +403,7 @@ class LOMMetadata(BaseLOMMetadata):  # pylint: disable=too-many-public-methods
 
     def append_format(self, mimetype: str) -> None:
         """Append format."""
-        self.deduped_append("metadata.technical.format", mimetype)
+        self.deduped_append("technical.format", mimetype)
 
     def get_formats(self) -> list:
         """Get formats."""
@@ -422,21 +422,21 @@ class LOMMetadata(BaseLOMMetadata):  # pylint: disable=too-many-public-methods
 
         :param str|int size: size in bytes (octets)
         """
-        self.record["metadata.technical.size"] = str(size)
+        self.record["technical.size"] = str(size)
 
     def set_thumbnail(self, value: dict) -> None:
         """Set thumbnail."""
-        self.record["metadata.technical.thumbnail"] = value
+        self.record["technical.thumbnail"] = value
 
     def set_duration(self, value: str, language: str) -> None:
         """Set duration."""
-        self.record["metadata.technical.duration"] = {
+        self.record["technical.duration"] = {
             "description": langstringify(value, lang=language),
         }
 
     def set_location(self, value: str) -> None:
         """Set location."""
-        self.record["metadata.technical.location"] = {"type": "URI", "#text": value}
+        self.record["technical.location"] = {"type": "URI", "#text": value}
 
     ###############
     #
@@ -457,7 +457,7 @@ class LOMMetadata(BaseLOMMetadata):  # pylint: disable=too-many-public-methods
             "entry": entry,
         }
         self.deduped_append(
-            "metadata.educational.learningresourcetype",
+            "educational.learningresourcetype",
             learningresourcetype_dict,
         )
 
@@ -478,7 +478,7 @@ class LOMMetadata(BaseLOMMetadata):  # pylint: disable=too-many-public-methods
 
         :param str context: One of the values LOM recommends for `educational.context`
         """
-        self.deduped_append("metadata.educational.context", vocabularify(context))
+        self.deduped_append("educational.context", vocabularify(context))
 
     def append_educational_description(
         self,
@@ -487,13 +487,13 @@ class LOMMetadata(BaseLOMMetadata):  # pylint: disable=too-many-public-methods
     ) -> None:
         """Append educational description."""
         self.deduped_append(
-            "metadata.educational.description",
+            "educational.description",
             langstringify(description, lang=language_code),
         )
 
     def set_typical_learning_time(self, value: str, description: str = None) -> None:
         """Set typical learning time."""
-        self.record["metadata.educational.typicallearningtime"] = {
+        self.record["educational.typicallearningtime"] = {
             "duration": {
                 "datetime": value,
                 "description": description,
@@ -514,7 +514,7 @@ class LOMMetadata(BaseLOMMetadata):  # pylint: disable=too-many-public-methods
         """
         url = standardize_url(url)
         lang = "x-t-cc-url" if url.startswith("https://creativecommons.org/") else None
-        self.record["metadata.rights"] = {
+        self.record["rights"] = {
             "copyrightandotherrestrictions": vocabularify("yes"),
             "url": url,
             "description": langstringify(url, lang=lang),
@@ -547,7 +547,7 @@ class LOMMetadata(BaseLOMMetadata):  # pylint: disable=too-many-public-methods
         """
         resource = {"identifier": [catalogify(pid, catalog="repo-pid")]}
         relation = {"kind": vocabularify(kind), "resource": resource}
-        self.deduped_append("metadata.relation", relation)
+        self.deduped_append("relation", relation)
 
     def get_relations(self, text_only=False) -> list:
         """Get relations."""
@@ -575,7 +575,7 @@ class LOMMetadata(BaseLOMMetadata):  # pylint: disable=too-many-public-methods
         """Get the classification that holds OEFOS, create it if it didn't exist."""
         # oefos are part of the unique `classification` whose `purpose` is "discipline"
         # try to find that classification, otherwise create it
-        for classification in self.record.get("metadata.classification", []):
+        for classification in self.record.get("classification", []):
             purpose = classification["purpose"]["value"]["langstring"]["#text"]
             if purpose == "discipline":
                 return (oefos_classification := classification)
@@ -585,7 +585,7 @@ class LOMMetadata(BaseLOMMetadata):  # pylint: disable=too-many-public-methods
             "purpose": vocabularify("discipline"),
             "taxonpath": [],
         }
-        self.record["metadata.classification.[]"] = oefos_classification
+        self.record["classification.[]"] = oefos_classification
         return oefos_classification
 
     def create_oefos_taxonpath(
