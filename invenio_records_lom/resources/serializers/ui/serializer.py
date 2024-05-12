@@ -16,7 +16,7 @@ from .schema import LOMUIRecordSchema
 class LOMToUIJSONSerializer(MarshmallowSerializer):
     """Wrapper with some convenience functions around a marshmallow-schema."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize serializer with arguments for LOM-serialization."""
         super().__init__(
             format_serializer_cls=JSONSerializer,

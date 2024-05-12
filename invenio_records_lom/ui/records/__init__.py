@@ -3,7 +3,7 @@
 # Copyright (C) 2019-2021 CERN.
 # Copyright (C) 2019-2021 Northwestern University.
 # Copyright (C)      2021 TU Wien.
-# Copyright (C) 2021-2023 Graz University of Technology.
+# Copyright (C) 2021-2024 Graz University of Technology.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -11,8 +11,6 @@
 """User interface utilities for records."""
 
 from flask import Blueprint, Flask
-from flask_menu import current_menu
-from invenio_i18n import lazy_gettext as _
 from invenio_pidstore.errors import (
     PIDDeletedError,
     PIDDoesNotExistError,
@@ -36,7 +34,7 @@ from .records import (
 )
 
 
-def init_records_views(blueprint: Blueprint, app: Flask):
+def init_records_views(blueprint: Blueprint, app: Flask) -> None:
     """Register blueprints for records on passed in `blueprint`."""
     routes = app.config["LOM_ROUTES"]
     app_ext = app.extensions["invenio-records-lom"]
@@ -87,19 +85,6 @@ def init_records_views(blueprint: Blueprint, app: Flask):
     blueprint.register_error_handler(PIDUnregistered, not_found_error)
     blueprint.register_error_handler(KeyError, not_found_error)
     blueprint.register_error_handler(
-        PermissionDeniedError, record_permission_denied_error
+        PermissionDeniedError,
+        record_permission_denied_error,
     )
-
-    # register dashboard-tab
-    @blueprint.before_app_first_request
-    def register_lom_dashboard_tab():
-        """Register entry for lom in the `flask_menu`-submenu "dashboard"."""
-        user_dashboard_menu = current_menu.submenu("dashboard")
-        user_dashboard_menu.submenu("OER").register(
-            "invenio_records_lom.uploads",  # <blueprint-name>.<view-func-name>
-            text=_("Educational Resources"),
-            order=5,
-            # visible_when=...,
-            # :callable[[], bool], flask_login.current_user.is_authenticated and Permission(<perm>).can()
-            # perm = flask_principal.<SomeKindOfNeed>("name-of-need")
-        )

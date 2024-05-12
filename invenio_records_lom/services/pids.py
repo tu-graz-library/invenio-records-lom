@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2023 Graz University of Technology.
+# Copyright (C) 2023-2024 Graz University of Technology.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -9,6 +9,7 @@
 
 from invenio_i18n import lazy_gettext as _
 from invenio_rdm_records.services.pids.providers import DataCitePIDProvider
+from marshmallow import ValidationError
 
 
 class LOMDataCitePIDProvider(DataCitePIDProvider):
@@ -18,7 +19,13 @@ class LOMDataCitePIDProvider(DataCitePIDProvider):
     hence another validation is needed.
     """
 
-    def validate(self, record, identifier=None, provider=None, **kwargs):
+    def validate(
+        self,
+        record,  # noqa: ANN001
+        identifier: str | None = None,
+        provider=None,  # noqa: ANN001
+        **kwargs: dict,
+    ) -> bool:
         """Validate the attributes of the identifier.
 
         :returns: A tuple (success, errors). `success` is a bool that specifies
@@ -28,7 +35,10 @@ class LOMDataCitePIDProvider(DataCitePIDProvider):
         """
         # skip direct parent-class's validate, but do parent's parent
         success, errors = super(DataCitePIDProvider, self).validate(
-            record, identifier, provider, **kwargs
+            record,
+            identifier,
+            provider,
+            **kwargs,
         )
 
         # check format, as in parent.validate
@@ -44,13 +54,15 @@ class LOMDataCitePIDProvider(DataCitePIDProvider):
         try:
             publisher = schema.fields["publisher"].serialize(None, record)
             if not publisher:
-                raise ValueError("No publisher serializable from passed-in `record`.")
-        except Exception:  # pylint: disable='broad-exception-caught
+                msg = "No publisher serializable from passed-in `record`."
+                raise ValueError(msg)  # noqa: TRY301
+        except (ValidationError, ValueError):
             errors.append(
                 {
-                    "field": "metadata.publisher",  # use invenio's field-name for compatibility
+                    # use invenio's field-name for compatibility
+                    "field": "metadata.publisher",
                     "messages": [_("Missing publisher.")],
-                }
+                },
             )
 
         return success and not errors, errors

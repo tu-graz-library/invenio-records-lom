@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2023 Graz University of Technology.
+# Copyright (C) 2023-2024 Graz University of Technology.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -11,12 +11,13 @@ from invenio_i18n import gettext as _
 from invenio_records_resources.services.records.facets import TermsFacet
 
 
-def license_labels(keys):
+def license_labels(keys: list) -> dict:
     """Label licenses.
 
-    ATTENTION:
+    ATTENTION: # noqa
     this should be a temporary solution. the real solution should be to fix the
     metadata within the database.
+
     """
     license_mapping = {
         "https://creativecommons.org/publicdomain/zero/1.0/": _("CC0 1.0"),

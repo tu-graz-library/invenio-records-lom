@@ -17,8 +17,7 @@
 
 """View-functions for record-related pages."""
 
-import typing as t
-from os.path import splitext
+from pathlib import Path
 
 from flask import abort, current_app, g, redirect, render_template, request, url_for
 from invenio_base.utils import obj_or_import_string
@@ -49,7 +48,12 @@ class PreviewFile:
     `invenio_previewer.api.PreviewFile`.
     """
 
-    def __init__(self, file_item: FileItem, record_pid_value: str, url: str = None):
+    def __init__(
+        self,
+        file_item: FileItem,
+        record_pid_value: str,
+        url: str | None = None,
+    ) -> None:
         """Create a new PreviewFile."""
         self.file = file_item
         self.data = file_item.data
@@ -62,21 +66,21 @@ class PreviewFile:
             filename=self.filename,
         )
 
-    def is_local(self):
+    def is_local(self) -> bool:
         """Check if file is local."""
         return True
 
-    def has_extensions(self, *exts):
+    def has_extensions(self, *exts: dict) -> bool:
         """Check if file has one of the extensions.
 
         Each `exts` has the format `.{file type}` e.g. `.txt` .
         """
-        file_ext = splitext(self.data["key"])[1].lower()
+        file_ext = Path(self.data["key"]).suffix.lower()
         return file_ext in exts
 
-    def open(self):
+    def open(self):  # noqa:ANN201
         """Open the file."""
-        return self.file._file.file.storage().open()  # pylint: disable=protected-access
+        return self.file._file.file.storage().open()  # noqa: SLF001
 
 
 #
@@ -86,10 +90,10 @@ class PreviewFile:
 @pass_record_or_draft
 @pass_record_files
 def record_detail(
-    pid_value: str = None,
-    is_preview: bool = None,
+    pid_value: str | None = None,
+    is_preview: bool | None = None,
     record: RecordItem = None,
-    files: t.Optional[FileList] = None,
+    files: FileList | None = None,
 ) -> str:
     """Record detail page (aka landing page)."""
     files_dict = {} if files is None else files.to_dict()
@@ -105,8 +109,7 @@ def record_detail(
     # emit a record view stats event
     emitter = current_stats.get_event_emitter("lom-record-view")
     if record is not None and emitter is not None:
-        # pylint: disable-next=protected-access
-        emitter(current_app, record=record._record, via_api=False)
+        emitter(current_app, record=record._record, via_api=False)  # noqa: SLF001
 
     return render_template(
         "invenio_records_lom/record.html",
@@ -114,7 +117,7 @@ def record_detail(
         pid=pid_value,
         files=files_dict,
         permissions=record.has_permissions_to(
-            ["edit", "new_version", "manage", "update_draft", "read_files", "review"]
+            ["edit", "new_version", "manage", "update_draft", "read_files", "review"],
         ),
         is_preview=is_preview,
         is_draft=is_draft,
@@ -125,10 +128,11 @@ def record_detail(
 @pass_record_or_draft
 def record_export(
     record: RecordItem = None,
-    export_format: str = None,
-    pid_value: str = None,
-    is_preview: bool = False,  # pylint: disable=unused-argument
-):
+    export_format: str | None = None,
+    pid_value: str | None = None,
+    *,
+    is_preview: bool | None = False,  # noqa: ARG001
+) -> tuple[dict, int, dict]:
     """Export view for LOM records."""
     exporter = current_app.config.get("LOM_RECORD_EXPORTERS", {}).get(export_format)
     if exporter is None:
@@ -138,7 +142,7 @@ def record_export(
         options={
             "indent": 2,
             "sort_keys": True,
-        }
+        },
     )
     exported_record = serializer.serialize_object(record.to_dict())
     content_type = exporter.get("content-type", export_format)
@@ -153,13 +157,13 @@ def record_export(
 @pass_is_preview
 @pass_record_or_draft
 @pass_file_metadata
-def record_file_preview(
-    record: RecordItem = None,  # pylint: disable=unused-argument
-    pid_value: str = None,
-    pid_type: str = "recid",  # pylint: disable=unused-argument
-    file_metadata: FileItem = None,
-    is_preview: bool = False,
-    **kwargs,
+def record_file_preview(  # noqa: ANN201
+    record: RecordItem | None = None,  # noqa: ARG001
+    pid_value: str | None = None,
+    pid_type: str = "recid",  # noqa: ARG001
+    file_metadata: FileItem | None = None,
+    *,
+    is_preview: bool | None = False,
 ):
     """Render a preview of the specified file."""
     file_previewer = file_metadata.data.get("previewer")
@@ -172,9 +176,8 @@ def record_file_preview(
 
     # find a suitable previewer
     file_obj = PreviewFile(file_metadata, pid_value, url)
-    for plugin in current_previewer.iter_previewers(
-        previewers=[file_previewer] if file_previewer else None
-    ):
+    previewers = [file_previewer] if file_previewer else None
+    for plugin in current_previewer.iter_previewers(previewers=previewers):
         if plugin.can_preview(file_obj):
             return plugin.preview(file_obj)
 
@@ -183,38 +186,41 @@ def record_file_preview(
 
 @pass_is_preview
 @pass_file_item
-def record_file_download(
+def record_file_download(  # noqa: ANN201
     file_item: FileItem = None,
-    pid_value: str = None,  # pylint: disable=unused-argument
-    is_preview: bool = False,  # pylint: disable=unused-argument
-    **kwargs,  # pylint: disable=unused-argument
+    pid_value: str | None = None,  # noqa: ARG001
+    *,
+    is_preview: bool = False,  # noqa: ARG001
 ):
     """Download a file from a record."""
     # emit a file download stats event
     emitter = current_stats.get_event_emitter("lom-file-download")
     if file_item is not None and emitter is not None:
         # pylint: disable-next=protected-access
-        obj = file_item._file.object_version
+        obj = file_item._file.object_version  # noqa: SLF001
         # pylint: disable-next=protected-access
-        emitter(current_app, record=file_item._record, obj=obj, via_api=False)
+        emitter(
+            current_app,
+            record=file_item._record,  # noqa: SLF001
+            obj=obj,
+            via_api=False,
+        )
 
     download = bool(request.args.get("download"))
     return file_item.send_file(as_attachment=download)
 
 
 @pass_record_latest
-def record_latest(
+def record_latest(  # noqa: ANN201
     record: RecordItem = None,
-    **kwargs,  # pylint: disable=unused-argument
 ):
     """Redirect to record's landing page."""
     return redirect(record["links"]["self_html"], code=301)
 
 
 @pass_record_from_pid
-def record_from_pid(
+def record_from_pid(  # noqa: ANN201
     record: RecordItem = None,
-    **kwargs,  # pylint: disable=unused-argument
 ):
     """Redirect to record's landing page."""
     return redirect(record["links"]["self_html"], code=301)

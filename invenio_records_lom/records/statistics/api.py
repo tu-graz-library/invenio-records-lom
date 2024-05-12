@@ -11,8 +11,9 @@
 
 """Permission factories for invenio-records-lom.
 
-In contrast to the very liberal defaults provided by invenio-records-lom, these permission
-factories deny access unless otherwise specified.
+In contrast to the very liberal defaults provided by
+invenio-records-lom, these permission factories deny access unless
+otherwise specified.
 """
 
 from flask import current_app
@@ -25,14 +26,14 @@ class LomStatistics(Statistics):
     prefix = "lom-record"
 
     @classmethod
-    def get_record_stats(cls, recid, parent_recid):
+    def get_record_stats(cls, recid: str, parent_recid: str) -> dict:
         """Fetch the statistics for the given record."""
         try:
             views = cls._get_query(f"{cls.prefix}-view").run(recid=recid)
             views_all = cls._get_query(f"{cls.prefix}-view-all-versions").run(
-                parent_recid=parent_recid
+                parent_recid=parent_recid,
             )
-        except Exception as e:  # pylint: disable=broad-exception-caught
+        except Exception as e:  # noqa: BLE001
             # e.g. opensearchpy.exceptions.NotFoundError
             # when the aggregation search index hasn't been created yet
             current_app.logger.warning(e)
@@ -46,9 +47,9 @@ class LomStatistics(Statistics):
         try:
             downloads = cls._get_query(f"{cls.prefix}-download").run(recid=recid)
             downloads_all = cls._get_query(f"{cls.prefix}-download-all-versions").run(
-                parent_recid=parent_recid
+                parent_recid=parent_recid,
             )
-        except Exception as e:  # pylint: disable=broad-exception-caught
+        except Exception as e:  # noqa: BLE001
             # same as above, but for failure in the download statistics
             # because they are a separate index that can fail independently
             current_app.logger.warning(e)
@@ -60,7 +61,7 @@ class LomStatistics(Statistics):
             }
             downloads = downloads_all = fallback_result
 
-        stats = {
+        return {
             "this_version": {
                 "views": views["views"],
                 "unique_views": views["unique_views"],
@@ -76,5 +77,3 @@ class LomStatistics(Statistics):
                 "data_volume": downloads_all["data_volume"],
             },
         }
-
-        return stats

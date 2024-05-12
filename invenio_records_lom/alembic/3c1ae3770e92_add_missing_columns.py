@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2023 Graz University of Technology.
+# Copyright (C) 2023-2024 Graz University of Technology.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -17,7 +17,7 @@ branch_labels = ()
 depends_on = None
 
 
-def upgrade():
+def upgrade() -> None:
     """Upgrade database."""
     # step 1: create the columns, but make them nullable for now
     op.add_column(
@@ -36,10 +36,12 @@ def upgrade():
     # step 2: set default values for existing rows
     default_value = "P"
     metadata_table = sa.sql.table(
-        "lom_records_metadata", sa.sql.column("deletion_status")
+        "lom_records_metadata",
+        sa.sql.column("deletion_status"),
     )
     metadata_version_table = sa.sql.table(
-        "lom_records_metadata_version", sa.sql.column("deletion_status")
+        "lom_records_metadata_version",
+        sa.sql.column("deletion_status"),
     )
     op.execute(metadata_table.update().values(deletion_status=default_value))
     op.execute(metadata_version_table.update().values(deletion_status=default_value))
@@ -48,7 +50,7 @@ def upgrade():
     op.alter_column("lom_records_metadata", "deletion_status", nullable=False)
 
 
-def downgrade():
+def downgrade() -> None:
     """Downgrade database."""
     op.drop_column("lom_records_metadata_version", "deletion_status")
     op.drop_column("lom_records_metadata", "deletion_status")

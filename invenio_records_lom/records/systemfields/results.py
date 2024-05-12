@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2021 Graz University of Technology.
+# Copyright (C) 2021-2024 Graz University of Technology.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
 """Results for relations system field."""
-
-import typing as t
 
 from invenio_records.systemfields.relations import RelationResult
 
@@ -17,18 +15,16 @@ from ...utils import DotAccessWrapper
 class RelationLOMResult(RelationResult):
     """Relation access result."""
 
-    def __call__(self, force=True):
+    def __call__(self, *, force: bool = True) -> None:  # noqa: ARG002
         """Resolve the relation."""
-        raise NotImplementedError(
-            f"{self.__class__.__qualname__}.__call__ is not implemented yet"
-        )
+        msg = f"{self.__class__.__qualname__}.__call__ is not implemented yet"
+        raise NotImplementedError(msg)
 
-    def _lookup_id(self):
-        raise NotImplementedError(
-            f"{self.__class__.__qualname__}._lookup_id is not implemented yet"
-        )
+    def _lookup_id(self) -> None:
+        msg = f"{self.__class__.__qualname__}._lookup_id is not implemented yet"
+        raise NotImplementedError(msg)
 
-    def validate(self):
+    def validate(self) -> bool:
         """Validate the field."""
         # this gets called on service.publish()->record.commit()->extension.pre_commit()
         # TODO: raise when json is ill-formed
@@ -36,9 +32,9 @@ class RelationLOMResult(RelationResult):
     def _apply_items(
         self,
         func: callable,
-        keys: t.Union[t.List[str], None] = None,
-        attrs: dict = None,
-    ):
+        keys: list[str] | None = None,
+        attrs: dict | None = None,
+    ) -> None:
         relations = self.record.get("metadata", {}).get("relation", [])
         queue = list(relations)  # queue for BFS, containing all visited relations
         for relation in queue:
@@ -62,9 +58,9 @@ class RelationLOMResult(RelationResult):
     def _clean_one(
         self,
         data: dict,
-        keys: t.Union[t.List[str], None],
-        attrs: t.Optional[dict],
-    ):
+        keys: list[str] | None,  # noqa: ARG002
+        attrs: dict | None,  # noqa: ARG002
+    ) -> None:
         """Remove all but "entry" and "catalog" key."""
         for k in list(data.keys()):
             if k not in ["catalog", "entry"]:
@@ -72,31 +68,29 @@ class RelationLOMResult(RelationResult):
 
     def dereference(
         self,
-        keys: t.Union[t.List[str], None] = None,
-        attrs: t.Optional[dict] = None,
-    ):
+        keys: list[str] | None = None,
+        attrs: dict | None = None,
+    ) -> None:
         """Dereference the relation field object inside the record."""
         return self._apply_items(self._dereference_one, keys, attrs)
 
     def clean(
         self,
-        keys: t.Union[t.List[str], None] = None,
-        attrs: t.Optional[dict] = None,
-    ):
+        keys: list[str] | None = None,
+        attrs: dict | None = None,
+    ) -> None:
         """Remove any dereferenced attributes from inside the record."""
         # gets called pre_commit, clears any dereferenced values before committing
         self._apply_items(self._clean_one, keys, attrs)
 
-    def append(self, value):
+    def append(self, value) -> None:  # noqa: ANN001, ARG002
         """Append a relation to the list."""
         # (2021-10-18): invenio raises here too
-        raise NotImplementedError(
-            f"{self.__class__.__qualname__}.append is not implemented yet"
-        )
+        msg = f"{self.__class__.__qualname__}.append is not implemented yet"
+        raise NotImplementedError(msg)
 
-    def insert(self, index, value):
+    def insert(self, index, value) -> None:  # noqa: ANN001, ARG002
         """Insert a relation to the list."""
         # (2021-10-18): invenio raises here too
-        raise NotImplementedError(
-            f"{self.__class__.__qualname__}.insert is not implemented yet"
-        )
+        msg = f"{self.__class__.__qualname__}.insert is not implemented yet"
+        raise NotImplementedError(msg)

@@ -5,14 +5,20 @@
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
-"""Module with utilities for handling `vCard` version 4.0 (see `RFC6350 <https://www.rfc-editor.org/rfc/rfc6350>`_ for the spec).
+"""Module with utilities for handling `vCard` version 4.0.
+
+(see `RFC6350 <https://www.rfc-editor.org/rfc/rfc6350>`_ for the spec).
 
 Usually, :py:func:`make_lom_vcard` should be what you need.
 
 .. code-block:: python
 
    # can be used directly, without any setup:
-   vcard = make_lom_vcard(fn='Firstname Lastname", email="person@company.com", **other_configured_properties)
+   vcard = make_lom_vcard(
+       fn='Firstname Lastname",
+       email="person@company.com",
+       **other_configured_properties,
+   )
    # `vcard`'s type will be `str`
 
 To configure how VCards are made, create your own :py:class:`VCardMaker`,
@@ -25,7 +31,6 @@ then use its :py:meth:`~VCardMaker.make_vcard` method:
    # `vcard`'s type will be type `str` or `bytes`, depending on `my_config`
    # which vcard-properties can be passed depends on `my_config`
 """
-from __future__ import annotations  # allow `str | None` notation
 
 from collections.abc import Iterable
 from dataclasses import dataclass
@@ -37,7 +42,8 @@ class VCardProperty:
 
     compoundable: bool = False
     min: int = 0
-    # just some sufficiently high number for properties that can appear arbitrarily often
+    # just some sufficiently high number for properties that can
+    # appear arbitrarily often
     max: int = 255
 
 
@@ -50,14 +56,22 @@ DEFAULT_PROPERTIES_CONFIG: dict[str, VCardProperty] = {
 
 
 class VCardMaker:
-    """Utility for making vcards version 4.0 (see `RFC 6350 <https://www.rfc-editor.org/rfc/rfc6350>`_ for the spec).
+    """Utility for making vcards version 4.0.
+
+    (see `RFC 6350 <https://www.rfc-editor.org/rfc/rfc6350>`_ for the spec).
 
     Defaults for arguments follow the spec.
 
     :param bool final_line_break: whether to include a line-break after the final line
     :param str line_break_str: which string to use for line-breaks
-    :param None | str output_encoding: output will be a ``bytes``-object encoded with this encoding, set to ``None`` to output a ``str``-object instead
-    :param None | dict[str, VCardProperty] properties_config: configures which vcard-properties are allowed and how to build them
+
+    :param None | str output_encoding: output will be a
+                      ``bytes``-object encoded with this encoding, set to ``None`` to
+                      output a ``str``-object instead
+
+    :param None | dict[str, VCardProperty] properties_config: configures which
+                                           vcard-properties are allowed and how to
+                                           build them
     """
 
     def __init__(
@@ -67,7 +81,7 @@ class VCardMaker:
         line_break_str: str = "\r\n",
         output_encoding: None | str = "utf-8",
         properties_config: None | dict[str, VCardProperty] = None,
-    ):
+    ) -> None:
         """Init."""
         self.final_line_break = final_line_break
         self.line_break_str = line_break_str
@@ -77,7 +91,7 @@ class VCardMaker:
         else:
             self.properties_config = properties_config
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Repr."""
         return (
             f"{self.__class__.__name__}("
@@ -88,7 +102,7 @@ class VCardMaker:
         )
 
     @staticmethod
-    def escape(vcard_property: str, is_component: bool):
+    def escape(vcard_property: str, *, is_component: bool) -> None:
         r"""Escape a vcard property.
 
         ``\``, ``\n``, and ``,`` are always escaped.
@@ -113,7 +127,8 @@ class VCardMaker:
     def line_wrap(self, unwrapped_vcard: str) -> str:
         """Wrap lines as per vcard-spec.
 
-        - line-length in "utf-8"-encoding may not be longer than 75 octets (excluding newline-characters)
+        - line-length in "utf-8"-encoding may not be longer than 75 octets
+          (excluding newline-characters)
         - can't break apart multi-octet-sequences when line-wrapping
         - continued lines start with a space-character
         """
@@ -121,13 +136,20 @@ class VCardMaker:
         output_lines = []
         for input_line in input_lines:
             start = 0  # index where currently built line starts
-            prefix = ""  # prefix of currently built line, space for continued lines, counts towards line-length
-            length = 0  # length of currently built line, in number of "utf-8"-octets in its "utf-8" encoding
+
+            # prefix of currently built line, space for continued lines,
+            # counts towards line-length
+            prefix = ""
+
+            # length of currently built line, in number of "utf-8"-octets
+            # in its "utf-8" encoding
+            length = 0
+
             idx = 0  # index running through `input_line`
             while idx < len(input_line):
                 char = input_line[idx]
                 length += self.utf_8_len(char)
-                if length > 75:
+                if length > 75:  # noqa: PLR2004
                     # `char` would push currently built line over limit
                     output_lines.append(prefix + input_line[start:idx])
                     start = idx
@@ -143,14 +165,16 @@ class VCardMaker:
         )
 
     def make_vcard(
-        self, **vcard_properties: str | Iterable[str | Iterable[str]]
+        self,
+        **vcard_properties: str | Iterable[str | Iterable[str]],
     ) -> str | bytes:
         r"""Build a vcard-string out of passed-in vcard properties.
 
         Some properties may occur in vcards multiple times.
         Call with a ``list[str]`` to get multiple occurances.
         Some properties (called *compound properties*) may consist of components.
-        Call with a ``list[list[str]]`` to have the inner list interpreted as components.
+        Call with a ``list[list[str]]`` to have the inner list interpreted as
+        components.
 
         .. code-block:: python
 
@@ -159,21 +183,22 @@ class VCardMaker:
                 make_vard(prop=['a', 'b'])  # 'PROP:a\nPROP:b\n'
                 make_vcard(prop=[['a','b'], 'c'])  # 'PROP:a;b\nPROP:c\n'
 
-        :return: built vcard, if `self.output_encoding` is truthy, encode output before return
+        :return: built vcard, if `self.output_encoding` is truthy, encode output before
+        return
         """
         # check: required properties exist
         required_properties = {
             name for name, config in self.properties_config.items() if config.min > 0
         }
         if missing_properties := sorted(required_properties - set(vcard_properties)):
-            raise TypeError(f"missing required properties: {missing_properties!r}")
+            msg = f"missing required properties: {missing_properties!r}"
+            raise TypeError(msg)
 
         # check: passed properties have configuration
         for name in vcard_properties:
             if name not in self.properties_config:
-                raise TypeError(
-                    f"got keyword argument without corresponding configuration: {name!r}"
-                )
+                msg = f"got keyword argument without corresponding configuration: {name!r}"
+                raise TypeError(msg)
 
         # convert to lines
         lines: list[str] = ["BEGIN:VCARD", "VERSION:4.0"]
@@ -191,16 +216,20 @@ class VCardMaker:
             for occurance in occurances:
                 if not isinstance(occurance, str):
                     # `occurance` is an iterable of components
-                    occurance = list(occurance)
-                    if len(occurance) > 1 and not config.compoundable:
+                    occurance_temp_list = list(occurance)
+                    if len(occurance_temp_list) > 1 and not config.compoundable:
                         msg = f"got multiple components for non-compound property {name!r}"
                         raise TypeError(msg)
                     occurance_str = ";".join(
-                        self.escape(comp, config.compoundable) for comp in occurance
+                        self.escape(comp, is_component=config.compoundable)
+                        for comp in occurance_temp_list
                     )
                 else:
                     # `occurance` is a str
-                    occurance_str = self.escape(occurance, config.compoundable)
+                    occurance_str = self.escape(
+                        occurance,
+                        is_component=config.compoundable,
+                    )
                 lines.append(f"{name.upper()}:{occurance_str}")
         lines.append("END:VCARD")
 
@@ -210,13 +239,12 @@ class VCardMaker:
         # wrap lines
         vcard = self.line_wrap(unwrapped_vcard)
 
-        # return
         if self.output_encoding:
             return vcard.encode(encoding=self.output_encoding)
         return vcard
 
 
-def make_lom_vcard(**vcard_properties: str | Iterable[str]):
+def make_lom_vcard(**vcard_properties: str | Iterable[str]) -> str | bytes:
     """Build a vcard out of passed-in properties.
 
     Internally uses a :py:class:`VCardMaker` configured for use with this package.

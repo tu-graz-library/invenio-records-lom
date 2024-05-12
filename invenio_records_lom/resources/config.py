@@ -7,11 +7,13 @@
 
 """REST API configuration."""
 
-import marshmallow
+from types import MappingProxyType
+
 from flask_resources import JSONSerializer, ResponseHandler
 from invenio_rdm_records.resources import IIIFResourceConfig
 from invenio_records_resources.resources import RecordResourceConfig
 from invenio_records_resources.resources.files import FileResourceConfig
+from marshmallow import fields
 
 from .serializers import LOMToUIJSONSerializer
 
@@ -46,19 +48,23 @@ class LOMRecordResourceConfig(RecordResourceConfig):
 
     default_accept_mimetype = "application/json"
 
-    routes = {
-        "list": "",
-        "item": "/<pid_value>",
-        "item-draft": "/<pid_value>/draft",
-        "item-publish": "/<pid_value>/draft/actions/publish",
-        "item-pids-reserve": "/<pid_value>/draft/pids/<scheme>",
-        "user-prefix": "/user",
-    }
+    routes = MappingProxyType(
+        {
+            "list": "",
+            "item": "/<pid_value>",
+            "item-draft": "/<pid_value>/draft",
+            "item-publish": "/<pid_value>/draft/actions/publish",
+            "item-pids-reserve": "/<pid_value>/draft/pids/<scheme>",
+            "user-prefix": "/user",
+        },
+    )
 
-    request_view_args = {
-        "pid_value": marshmallow.fields.Str(),
-        "scheme": marshmallow.fields.Str(),
-    }
+    request_view_args = MappingProxyType(
+        {
+            "pid_value": fields.Str(),
+            "scheme": fields.Str(),
+        },
+    )
 
     response_handlers = record_serializer
 

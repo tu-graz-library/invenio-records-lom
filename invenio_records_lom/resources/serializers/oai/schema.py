@@ -19,21 +19,21 @@ LANGSTRING_LOM_V1 = {
     "langstring": {
         "#text": "LOMv1.0",
         "lang": "x-none",
-    }
+    },
 }
 
 LANGSTRING_KIM_HCRT_SCHEME = {
     "langstring": {
         "#text": "https://w3id.org/kim/hcrt/scheme",
         "lang": "x-none",
-    }
+    },
 }
 
 LANGSTRING_OEFOS = {
     "langstring": {
         "#text": "https://w3id.org/oerbase/vocabs/oefos2012",
         "lang": "x-none",
-    }
+    },
 }
 
 
@@ -101,7 +101,7 @@ class LangstringRoleInnerSchema(ExcludeUnknownOrderedSchema):
                 "Educational Validator",
                 "Script Writer",
                 "Instructional Designer",
-            ]
+            ],
         ),
     )
 
@@ -119,7 +119,7 @@ class LangstringLicenseInnerSchema(ExcludeUnknownOrderedSchema):
     text = fields.Str(attribute="#text", data_key="#text", required=True)
 
     @validates_schema
-    def validate_cc_license_text_fits_lang(self, obj, **__):
+    def validate_cc_license_text_fits_lang(self, obj: dict, **__: dict) -> None:
         """Validate that license-url fits with `lang`."""
         validate_cc_license_lang(obj)
 
@@ -151,7 +151,7 @@ class AggregationLevelSchema(ExcludeUnknownOrderedSchema):
     value = fields.Nested(LangstringXNoneSchema(), required=True)
 
     @classmethod
-    def dump_default(cls):
+    def dump_default(cls) -> dict:
         """Dump default."""
         aggregation_level = {"value": {"langstring": {"lang": "x-none", "#text": "4"}}}
         aggregation_level |= {"source": LANGSTRING_LOM_V1}
@@ -209,7 +209,7 @@ class ContributeSchema(ExcludeUnknownOrderedSchema):
         None,  # load
     )
 
-    def get_centity(self, contributors):
+    def get_centity(self, contributors: dict) -> list:
         """Get vcard."""
         role = contributors["role"]["value"]["langstring"]["#text"]
         entity = contributors["entity"]
@@ -226,7 +226,7 @@ class LifecycleSchema(ExcludeUnknownOrderedSchema):
     contribute = fields.List(fields.Nested(ContributeSchema()))
 
     @pre_load
-    def group_contributes_by_role(self, data, **__):
+    def group_contributes_by_role(self, data: dict, **__: dict) -> dict:
         """Group contributes by role."""
         contributions_by_role = {}
         for contribute in data.get("contribute", []):
@@ -266,12 +266,11 @@ class LocationSchema(ExcludeUnknownOrderedSchema):
     text = fields.Str(
         attribute="#text",
         data_key="#text",
-        # required=True,
         dump_default="N/A",
     )
 
     @classmethod
-    def dump_default(cls):
+    def dump_default(cls) -> dict:
         """Dump default."""
         return {"#text": "N/A"}
 
@@ -312,7 +311,7 @@ class LearningResourceTypeSchema(ExcludeUnknownOrderedSchema):
     id = fields.Str(required=True, dump_default="N/A")
 
     @classmethod
-    def dump_default(cls):
+    def dump_default(cls) -> dict:
         """Dump default."""
         obj = {"id": "N/A"}
         obj |= {"source": LANGSTRING_KIM_HCRT_SCHEME}
@@ -340,7 +339,7 @@ class RightsSchema(ExcludeUnknownOrderedSchema):
         {
             "source": {"langstring": {"#text": "LOMv1.0", "lang": "x-none"}},
             "value": {"langstring": {"#text": "yes", "lang": "x-none"}},
-        }
+        },
     )
     description = fields.Nested(LangstringLicenseSchema(), required=True)
 

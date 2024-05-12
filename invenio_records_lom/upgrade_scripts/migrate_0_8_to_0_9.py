@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2023 Graz University of Technology.
+# Copyright (C) 2023-2024 Graz University of Technology.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -8,21 +8,24 @@
 """Record migration script from invenio-records-lom 0.8 to 0.9.
 
 To upgrade call the whole file from within app-context.
-(e.g. via `pipenv run invenio shell /path/to/invenio_records_lom/upgrade_scripts/migrate_0_8_to_0_9.py`)
-(e.g. via `pipenv run invenio shell $(find $(pipenv --venv)/lib/*/site-packages/invenio_records_lom -name migrate_0_8_to_0_9.py))`)
+(e.g. via `pipenv run invenio shell \
+           /path/to/invenio_records_lom/upgrade_scripts/migrate_0_8_to_0_9.py`)
+(e.g. via `pipenv run invenio shell \
+           $(find $(pipenv --venv)/lib/*/site-packages/invenio_records_lom \
+           -name migrate_0_8_to_0_9.py))`)
 """
 
 from copy import deepcopy
 
-import click
+from click import secho
 from invenio_db import db
 
 from invenio_records_lom.records.models import LOMDraftMetadata, LOMRecordMetadata
 
 
-def execute_upgrade():
+def execute_upgrade() -> None:
     """Execute upgrade from `invenio-records-lom` `v0.8` to `v0.9`."""
-    click.secho('LOM upgrade: adding "$schema"-key to drafts and records', fg="green")
+    secho('LOM upgrade: adding "$schema"-key to drafts and records', fg="green")
 
     # upgrade JSONs in database; namely insert "$schema"-key
     schema_key = "$schema"
@@ -59,8 +62,8 @@ def execute_upgrade():
         db.session.add(record)
 
     db.session.commit()
-    click.secho('Successfully added "$schema"-key to drafts and records!', fg="green")
-    click.secho(
+    secho('Successfully added "$schema"-key to drafts and records!', fg="green")
+    secho(
         "NOTE: this only updated the SQL-database, call `invenio lom reindex` to update opensearch-indices",
         fg="red",
     )

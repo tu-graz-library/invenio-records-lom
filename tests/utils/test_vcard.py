@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2023 Graz University of Technology.
+# Copyright (C) 2023-2024 Graz University of Technology.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -9,7 +9,7 @@
 from invenio_records_lom.utils.vcard import VCardMaker, VCardProperty, make_lom_vcard
 
 
-def test_basic_vcard():
+def test_basic_vcard() -> None:
     """Test most basic `VCard`-creation."""
     vcard: str = make_lom_vcard(fn="Value of *Formatted Name* property")
     assert vcard == (
@@ -20,10 +20,10 @@ def test_basic_vcard():
     )
 
 
-def test_escaping():
+def test_escaping() -> None:
     """Test whether special symbols are indeed escaped."""
     vcard: str = make_lom_vcard(
-        fn="Commas (,), backslashes (\\), and new-lines (\n) must be escaped"
+        fn="Commas (,), backslashes (\\), and new-lines (\n) must be escaped",
     )
     assert vcard == (
         "BEGIN:VCARD\n"
@@ -33,22 +33,24 @@ def test_escaping():
     )
 
 
-def test_line_wrapping():
+def test_line_wrapping() -> None:
     """Test whether long lines wrap correctly."""
     vcard: str = make_lom_vcard(
         fn="Name so long that the `FN:<this name>` line has more than 75 octets"
-        " in its utf-8 encoding, which will cause line-wrapping"
+        " in its utf-8 encoding, which will cause line-wrapping",
     )
+    # cuts off in the middle of the word
+    # wrapped line starts with an extra space
     assert vcard == (
         "BEGIN:VCARD\n"
         "VERSION:4.0\n"
-        "FN:Name so long that the `FN:<this name>` line has more than 75 octets in i\n"  # cuts off in the middle of the word
-        " ts utf-8 encoding\\, which will cause line-wrapping\n"  # wrapped line starts with an extra space
+        "FN:Name so long that the `FN:<this name>` line has more than 75 octets in i\n"
+        " ts utf-8 encoding\\, which will cause line-wrapping\n"
         "END:VCARD"
     )
 
 
-def test_advanced_vcard():
+def test_advanced_vcard() -> None:
     """Test whether singular features also work together in concert."""
     vcard: str = make_lom_vcard(
         fn="Long name as to cause line-wrapping, also includes special symbols for escaping (like \\, \n).",
@@ -59,7 +61,7 @@ def test_advanced_vcard():
                 "title\nnewline",
                 "honorific\\backslash",
                 "lengthening for wrap",
-            ]  # note: nested list to test compounding
+            ],  # note: nested list to test compounding
         ],
         email=["first@mail.org", "second@mail.org"],
     )
@@ -76,7 +78,7 @@ def test_advanced_vcard():
     )
 
 
-def test_custom_vcard():
+def test_custom_vcard() -> None:
     """Test customized VCard-creation."""
     custom_config = {
         "fn": VCardProperty(compoundable=False, min=1),

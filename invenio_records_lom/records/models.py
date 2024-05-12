@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2021-2023 Graz University of Technology.
+# Copyright (C) 2021-2024 Graz University of Technology.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
 """SQL-table definitions for LOM module."""
+
 
 from invenio_communities.records.records.models import CommunityRelationMixin
 from invenio_db import db
@@ -65,7 +66,7 @@ class LOMRecordMetadata(db.Model, RecordMetadataBase, ParentRecordMixin):
 
     # signals SQLAlchemy-Continuum to record transactions with this table
     # other models keep track of versions with their `version_id`-attribute
-    __versioned__ = {}
+    __versioned__ = {}  # noqa: RUF012
 
     bucket_id = db.Column(UUIDType, db.ForeignKey(Bucket.id))
     bucket = db.relationship(Bucket)
@@ -84,7 +85,7 @@ class LOMFileRecordMetadata(db.Model, RecordMetadataBase, FileRecordModelMixin):
 
     __record_model_cls__ = LOMRecordMetadata
 
-    __versioned__ = {}
+    __versioned__ = {}  # noqa: RUF012
 
 
 class LOMVersionsState(db.Model, ParentRecordStateMixin):
