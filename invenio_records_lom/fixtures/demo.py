@@ -24,7 +24,7 @@ from .tasks import create_lom_record
 # functions for LOM datatypes
 #
 def langstringify(fake: Faker, text: str, lang: str = "") -> dict:
-    """Wraps `text` in a dict, emulating LOMv1.0 langstring-objects.
+    """Wrap `text` in a dict, emulating LOMv1.0 langstring-objects.
 
     If `lang` is given and None, no "lang"-key is added to the returned dict.
     If `lang` is given and truthy, its value is used for the "lang"-key.
@@ -38,7 +38,10 @@ def langstringify(fake: Faker, text: str, lang: str = "") -> dict:
 
 
 def vocabularify(fake: Faker, choices: list) -> dict:
-    """Randomly draw a choice from `choices`, then wrap it in a dict, emulating LOMv1.0 Vocabulary-objects."""
+    """Emulate LOMv1.0 Vocabulary-objects.
+
+    Randomly draw a choice from `choices`, then wrap it in a dict.
+    """
     return {
         "source": langstringify(fake, "LOMv1.0", lang="x-none"),
         "value": langstringify(fake, fake.random.choice(choices), lang="x-none"),
@@ -72,7 +75,7 @@ def create_fake_duration(fake: Faker) -> dict:
 
 
 def create_fake_vcard(fake: Faker) -> str:
-    """Returns a placeholder-string for a vcard-object."""
+    """Return a placeholder-string for a vcard-object."""
     return f"{fake.last_name()}, {fake.first_name()}"
 
 
@@ -93,11 +96,7 @@ def create_fake_language(fake: Faker) -> str:
 def create_fake_identifier(fake: Faker) -> dict:
     """Create a fake "identifier"-element, compatible with LOMv1.0."""
     catalog = fake.random.choice(["URL", "ISBN"])
-    if catalog == "URL":
-        entry = fake.uri()
-    else:
-        entry = fake.isbn13()
-
+    entry = fake.uri() if catalog == "URL" else fake.isbn13()
     lang = fake.random.choice([None, create_fake_language(fake)])
 
     return {
@@ -413,7 +412,7 @@ def create_fake_metadata(fake: Faker) -> dict:
     return json.loads(json.dumps(data_to_use))
 
 
-def create_fake_access(fake: Faker):
+def create_fake_access(fake: Faker) -> dict:
     """Create a fake json of an "access"-element, compatible with invenio."""
     fake_access_type = fake.random.choice(["public", "restricted"])
 
@@ -434,7 +433,12 @@ def create_fake_access(fake: Faker):
     }
 
 
-def create_fake_data(fake: Faker, resource_type: str, files_enabled: bool = False):
+def create_fake_data(
+    fake: Faker,
+    resource_type: str,
+    *,
+    files_enabled: bool = False,
+) -> dict:
     """Create a fake json of an invenio-record, "metadata" conforms to LOM-standard."""
     resource_types = current_app.config["LOM_RESOURCE_TYPES"]
     resource_type = resource_type or fake.random.choice(resource_types)
@@ -451,7 +455,7 @@ def create_fake_data(fake: Faker, resource_type: str, files_enabled: bool = Fals
 #
 # helpers for `publish_fake_record`
 #
-def attach_fake_files(fake: Faker, draft_item: RecordItem):
+def attach_fake_files(fake: Faker, draft_item: RecordItem) -> None:
     """Attach fake files to the record behind `draft_item`."""
     service = current_records_lom.records_service
     df_service = service.draft_files
@@ -478,27 +482,28 @@ def attach_fake_files(fake: Faker, draft_item: RecordItem):
     draft_item = update_draft(id_=draft_item.id, data=draft_data)
 
 
-def create_then_publish(fake: Faker, data: dict, create_fake_files: bool = False):
+def create_then_publish(
+    fake: Faker,
+    data: dict,
+    *,
+    create_fake_files: bool = False,
+) -> RecordItem:
     """Create a fake record, then publish it.
 
     if `create_fake_files` is True, attach fake files to created fake record.
     """
     service = current_records_lom.records_service
 
-    # partially apply identity=system_identity
-    create = partial(service.create, identity=system_identity)
-    publish = partial(service.publish, identity=system_identity)
-
     # create
-    draft_item = create(data=data)
+    draft_item = service.create(data=data, identity=system_identity)
 
     if create_fake_files:
         attach_fake_files(fake, draft_item)
 
-    return publish(id_=draft_item.id)
+    return service.publish(id_=draft_item.id, identity=system_identity)
 
 
-def inject_relation(data: dict, kind: str, pid: str):
+def inject_relation(data: dict, kind: str, pid: str) -> None:
     """Inject relation of kind `kind` into `data` under entry `pid`.
 
     `data` is a json-representation of data, compatible with LOMv1.0.
@@ -514,7 +519,7 @@ def inject_relation(data: dict, kind: str, pid: str):
     data["metadata"]["relation"].append({"kind": kind, "resource": resource})
 
 
-def link_up(whole_id: str, part_id: str):
+def link_up(whole_id: str, part_id: str) -> None:
     """Links up the records behind `whole_id` and `part_id`.
 
     `whole_record`'s json gains a new "haspart"-relation to `part_record`.
@@ -546,13 +551,13 @@ def link_up(whole_id: str, part_id: str):
 #
 # functions for publishing fake records
 #
-def publish_fake_record(fake: Faker):
+def publish_fake_record(fake: Faker) -> None:
     """Enter fake records into the SQL-database."""
     file_data = create_fake_data(fake, resource_type="file", files_enabled=True)
     create_then_publish(fake=fake, data=file_data, create_fake_files=True)
 
 
-def publish_fake_record_over_celery(fake: Faker):
+def publish_fake_record_over_celery(fake: Faker) -> None:
     """Create fake records via celery."""
     data = create_fake_data(fake, resource_type="file", files_enabled=False)
     create_lom_record.delay(data)

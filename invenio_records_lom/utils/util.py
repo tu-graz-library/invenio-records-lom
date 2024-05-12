@@ -13,7 +13,7 @@ from collections.abc import MutableMapping
 from csv import reader
 from importlib import resources
 from json import load
-from typing import Any, Iterator, Optional, Union
+from typing import Iterator
 
 from invenio_search import RecordsSearch
 from invenio_search.engine import dsl
@@ -47,14 +47,15 @@ class DotAccessWrapper(MutableMapping):
 
     def __init__(
         self,
-        data: Union[dict, list, None] = None,
+        data: dict | list | None = None,
+        *,
         overwritable: bool = True,
     ) -> None:
-        """Constructor."""
+        """Construct."""
         self.data = data if (data is not None) else {}
         self.overwritable = overwritable
 
-    def __getitem__(self, dotted_key: str) -> Any:
+    def __getitem__[T](self, dotted_key: str) -> T:
         """Get."""
         cursor = self.data
         for subkey in self.split(dotted_key):
@@ -66,13 +67,15 @@ class DotAccessWrapper(MutableMapping):
                 raise KeyError(dotted_key) from exc
         return cursor
 
-    def __setitem__(self, dotted_key: str, value: Any) -> None:
+    def __setitem__[T](self, dotted_key: str, value: T) -> None:
         """Set."""
-        if not self.overwritable:
-            if "[]" not in self.split(dotted_key) and dotted_key in self:
-                raise KeyError(
-                    f"Tried to overwrite {dotted_key!r} when overwriting is disabled."
-                )
+        if (
+            not self.overwritable
+            and "[]" not in self.split(dotted_key)
+            and dotted_key in self
+        ):
+            msg = f"Tried to overwrite {dotted_key!r} when overwriting is disabled."
+            raise KeyError(msg)
 
         cursor = self.data
         subkeys = self.split(dotted_key)
@@ -95,10 +98,10 @@ class DotAccessWrapper(MutableMapping):
         *parent_keys, last_key = self.split(dotted_key)
         parent = self[".".join(str(key) for key in parent_keys)]
         self.ascertain_unambiguity(parent, last_key)
-        del parent[last_key]  # pylint: disable=unsupported-delete-operation
+        del parent[last_key]
 
     def __iter__(self) -> Iterator:
-        """Iter."""
+        """Iterate."""
         return iter(self.data)
 
     def __len__(self) -> None:
@@ -110,7 +113,7 @@ class DotAccessWrapper(MutableMapping):
         return f"<{type(self).__qualname__}({self.data!r}) at {hex(id(self))}>"
 
     @staticmethod
-    def ascertain_unambiguity(container: Union[dict, list], key: str) -> None:
+    def ascertain_unambiguity(container: dict | list, key: str) -> None:
         """Check whether `key` is unambiguous within `container`."""
         try:
             int(key)  # try to int-cast key
@@ -122,10 +125,11 @@ class DotAccessWrapper(MutableMapping):
             # it's not clear whether key is supposed to be int-casted or not
             # since dicts take both when using an int-castable key, you probably
             # meant to use it with a list anyway...
-            raise ValueError("For unambiguity, dict-keys may not be int-castable.")
+            msg = "For unambiguity, dict-keys may not be int-castable."
+            raise ValueError(msg)
 
     @staticmethod
-    def split(dotted_key: str) -> list[Union[str, int]]:
+    def split(dotted_key: str) -> list[str | int]:
         """Split `dotted_key` into its subkeys."""
         res = []
         for subkey in dotted_key.split("."):
@@ -149,16 +153,16 @@ def get_learningresourcetypedict() -> dict[str, dict[str, str]]:
 
 def get_oefosdict(language_code: str = "de") -> dict[str, str]:
     """Get oefos-dict, which maps OEFOS-codes to subject-names."""
-    oefosdict = {}  # to be result
-
     filenames_by_language = {
         "de": "OEFOS2012_DE_CTI_20211111_154218_utf8.csv",
         "en": "OEFOS2012_EN_CTI_20211111_154228_utf8.csv",
     }
-    if language_code.lower() not in filenames_by_language:
-        raise ValueError(f"OEFOS aren't available for language_code {language_code!r}.")
-    filename = filenames_by_language[language_code.lower()]
 
+    if language_code.lower() not in filenames_by_language:
+        msg = f"OEFOS aren't available for language_code {language_code!r}."
+        raise ValueError(msg)
+
+    filename = filenames_by_language[language_code.lower()]
     traversable = resources.files(__package__).joinpath(filename)
     with traversable.open("r", encoding="utf-8") as file_pointer:
         file_reader = reader(file_pointer, delimiter=";")
@@ -166,14 +170,11 @@ def get_oefosdict(language_code: str = "de") -> dict[str, str]:
         # discard header
         next(file_reader)
 
-        for __, edv_code, __, name, __ in file_reader:
-            oefosdict[edv_code] = name
-
-    return oefosdict
+        return {edv_code: name for __, edv_code, __, name, __ in file_reader}
 
 
-def langstringify(text: str, lang: Optional[str] = "x-none") -> dict:
-    """Wraps `text` and `lang` into a langstring-dict as per LOM-standard.
+def langstringify(text: str, lang: str | None = "x-none") -> dict:
+    """Wrap `text` and `lang` into a langstring-dict as per LOM-standard.
 
     If `lang` is falsy, the output won't have a "lang"-field.
     """
@@ -185,7 +186,7 @@ def langstringify(text: str, lang: Optional[str] = "x-none") -> dict:
 
 
 def vocabularify(value: str, source: str = "LOMv1.0") -> dict:
-    """Wraps `value` and `source` into a vocabulary-dict as per LOM-standard."""
+    """Wrap `value` and `source` into a vocabulary-dict as per LOM-standard."""
     return {
         "source": langstringify(source),
         "value": langstringify(value),
@@ -193,20 +194,21 @@ def vocabularify(value: str, source: str = "LOMv1.0") -> dict:
 
 
 def catalogify(value: str, catalog: str) -> dict:
-    """Wraps `value` and `catalog` into a catalog-dict as per LOM-standard."""
+    """Wrap `value` and `catalog` into a catalog-dict as per LOM-standard."""
     return {
         "catalog": catalog,
         "entry": langstringify(value),
     }
 
 
-def durationify(datetime: str, description: str):
-    """Wraps `datetime` and `description` into a duration-dict as per LOM-standard.
+def durationify(datetime: str, description: str) -> dict:
+    """Wrap `datetime` and `description` into a duration-dict as per LOM-standard.
 
     If either parameter is falsy, the output won't have the corresponding field.
     """
     if not datetime and not description:
-        raise ValueError("At least one of `datetime`, `description` need be truthy.")
+        msg = "At least one of `datetime`, `description` need be truthy."
+        raise ValueError(msg)
 
     inner = {}
     if datetime:
@@ -233,13 +235,13 @@ def standardize_url(url: str) -> str:
 class LOMDuplicateRecordError(Exception):
     """Duplicate Record Exception."""
 
-    def __init__(self, value, catalog, id_):
-        """Constructor for class DuplicateRecordException."""
+    def __init__(self, value: str, catalog: str, id_: str) -> None:
+        """Construct for class DuplicateRecordException."""
         msg = f"LOMDuplicateRecordError value: {value} with catalog: {catalog} already exists id={id_} in the database"
         super().__init__(msg)
 
 
-def check_about_duplicate(identifier: str, catalog: str):
+def check_about_duplicate(identifier: str, catalog: str) -> None:
     """Check if the record with the identifier is already within the database."""
     search = RecordsSearch(index="lomrecords")
 

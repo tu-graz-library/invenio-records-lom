@@ -7,7 +7,9 @@
 
 """Marshmallow schema for validating and serializing LOM JSONs."""
 
-import copy
+from collections.abc import Callable
+from copy import copy
+from types import MappingProxyType
 
 from invenio_i18n import lazy_gettext as _
 from marshmallow import (
@@ -31,27 +33,35 @@ class NoValidationSchema(Schema):
 
         unknown = INCLUDE
 
-    def dump(self, obj, **__):
+    def dump(self, obj: dict, **__: dict) -> dict:
         """Overwrite dump to return `obj`, bypassing validation as class name indicates."""
-        return copy.copy(obj)
+        return copy(obj)
 
 
 class LangstringField(fields.Field):
     """Verifies against form {"langstring": {"#text": str, "lang": str}}."""
 
-    default_error_messages = {
-        # the following shouldn't really be shown to users, hence no translation:
-        "extraneous_keys": "Extraneous keys in this langstring: {keys!r}.",
-        "extraneous_lang": "This langstring must not have a 'lang'-field.",
-        "invalid_inner_type": "Inner langstring must be a `dict`.",
-        "invalid_outer_type": "Outer langstring must be a `dict`.",
-        "lang_required": "`lang` is falsy when its existence was required.",
-        "missing_langstring_key": "No {keys!r}-key in this langstring.",
-        # the following overwrites default from parent-class with a translated version:
-        "required": _("Missing data for required field."),
-    }
+    default_error_messages = MappingProxyType(
+        {
+            # the following shouldn't really be shown to users, hence no translation:
+            "extraneous_keys": "Extraneous keys in this langstring: {keys!r}.",
+            "extraneous_lang": "This langstring must not have a 'lang'-field.",
+            "invalid_inner_type": "Inner langstring must be a `dict`.",
+            "invalid_outer_type": "Outer langstring must be a `dict`.",
+            "lang_required": "`lang` is falsy when its existence was required.",
+            "missing_langstring_key": "No {keys!r}-key in this langstring.",
+            # the following overwrites default from parent-class with a translated version:
+            "required": _("Missing data for required field."),
+        },
+    )
 
-    def __init__(self, lang_exists=True, validate_lang_existence=True, **kwargs):
+    def __init__(
+        self,
+        *,
+        lang_exists: bool = True,
+        validate_lang_existence: bool = True,
+        **kwargs: dict,
+    ) -> None:
         """Init.
 
         :param bool| lang_exists:
@@ -64,36 +74,40 @@ class LangstringField(fields.Field):
         self.lang_exists = lang_exists
         self.validate_lang_existence = validate_lang_existence
 
-    def _deserialize(self, value, attr, data, **kwargs):
+    def _deserialize(self, value, **__: dict) -> dict:  # noqa: C901, ANN001
         if not isinstance(value, dict):
-            raise self.make_error("invalid_outer_type")
+            msg = "invalid_outer_type"
+            raise self.make_error(msg)
 
         # validate outer keys
         outer_keys = set(value)
         if "langstring" not in outer_keys:
-            raise self.make_error("missing_langstring_key", keys="langstring")
+            msg = "missing_langstring_key"
+            raise self.make_error(msg, keys="langstring")
         if not outer_keys <= {"langstring"}:
-            raise self.make_error(
-                "extraneous_keys", keys=sorted(outer_keys - {"langstring"})
-            )
+            msg = "extraneous_keys"
+            raise self.make_error(msg, keys=sorted(outer_keys - {"langstring"}))
 
         langstring_inner = value["langstring"]
 
         # validate inner keys
         if not isinstance(langstring_inner, dict):
-            raise self.make_error("invalid_inner_type")
+            msg = "invalid_inner_type"
+            raise self.make_error(msg)
         inner_keys = set(langstring_inner)
         if "#text" not in inner_keys:
-            raise self.make_error("missing_langstring_key", keys="#text")
+            msg = "missing_langstring_key"
+            raise self.make_error(msg, keys="#text")
         if self.validate_lang_existence:
             if "lang" not in inner_keys and self.lang_exists:
-                raise self.make_error("missing_langstring_key", keys="lang")
+                msg = "missing_langstring_key"
+                raise self.make_error(msg, keys="lang")
             if "lang" in inner_keys and not self.lang_exists:
-                raise self.make_error("extraneous_lang")
+                msg = "extraneous_lang"
+                raise self.make_error(msg)
         if not inner_keys <= {"#text", "lang"}:
-            raise self.make_error(
-                "extraneous_keys", keys=sorted(inner_keys - {"#text", "lang"})
-            )
+            msg = "extraneous_keys"
+            raise self.make_error(msg, keys=sorted(inner_keys - {"#text", "lang"}))
 
         text = sanitize_unicode(str(langstring_inner["#text"]))
         lang_exists = "lang" in langstring_inner
@@ -101,9 +115,11 @@ class LangstringField(fields.Field):
 
         # validate non-emptiness of "#text"-, "lang"-key
         if not text:
-            raise self.make_error("required")
+            msg = "required"
+            raise self.make_error(msg)
         if self.validate_lang_existence and self.lang_exists and not lang:
-            raise self.make_error("lang_required")
+            msg = "lang_required"
+            raise self.make_error(msg)
 
         # validation succeded, rebuild langstring with sanitized text/lang
         result = {"langstring": {"#text": text}}
@@ -113,46 +129,50 @@ class LangstringField(fields.Field):
         return result
 
 
-def validate_langstring_lang(validator_callable):
-    """Wraps `validator_callable`, passing it value["langstring"]["lang"] instead of value itself."""
+def validate_langstring_lang(validator: Callable) -> Callable:
+    """Wrap `validator`, passing it value["langstring"]["lang"]."""
 
-    def validate_lang(value):
+    def validate_lang[T](value: dict) -> T:
         try:
             lang = value["langstring"]["lang"]
         except (KeyError, TypeError) as error:
-            raise ValidationError("not a valid langstring") from error
-        return validator_callable(lang)
+            msg = "not a valid langstring"
+            raise ValidationError(msg) from error
+        return validator(lang)
 
     return validate_lang
 
 
-def validate_langstring_text(validator_callable):
-    """Wraps `validator_callable`, passing it value["langstring"]["#text"] instead of value itself."""
+def validate_langstring_text(validator: Callable) -> Callable:
+    """Wrap `validator_callable`, passing it value["langstring"]["#text"]."""
 
-    def validate_text(value):
+    def validate_text[T](value: dict) -> T:
         try:
             text = value["langstring"]["#text"]
         except (KeyError, TypeError) as error:
-            raise ValidationError("not a valid langstring") from error
-        return validator_callable(text)
+            msg = "not a valid langstring"
+            raise ValidationError(msg) from error
+        return validator(text)
 
     return validate_text
 
 
-def validate_cc_license_lang(value):
+def validate_cc_license_lang(value: dict) -> None:
     """Validate that a license fits with its langstring's 'lang' (different for CC)."""
     try:
         lang = value["langstring"].get("lang", missing)
         text = value["langstring"]["#text"]
     except (KeyError, TypeError) as error:
-        raise ValidationError("not a valid langstring") from error
+        msg = "not a valid langstring"
+        raise ValidationError(msg) from error
 
     if text.startswith("https://creativecommons.org/"):
         if lang != "x-t-cc-url":
-            raise ValidationError("for CC licenses, lang must equal 'x-t-cc-url'")
-    else:
-        if lang != missing:
-            raise ValidationError("for non-CC licenses, lang may not be present")
+            msg = "for CC licenses, lang must equal 'x-t-cc-url'"
+            raise ValidationError(msg)
+    elif lang != missing:
+        msg = "for non-CC licenses, lang may not be present"
+        raise ValidationError(msg)
 
 
 class GeneralSchema(Schema):
@@ -196,7 +216,7 @@ class RoleSchema(Schema):
                         "Terminator",
                         "Unknown",
                         "Validator",
-                    ]
+                    ],
                 ),
             ),
             validate_langstring_lang(validate.Equal("x-none")),
@@ -210,11 +230,12 @@ class ContributeSchema(Schema):
     role = fields.Nested(RoleSchema, required=True)
     entity = fields.List(
         SanitizedUnicode(
-            validate=validate.Length(min=1, error=_("Name cannot be empty."))
+            validate=validate.Length(min=1, error=_("Name cannot be empty.")),
         ),
         required=True,
         validate=validate.Length(
-            min=1, error="Contribute requires at least one associated entity."
+            min=1,
+            error="Contribute requires at least one associated entity.",
         ),
     )
 
@@ -228,10 +249,10 @@ class LifecycleSchema(Schema):
     )
 
     @validates("contribute")
-    def validate_author_publisher_exist(self, contributes):
-        """Validates existence of >=1 author/publisher contributes."""
+    def validate_author_publisher_exist(self, contributes: list) -> None:
+        """Validate existence of >=1 author/publisher contributes."""
 
-        def get_role_text_lower(contribute):
+        def get_role_text_lower(contribute: dict) -> str:
             try:
                 return contribute["role"]["value"]["langstring"]["#text"].lower()
             except KeyError:
@@ -248,14 +269,19 @@ class LifecycleSchema(Schema):
             if get_role_text_lower(contribute) == "publisher"
         ]
 
+        msg = None
+
         if len(author_contributes) < 1 and len(publisher_contributes) < 1:
-            raise ValidationError(
-                _("Must provide at least one author and one publisher.")
-            )
-        if len(author_contributes) < 1:
-            raise ValidationError(_("Must provide at least one author."))
-        if len(publisher_contributes) < 1:
-            raise ValidationError(_("Must provide at least one publisher."))
+            msg = _("Must provide at least one author and one publisher.")
+
+        elif len(author_contributes) < 1:
+            msg = _("Must provide at least one author.")
+
+        elif len(publisher_contributes) < 1:
+            msg = _("Must provide at least one publisher.")
+
+        if msg:
+            raise ValidationError(msg)
 
 
 class LocationSchema(Schema):
@@ -271,12 +297,15 @@ class TechnicalSchema(Schema):
         SanitizedUnicode(
             required=True,
             validate=validate.Length(
-                min=1, error=_("Missing data for required field.")
+                min=1,
+                error=_("Missing data for required field."),
             ),
         ),
         required=True,
         validate=validate.Length(
-            min=1, max=1, error="Format requires exactly one entry."
+            min=1,
+            max=1,
+            error="Format requires exactly one entry.",
         ),
     )
     location = fields.Nested(LocationSchema)
@@ -292,8 +321,8 @@ class LearningResourceTypeSchema(Schema):
                 "langstring": {
                     "#text": "https://w3id.org/kim/hcrt/scheme",
                     "lang": "x-none",
-                }
-            }
+                },
+            },
         ),
     )
     id = SanitizedUnicode(
@@ -328,10 +357,13 @@ class RightsSchema(Schema):
     """Schema for LOM's `rights`-category."""
 
     copyrightandotherrestrictions = fields.Nested(
-        CopyrightAndOtherSchema, required=True
+        CopyrightAndOtherSchema,
+        required=True,
     )
     description = LangstringField(
-        validate_lang_existence=False, required=True, validate=validate_cc_license_lang
+        validate_lang_existence=False,
+        required=True,
+        validate=validate_cc_license_lang,
     )
     url = SanitizedUnicode(
         required=True,
@@ -362,8 +394,8 @@ class TaxonpathSchema(Schema):
                 "langstring": {
                     "#text": "https://w3id.org/oerbase/vocabs/oefos2012",
                     "lang": "x-none",
-                }
-            }
+                },
+            },
         ),
     )
     taxon = fields.Nested(
@@ -383,7 +415,7 @@ class ClassificationSchema(Schema):
             {
                 "source": {"langstring": {"#text": "LOMv1.0", "lang": "x-none"}},
                 "value": {"langstring": {"#text": "discipline", "lang": "x-none"}},
-            }
+            },
         ),
     )
     taxonpath = fields.Nested(
@@ -415,17 +447,17 @@ class MetadataSchema(Schema):
         many=True,
         required=True,
         validate=validate.Length(
-            min=1, error="Classification requires at least one entry."
+            min=1,
+            error="Classification requires at least one entry.",
         ),
     )
 
-    def load(self, data, **kwargs):
-        """Overwrite parent as to use `NoValidationSchema` for resource-type!="upload"."""
+    def load(self, data: dict, **kwargs: dict) -> dict:
+        """Overwrite parent as to use NoValidationSchema for resource-type!="upload"."""
         if data["type"] != "upload":
             return NoValidationSchema().load(data, **kwargs)
-        data = super().load(data, **kwargs)
-        return data
+        return super().load(data, **kwargs)
 
-    def dump(self, obj, **_):
+    def dump(self, obj: dict, **__: dict) -> dict:
         """Overwrite parent as to dump everything always."""
         return obj

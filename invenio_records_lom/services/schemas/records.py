@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2021-2023 Graz University of Technology.
+# Copyright (C) 2021-2024 Graz University of Technology.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -28,7 +28,7 @@ from .metadata import MetadataSchema
 from .statistics import LomStatisticSchema
 
 
-def validate_lom_scheme(scheme: str):
+def _validate_lom_scheme(scheme: str) -> None:
     """Validate whether scheme is supported."""
     if scheme not in current_app.config["LOM_PERSISTENT_IDENTIFIERS"]:
         raise ValidationError(_("Persistent identifier scheme unknown to LOM."))
@@ -44,7 +44,7 @@ class LOMRecordSchema(RDMRecordSchema):
     metadata = NestedAttribute(MetadataSchema)
 
     pids = fields.Dict(
-        keys=SanitizedUnicode(validate=validate_lom_scheme),
+        keys=SanitizedUnicode(validate=_validate_lom_scheme),
         values=fields.Nested(PIDSchema),
     )
 
@@ -56,7 +56,7 @@ class LOMRecordSchema(RDMRecordSchema):
 
     @pre_dump
     @pre_load
-    def add_resource_type_to_metadata(self, obj, **_):
+    def add_resource_type_to_metadata(self, obj: dict, **__: dict) -> dict:
         """Add `resource_type` to `obj["metadata"]`.
 
         `RDMRecordSchema` does not play nice with `OneOfSchema`, hence `MetadataSchema`
@@ -70,7 +70,7 @@ class LOMRecordSchema(RDMRecordSchema):
 
     @post_dump
     @post_load
-    def remove_resource_type_from_metadata(self, obj, **_):
+    def remove_resource_type_from_metadata(self, obj: dict, **__: dict) -> dict:
         """Remove `resource_type` from `obj["metadata"]`.
 
         Cleanup to the above adding of `resource_type` to `obj["metadata"]`.
@@ -78,6 +78,3 @@ class LOMRecordSchema(RDMRecordSchema):
         if obj.get("metadata", {}).get("type"):
             del obj["metadata"]["type"]
         return obj
-
-
-__all__ = ("LOMRecordSchema",)

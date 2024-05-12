@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2021 Graz University of Technology.
+# Copyright (C) 2021-2024 Graz University of Technology.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -24,6 +24,7 @@ from invenio_rdm_records.services.components import (
 )
 from invenio_records_resources.services.uow import TaskOp
 
+from ..records import LOMDraft, LOMRecord
 from .tasks import register_or_update_pid
 
 
@@ -33,53 +34,52 @@ class ResourceTypeComponent(ServiceComponent):
     Akin to invenio_rdm_records.services.components.MetadataComponent.
     """
 
-    new_version_skip_fields = ["publication_date", "version"]
+    new_version_skip_fields = ("publication_date", "version")
 
     def create(
         self,
-        identity: Identity,
-        data: dict = None,
+        identity: Identity,  # noqa: ARG002
+        data: dict | None = None,
         record: Record = None,
-        errors=None,  # pylint: disable=unused-argument
-        **kwargs,
-    ):
+        **__: dict,
+    ) -> None:
         """Inject parsed resource_type to the record."""
         record.resource_type = data.get("resource_type", {})
 
     def update_draft(
         self,
-        identity: Identity,
-        data: dict = None,
+        identity: Identity,  # noqa: ARG002
+        data: dict | None = None,
         record: Record = None,
-        errors=None,
-    ):
+        errors: list | None = None,  # noqa: ARG002
+    ) -> None:
         """Inject parsed resource_type to the record."""
         record.resource_type = data.get("resource_type", {})
 
     def publish(
         self,
-        identity: Identity,
+        identity: Identity,  # noqa: ARG002
         draft: Record = None,
         record: Record = None,
-    ):
+    ) -> None:
         """Update draft resource_type."""
         record.resource_type = draft.get("resource_type", {})
 
     def edit(
         self,
-        identity: Identity,
+        identity: Identity,  # noqa: ARG002
         draft: Record = None,
         record: Record = None,
-    ):
+    ) -> None:
         """Update draft resource_type."""
         draft.resource_type = record.get("resource_type", {})
 
     def new_version(
         self,
-        identity: Identity,
+        identity: Identity,  # noqa: ARG002
         draft: Record = None,
         record: Record = None,
-    ):
+    ) -> None:
         """Update draft resource_type."""
         draft.resource_type = copy(record.get("resource_type", {}))
         # Remove fields that should not be copied to the new version
@@ -93,7 +93,12 @@ class LOMPIDsComponent(PIDsComponent):
 
     # overwrite `publish`` to use the celery-task from this package
     # this was copied from its parent class, except for its last line
-    def publish(self, identity, draft=None, record=None):
+    def publish(
+        self,
+        identity: Identity,  # noqa: ARG002
+        draft: LOMDraft = None,
+        record: LOMRecord = None,
+    ) -> None:
         """Publish handler."""
         # ATTENTION: A draft can be for both an unpublished or published
         # record. For an unpublished record, we usually simply need to create
@@ -141,7 +146,7 @@ class LOMPIDsComponent(PIDsComponent):
         record.pids = pids
 
         # Async register/update tasks after transaction commit.
-        for scheme in pids.keys():
+        for scheme in pids:
             self.uow.register(TaskOp(register_or_update_pid, record["id"], scheme))
 
 

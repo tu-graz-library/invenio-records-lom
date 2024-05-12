@@ -16,16 +16,19 @@ import tempfile
 
 import pytest
 from faker import Faker
+from flask import Flask
 from flask_principal import Identity, UserNeed
 from invenio_access.permissions import any_user, system_process
 from invenio_app.factory import create_app as invenio_create_app
+from invenio_db.shared import SQLAlchemy
 from invenio_files_rest.models import Location
 
 from invenio_records_lom.fixtures import create_fake_data
+from invenio_records_lom.services import LOMRecordService
 
 
 @pytest.fixture(scope="module")
-def app_config(app_config):  # pylint: disable=redefined-outer-name
+def app_config(app_config: dict) -> dict:
     """Override pytest-invenio app_config-fixture."""
     # configuration for `jsonresolver`-package interoperability
     app_config["RECORDS_REFRESOLVER_CLS"] = (
@@ -38,7 +41,7 @@ def app_config(app_config):  # pylint: disable=redefined-outer-name
     # Enable DOI minting...
     app_config["DATACITE_ENABLED"] = True
     app_config["DATACITE_USERNAME"] = "INVALID"
-    app_config["DATACITE_PASSWORD"] = "INVALID"
+    app_config["DATACITE_PASSWORD"] = "INVALID"  # noqa: S105
     app_config["DATACITE_PREFIX"] = "10.1234"
     # ...but fake it
 
@@ -46,7 +49,7 @@ def app_config(app_config):  # pylint: disable=redefined-outer-name
 
 
 @pytest.fixture(scope="module")
-def create_app():
+def create_app() -> None:
     """Application factory fixture.
 
     pytest-invenio uses this in creating the `base_app`-fixture.
@@ -54,8 +57,8 @@ def create_app():
     return invenio_create_app
 
 
-@pytest.fixture
-def cli_location(db):
+@pytest.fixture()
+def cli_location(db: SQLAlchemy) -> None:
     """Fixture for invenio file-location.
 
     Adapted to work with `<Flask-obj>.test_cli_runner`.
@@ -73,8 +76,8 @@ def cli_location(db):
     shutil.rmtree(uri)
 
 
-@pytest.fixture
-def identity():
+@pytest.fixture()
+def identity() -> None:
     """Identity fixture with rights to interact with service."""
     i = Identity(1)
     i.provides.add(UserNeed(1))
@@ -83,14 +86,14 @@ def identity():
     return i
 
 
-@pytest.fixture(scope="function")
-def service(base_app, location):  # pylint: disable=unused-argument
+@pytest.fixture()
+def service(base_app: Flask, location: Location) -> LOMRecordService:  # noqa: ARG001
     """Service fixture."""
     return base_app.extensions["invenio-records-lom"].records_service
 
 
 @pytest.fixture(scope="module")
-def full_lom_metadata(base_app):
+def full_lom_metadata(base_app: Flask) -> None:
     """Python dict/list-nesting in LOM-format, containing all valid fields."""
     fake = Faker()
     Faker.seed(42)  # for reproducibility: always generate same metadata

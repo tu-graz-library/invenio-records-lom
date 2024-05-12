@@ -37,16 +37,16 @@ class LOMRecordPermissionPolicy(RDMRecordPermissionPolicy):
     #
     # General permission-groups, to be used in below categories
     #
-    can_manage = [RecordOwners(), SystemProcess()]
-    can_curate = can_manage + [OERCurators()]
+    can_manage = (RecordOwners(), SystemProcess())
+    can_curate = (*can_manage, OERCurators())
     can_review = can_curate
     can_preview = can_manage
     can_view = can_manage
 
-    can_authenticated = [AuthenticatedUser(), SystemProcess()]
-    can_all = [AnyUser(), SystemProcess()]
+    can_authenticated = (AuthenticatedUser(), SystemProcess())
+    can_all = (AnyUser(), SystemProcess())
 
-    can_handle_oer = [OERCertifiedUsers(), OERCurators(), SystemProcess()]
+    can_handle_oer = (OERCertifiedUsers(), OERCurators(), SystemProcess())
 
     #
     #  Records
@@ -54,28 +54,24 @@ class LOMRecordPermissionPolicy(RDMRecordPermissionPolicy):
     # Allow searching of records
     can_search = can_all
     # Allow reading metadata of a record
-    can_read = [
-        IfRestricted("record", then_=can_view, else_=can_all),
-    ]
+    can_read = (IfRestricted("record", then_=can_view, else_=can_all),)
     # `service.search` uses this instead of `can_read`
     # see comment in parent-class for further info
-    can_read_deleted = [
+    can_read_deleted = (
         IfRecordDeleted(
             then_=[OERCurators(), SystemProcess()],
             else_=can_read,
-        )
-    ]
+        ),
+    )
     can_read_deleted_files = can_read_deleted
-    can_media_read_deleted_files = []
+    can_media_read_deleted_files = ()
     # Allow reading the files of a record
-    can_read_files = [
-        IfRestricted("files", then_=can_view, else_=can_all),
-    ]
-    can_get_content_files = [
+    can_read_files = (IfRestricted("files", then_=can_view, else_=can_all),)
+    can_get_content_files = (
         # note: even though this is closer to business logic than permissions,
         # it was simpler and less coupling to implement this as permission check
         IfFileIsLocal(then_=can_read_files, else_=[SystemProcess()]),
-    ]
+    )
     # Allow submitting new record
     can_create = can_handle_oer
 
@@ -92,41 +88,41 @@ class LOMRecordPermissionPolicy(RDMRecordPermissionPolicy):
     can_update_draft = can_review
     # Allow uploading, updating and deleting files in drafts
     can_draft_create_files = can_review
-    can_draft_set_content_files = [
+    can_draft_set_content_files = (
         # if local then same permission as can_draft_create_files
         IfFileIsLocal(then_=can_review, else_=[SystemProcess()]),
-    ]
-    can_draft_get_content_files = [
+    )
+    can_draft_get_content_files = (
         # if local then same permission as can_draft_read_files
         IfFileIsLocal(then_=can_preview, else_=[SystemProcess()]),
-    ]
-    can_draft_commit_files = [
+    )
+    can_draft_commit_files = (
         # if local then same permission as can_draft_create_files
         IfFileIsLocal(then_=can_review, else_=[SystemProcess()]),
-    ]
+    )
     can_draft_update_files = can_review
     can_draft_delete_files = can_review
     # Allow enabling/disabling files
     # files are always enabled
     # to test publishing isolatedly from uploading files, test system-process is allowed
-    can_manage_files = [
+    can_manage_files = (
         IfConfig(
             "LOM_ALLOW_METADATA_ONLY_RECORDS",
             then_=[IfNewRecord(then_=can_authenticated, else_=can_review)],
             else_=[],
         ),
-    ]
+    )
     # Allow access-management (i.e. set record/files to restricted/public)
     # TODO: allow oer-curators to manage access
     #       requires update of upload-page
     # to test records with restricted access, test system-process is allowed
-    can_manage_record_access = [
+    can_manage_record_access = (
         IfConfig(
             "LOM_ALLOW_RESTRICTED_RECORDS",
             then_=[IfNewRecord(then_=can_authenticated, else_=can_review)],
             else_=[],
-        )
-    ]
+        ),
+    )
 
     #
     # PIDs
@@ -155,25 +151,25 @@ class LOMRecordPermissionPolicy(RDMRecordPermissionPolicy):
     # Communities
     #
     # Allow adding record to a community
-    can_add_community = []
+    can_add_community = ()
     # Allow removing community from a record
-    can_remove_community = []
+    can_remove_community = ()
     # Allow removing records from a community
-    can_remove_record = []
+    can_remove_record = ()
 
     #
     # Media files - draft
     #
-    can_draft_media_create_files = []
-    can_draft_media_read_files = []
-    can_draft_media_set_content_files = []
-    can_draft_media_get_content_files = []
-    can_draft_media_commit_files = []
-    can_draft_media_update_files = []
-    can_draft_media_delete_files = []
+    can_draft_media_create_files = ()
+    can_draft_media_read_files = ()
+    can_draft_media_set_content_files = ()
+    can_draft_media_get_content_files = ()
+    can_draft_media_commit_files = ()
+    can_draft_media_update_files = ()
+    can_draft_media_delete_files = ()
 
     #
     # Media files - record
     #
-    can_media_read_files = []
-    can_media_get_content_files = []
+    can_media_read_files = ()
+    can_media_get_content_files = ()

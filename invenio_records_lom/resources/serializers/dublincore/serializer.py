@@ -18,13 +18,13 @@ from .schema import LOMToDublinCoreRecordSchema
 class LOMToDublinCoreJSONSerializer(MarshmallowSerializer):
     """Marshmallow based Dublin Core serializer for records."""
 
-    def __init__(self, **options):
-        """Constructor."""
+    def __init__(self, **kwargs: dict) -> None:
+        """Construct."""
         super().__init__(
             format_serializer_cls=JSONSerializer,
             object_schema_cls=LOMToDublinCoreRecordSchema,
             list_schema_cls=BaseListSchema,
-            **options,
+            **kwargs,
         )
 
 
@@ -35,12 +35,12 @@ class LOMToDublinCoreXMLSerializer(MarshmallowSerializer):
     records.
     """
 
-    def __init__(self, **options):
-        """Constructor."""
+    def __init__(self, **kwargs: dict) -> None:
+        """Construct."""
         super().__init__(
             format_serializer_cls=SimpleSerializer,
             object_schema_cls=LOMToDublinCoreRecordSchema,
             list_schema_cls=BaseListSchema,
             encoder=simpledc.tostring,
-            **options,
+            **kwargs,
         )

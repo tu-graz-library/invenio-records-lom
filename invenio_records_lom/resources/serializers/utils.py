@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2021-2023 Graz University of Technology.
+# Copyright (C) 2021-2024 Graz University of Technology.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -40,7 +40,7 @@ def get_related(obj: dict, relation_kind: str, catalog: str = "repo-pid") -> lis
     return results
 
 
-def get_newest_part(obj: dict):
+def get_newest_part(obj: dict):  # noqa: ANN201
     """Get newest dereferenced record that is "haspart"-related to `obj`."""
     parts = get_related(obj, relation_kind="haspart")
     return parts[-1]

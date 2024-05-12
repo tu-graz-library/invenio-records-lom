@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2021 Graz University of Technology.
+# Copyright (C) 2021-2024 Graz University of Technology.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -97,9 +97,9 @@ class RelationsMeta(type):
     Delays assigning to `.relations`' `pid_field` until class is already created.
     """
 
-    def __new__(mcs, name, bases, attrs):
+    def __new__(cls, name, bases, attrs):  # noqa: ANN001, ANN204
         """Create and return a new class with `.relations`-attribute."""
-        new_mcs = super().__new__(mcs, name, bases, attrs)
+        new_mcs = super().__new__(cls, name, bases, attrs)
         relations = RelationsField(
             wholes=PIDLOMRelation(
                 source="LOMv1.0",
@@ -133,7 +133,7 @@ class LOMDraft(Draft, metaclass=LOMRecordMeta):
     dumper = SearchDumper(
         extensions=[
             LomStatisticsDumperExt("stats"),
-        ]
+        ],
     )
 
     pid = PIDField(
@@ -199,7 +199,8 @@ class LOMRecord(Record, metaclass=LOMRecordMeta):
     bucket_id = ModelField(dump=False)
     bucket = ModelField(dump=False)
     index = IndexField(
-        "lomrecords-records-record-v1.0.0", search_alias="lomrecords-records"
+        "lomrecords-records-record-v1.0.0",
+        search_alias="lomrecords-records",
     )
     is_published = PIDStatusCheckField(status=PIDStatus.REGISTERED, dump=True)
     pids = DictField()

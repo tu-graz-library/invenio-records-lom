@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2022 Graz University of Technology.
+# Copyright (C) 2022-2024 Graz University of Technology.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -8,15 +8,23 @@
 """PIDsService tests."""
 
 import pytest
+from flask_principal import Identity
+from invenio_db.shared import SQLAlchemy
 from invenio_pidstore.errors import PIDDoesNotExistError
 from invenio_pidstore.models import PIDStatus
+from pytest_mock import MockerFixture
 
 from invenio_records_lom.resources.serializers import LOMToDataCite44Serializer
+from invenio_records_lom.services import LOMRecordService
 from invenio_records_lom.services.tasks import register_or_update_pid
 
 
-# pylint: disable-next=unused-argument
-def test_resolve_pid(service, db, identity, full_lom_metadata):
+def test_resolve_pid(
+    service: LOMRecordService,
+    db: SQLAlchemy,  # noqa: ARG001
+    identity: Identity,
+    full_lom_metadata: dict,
+) -> None:
     """Resolve a PID."""
     draft = service.create(identity=identity, data=full_lom_metadata)
     record = service.publish(identity=identity, id_=draft.id)
@@ -28,7 +36,7 @@ def test_resolve_pid(service, db, identity, full_lom_metadata):
     assert resolved_record["pids"]["doi"]["identifier"] == doi
 
 
-def test_resolve_nonexisting_pid(service, identity):
+def test_resolve_nonexisting_pid(service: LOMRecordService, identity: Identity) -> None:
     """Attempt to resolve a non-existing pid."""
     fake_doi = "10.4321/client.12345-invalid"
 
@@ -36,22 +44,28 @@ def test_resolve_nonexisting_pid(service, identity):
         service.pids.resolve(identity=identity, id_=fake_doi, scheme="doi")
 
 
-# pylint: disable-next=unused-argument
-def test_reserve_pid(service, db, identity, full_lom_metadata):
+def test_reserve_pid(
+    service: LOMRecordService,
+    db: SQLAlchemy,  # noqa: ARG001
+    identity: Identity,
+    full_lom_metadata: dict,
+) -> None:
     """Reserve a new pid."""
     draft = service.create(identity=identity, data=full_lom_metadata)
     draft = service.pids.create(identity=identity, id_=draft.id, scheme="doi")
     doi = draft["pids"]["doi"]["identifier"]
 
-    # pylint: disable-next=protected-access
-    provider = service.pids.pid_manager._get_provider("doi", "datacite")
+    provider = service.pids.pid_manager._get_provider("doi", "datacite")  # noqa: SLF001
     pid = provider.get(pid_value=doi)
 
     assert pid.status == PIDStatus.NEW
 
 
-# pylint: disable-next=unused-argument
-def test_datacite_schema(service, db, full_lom_metadata):
+def test_datacite_schema(
+    service: LOMRecordService,  # noqa: ARG001
+    db: SQLAlchemy,  # noqa: ARG001
+    full_lom_metadata: dict,
+) -> None:
     """Dump a LOM-object with LOMSerializer."""
     datacite_data = LOMToDataCite44Serializer().dump_one(full_lom_metadata)
     mandatory_keys = [
@@ -65,11 +79,16 @@ def test_datacite_schema(service, db, full_lom_metadata):
     assert all(key in datacite_data for key in mandatory_keys)
 
 
-# pylint: disable-next=unused-argument
-def test_register_pid(service, db, identity, full_lom_metadata, mocker):
+def test_register_pid(
+    service: LOMRecordService,
+    db: SQLAlchemy,  # noqa: ARG001
+    identity: Identity,
+    full_lom_metadata: dict,
+    mocker: MockerFixture,
+) -> None:
     """Register a pid."""
 
-    def public_doi(self, metadata, url, doi):  # pylint: disable=unused-argument
+    def public_doi(self, metadata, url, doi) -> None:  # noqa: ANN001, ARG001
         """Mock doi publication."""
 
     mocker.patch(
@@ -81,17 +100,16 @@ def test_register_pid(service, db, identity, full_lom_metadata, mocker):
     draft = service.pids.create(identity=identity, id_=draft.id, scheme="doi")
     doi = draft["pids"]["doi"]["identifier"]
 
-    # pylint: disable-next=protected-access
-    provider = service.pids.pid_manager._get_provider("doi", "datacite")
+    provider = service.pids.pid_manager._get_provider("doi", "datacite")  # noqa: SLF001
     pid = provider.get(pid_value=doi)
 
     # pylint: disable-next=protected-access
-    record = service.record_cls.publish(draft._record)
+    record = service.record_cls.publish(draft._record)  # noqa: SLF001
     record.pids = {
         pid.pid_type: {
             "identifier": pid.pid_value,
             "provider": "datacite",
-        }
+        },
     }
     record.metadata = draft["metadata"]
     record.register()

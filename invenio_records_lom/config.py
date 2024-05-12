@@ -40,7 +40,7 @@ LOM_FACETS = {
             # namely, the overridable `BucketAggregation` component gets these
             "field": "metadata.rights.url",
         },
-    }
+    },
 }
 
 LOM_SORT_OPTIONS = {
@@ -70,7 +70,7 @@ LOM_SEARCH = {
         "mostdownloaded",
     ],
     "facets": [  # which facets to activate, see `LOM_FACETS` for facet-configuration
-        "rights_license"
+        "rights_license",
     ],
 }
 """Record search configuration."""
@@ -78,7 +78,7 @@ LOM_SEARCH = {
 LOM_SEARCH_DRAFTS = {
     "sort": ["bestmatch", "newest"],
     "facets": [  # which facets to activate, see `LOM_FACETS` for facet-configuration
-        "rights_license"
+        "rights_license",
     ],
 }
 
@@ -202,7 +202,7 @@ LOM_STATS_CELERY_TASKS = {
             (
                 "lom-record-view-agg",
                 "lom-file-download-agg",
-            )
+            ),
         ],
         "schedule": crontab(minute=7),  # Every hour at minute 7
     },
@@ -212,7 +212,7 @@ LOM_STATS_CELERY_TASKS = {
             (
                 "stats-lom-record-view",
                 "stats-lom-file-download",
-            )
+            ),
         ],
         "schedule": crontab(minute="20"),
     },
@@ -231,7 +231,7 @@ LOM_STATS_EVENTS = {
         ],
         "cls": EventsIndexer,
         "params": {
-            "preprocessors": [flag_robots, anonymize_user, build_file_unique_id]
+            "preprocessors": [flag_robots, anonymize_user, build_file_unique_id],
         },
     },
     "lom-record-view": {
