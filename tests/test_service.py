@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2021 Graz University of Technology.
+# Copyright (C) 2021-2024 Graz University of Technology.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -105,11 +105,9 @@ def test_create_draft(service, db, identity, access):  # pylint: disable=too-man
     json_pid = general["identifier"][0]["entry"]["langstring"]["#text"]
     assert json_pid == draft_pid.pid_value
 
-    # test json
-    # other than general.identifier, record's metadata should be identical to initial metadata
-    del general["identifier"]
-    # TODO: doesn't work at the moment. has to be fixed
-    # assert json["metadata"] == data["metadata"]
+    # TODO: check the necessity of this
+    del data["metadata"]["type"]
+    assert json["metadata"] == data["metadata"]
     assert "access" in json
     assert json["access"]["files"] == access["files"]
     assert json["access"]["record"] == access["record"]
@@ -167,9 +165,6 @@ def test_publish(service, db, identity, access):  # pylint: disable=too-many-loc
     json_pid = general["identifier"][0]["entry"]["langstring"]["#text"]
     assert json_pid == record_pid.pid_value
 
-    # test json
-    # other than general.identifier, record's metadata should be identical to initial metadata
-    del general["identifier"]
     assert json["metadata"] == data["metadata"]
     assert "access" in json
     assert json["access"]["files"] == access["files"]
