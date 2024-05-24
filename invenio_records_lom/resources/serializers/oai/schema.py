@@ -212,10 +212,10 @@ class ContributeSchema(ExcludeUnknownOrderedSchema):
     def get_centity(self, contributors):
         """Get vcard."""
         role = contributors["role"]["value"]["langstring"]["#text"]
+        entity = contributors["entity"]
+        entities = entity if isinstance(entity, list) else [entity]
 
-        return [
-            {"vcard": make_lom_vcard(fn=e, role=role)} for e in contributors["entity"]
-        ]
+        return [{"vcard": make_lom_vcard(fn=e, role=role)} for e in entities]
 
 
 class LifecycleSchema(ExcludeUnknownOrderedSchema):
