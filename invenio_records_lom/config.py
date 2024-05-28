@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2020-2023 Graz University of Technology.
+# Copyright (C) 2020-2024 Graz University of Technology.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -381,3 +381,9 @@ LOM_STATS_QUERIES = {
         },
     },
 }
+
+LOM_ALLOW_METADATA_ONLY_RECORDS = True
+"""Allow users to publish metadata-only records."""
+
+LOM_ALLOW_RESTRICTED_RECORDS = True
+"""Allow users to set restricted/private records."""

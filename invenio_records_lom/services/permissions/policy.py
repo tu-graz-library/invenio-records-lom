@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2021-2023 Graz University of Technology.
+# Copyright (C) 2021-2024 Graz University of Technology.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -9,6 +9,7 @@
 
 from invenio_rdm_records.services.generators import (
     IfFileIsLocal,
+    IfNewRecord,
     IfRecordDeleted,
     IfRestricted,
     RecordOwners,
@@ -17,6 +18,7 @@ from invenio_rdm_records.services.permissions import RDMRecordPermissionPolicy
 from invenio_records_permissions.generators import (
     AnyUser,
     AuthenticatedUser,
+    IfConfig,
     SystemProcess,
 )
 
@@ -107,12 +109,24 @@ class LOMRecordPermissionPolicy(RDMRecordPermissionPolicy):
     # Allow enabling/disabling files
     # files are always enabled
     # to test publishing isolatedly from uploading files, test system-process is allowed
-    can_manage_files = [SystemProcess()]
+    can_manage_files = [
+        IfConfig(
+            "LOM_ALLOW_METADATA_ONLY_RECORDS",
+            then_=[IfNewRecord(then_=can_authenticated, else_=can_review)],
+            else_=[],
+        ),
+    ]
     # Allow access-management (i.e. set record/files to restricted/public)
     # TODO: allow oer-curators to manage access
     #       requires update of upload-page
     # to test records with restricted access, test system-process is allowed
-    can_manage_record_access = [SystemProcess()]
+    can_manage_record_access = [
+        IfConfig(
+            "LOM_ALLOW_RESTRICTED_RECORDS",
+            then_=[IfNewRecord(then_=can_authenticated, else_=can_review)],
+            else_=[],
+        )
+    ]
 
     #
     # PIDs
