@@ -56,6 +56,8 @@ def create_fake_datetime(fake: Faker) -> dict:
     elif pattern == "YMDhmsTZD":
         time_zone_designator = fake.pytimezone()
         datetime = fake.date_time(tzinfo=time_zone_designator).isoformat()
+    else:
+        datetime = "1970"
 
     return {"datetime": datetime, "description": langstringify(fake, fake.sentence())}
 
