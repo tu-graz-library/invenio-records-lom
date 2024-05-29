@@ -7,6 +7,15 @@
 Changes
 =======
 
+Version v0.15.0 (release 2024-05-29)
+
+- fix: update permission for manage_
+- if the entity is not a list what it should be it will be handled
+  correctly
+- the LOMMetadata handles now only the metadata
+- add a function to check about duplicate entries
+
+
 Version v0.14.0 (release 2024-05-06)
 
 - modification: add statistic for a record
