@@ -9,7 +9,7 @@ Changes
 
 Version v0.15.0 (release 2024-05-29)
 
-- fix: update permission for manage_
+- fix: update permission for manage condition
 - if the entity is not a list what it should be it will be handled
   correctly
 - the LOMMetadata handles now only the metadata
@@ -223,4 +223,3 @@ Version v0.3.1 (release 2022-06-01)
 
 - update publish action
 - fix combined fixes
-
