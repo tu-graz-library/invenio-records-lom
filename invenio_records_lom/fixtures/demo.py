@@ -297,6 +297,7 @@ def create_fake_learningresourcetype(fake: Faker) -> dict:
 def create_fake_rights(fake: Faker) -> dict:
     """Create a fake "rights"-element, compatible with LOMv1.0."""
     urls = [
+        "https://creativecommons.org/publicdomain/zero/1.0/",
         "https://creativecommons.org/licenses/by/4.0",
         "https://creativecommons.org/licenses/by-sa/4.0",
         "https://creativecommons.org/licenses/by-nd/4.0",
