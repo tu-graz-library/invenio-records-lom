@@ -19,6 +19,7 @@ def license_labels(keys):
     metadata within the database.
     """
     license_mapping = {
+        "https://creativecommons.org/publicdomain/zero/1.0/": _("CC0 1.0"),
         "https://creativecommons.org/licenses/by/4.0/": _("CC BY 4.0"),
         "https://creativecommons.org/licenses/by-sa/4.0/": _("CC BY-SA 4.0"),
         "https://creativecommons.org/licenses/by-nd/4.0/": _("CC BY-ND 4.0"),

@@ -37,6 +37,9 @@ def get_deposit_template_context(**extra_form_config_kwargs) -> dict:
     }
     # TODO: dont hardcode vocabularies here...
     license_vocabulary = {
+        "https://creativecommons.org/publicdomain/zero/1.0/": {
+            "name": "CC0 1.0 - Creative Commons CC0 1.0 Universal",
+        },
         "https://creativecommons.org/licenses/by/4.0/": {
             "name": "CC BY 4.0 - Creative Commons Attribution 4.0 International",
         },

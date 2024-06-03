@@ -86,9 +86,14 @@ class Rights(fields.Field):
         value = value or {}
 
         if "creativecommons" in value.get("url", ""):
-            result = re.search("licenses/([a-z-]+)/.*", value["url"])
-            id_ = f"CC {result.group(1).upper()}"
-            icon = f"{id_.lower().replace(' ', '-')}-icon"
+            if "creativecommons.org/publicdomain/zero" in value["url"]:
+                id_ = "CC0"
+                icon = "cc-cc0-icon"
+            else:
+                result = re.search("licenses/([a-z-]+)/.*", value["url"])
+                id_ = f"CC {result.group(1).upper()}"
+                icon = f"{id_.lower().replace(' ', '-')}-icon"
+
             right = {
                 "id": id_,
                 "title_l10n": id_,
