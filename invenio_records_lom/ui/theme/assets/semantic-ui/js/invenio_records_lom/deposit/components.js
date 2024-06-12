@@ -5,7 +5,7 @@
 
 import React from "react";
 import { AccordionField, ArrayField, FieldLabel } from "react-invenio-forms";
-import { PIDField } from "react-invenio-deposit";
+import { PIDField } from "@js/invenio_rdm_records";
 import { useSelector } from "react-redux";
 import { Form, Icon } from "semantic-ui-react";
 import { i18next } from "@translations/invenio_records_lom/i18next";

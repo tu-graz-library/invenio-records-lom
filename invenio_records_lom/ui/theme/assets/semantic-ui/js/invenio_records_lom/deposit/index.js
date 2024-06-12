@@ -5,7 +5,7 @@
 
 import React from "react"; // needs be in scope to use .jsx
 import ReactDOM from "react-dom";
-import { getInputFromDOM } from "react-invenio-deposit";
+import { getInputFromDOM } from "@js/invenio_rdm_records";
 import LOMDepositForm from "./LOMDepositForm";
 
 ReactDOM.render(

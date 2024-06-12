@@ -30,7 +30,6 @@ theme = WebpackThemeBundle(
                 "@babel/runtime": "^7.9.0",
                 "react": "^16.13.0",
                 "react-dom": "^16.13.0",
-                "react-invenio-deposit": "^2.6.1",
             },
         },
     },
