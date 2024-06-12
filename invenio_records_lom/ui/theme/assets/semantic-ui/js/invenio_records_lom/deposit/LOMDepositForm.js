@@ -13,7 +13,7 @@ import {
   PreviewButton,
   PublishButton,
   SaveButton,
-} from "react-invenio-deposit";
+} from "@js/invenio_rdm_records";
 //} from "@js/invenio_rdm_records"; // reserve doi is not working with error: setSubmitContext is not a function
 import { AccordionField } from "react-invenio-forms";
 import {

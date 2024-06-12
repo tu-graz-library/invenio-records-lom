@@ -8,7 +8,7 @@ import _get from "lodash/get";
 import _pick from "lodash/pick";
 import _set from "lodash/set";
 import _sortBy from "lodash/sortBy";
-import { DepositRecordSerializer } from "react-invenio-deposit";
+import { DepositRecordSerializer } from "@js/invenio_rdm_records";
 
 // TODO: move `debug` to debug.js
 const debug = (obj) => alert(JSON.stringify(obj, null, 2));
