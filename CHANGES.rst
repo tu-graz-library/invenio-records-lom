@@ -7,6 +7,12 @@
 Changes
 =======
 
+Version v0.15.1 (release 2024-06-13)
+
+- fix: typo on attribute name
+- add CC0 to license selection
+
+
 Version v0.15.0 (release 2024-05-29)
 
 - fix: update permission for manage
