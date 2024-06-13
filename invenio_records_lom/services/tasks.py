@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2022 Graz University of Technology.
+# Copyright (C) 2022-2024 Graz University of Technology.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -57,7 +57,7 @@ def lom_reindex_stats(stats_indices):
         end = len(list(all_parents))
         for i in range(0, end, step):
             records_q = dsl.Q("terms", parent__id=all_parents_list[i : i + step])
-            current_records_lom.record_service.reindex(
+            current_records_lom.records_service.reindex(
                 params={"allversions": True},
                 identity=system_identity,
                 search_query=records_q,
