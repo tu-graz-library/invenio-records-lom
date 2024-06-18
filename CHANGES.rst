@@ -7,6 +7,13 @@
 Changes
 =======
 
+Version v0.15.2 (release 2024-06-18)
+
+- oai: add missing function for getrecords
+- oai: fix doi not exists
+- fix: import deposit components from rdm
+
+
 Version v0.15.1 (release 2024-06-13)
 
 - fix: typo on attribute name
