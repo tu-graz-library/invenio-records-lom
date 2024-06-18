@@ -18,11 +18,18 @@ from .resources.serializers import LOMToOAIXMLSerializer
 
 def lom_etree(pid, record):  # pylint: disable=unused-argument
     """Get LOM XML for OAI-PMH."""
+    try:
+        # the doi creation is optional and depends on the variable
+        # DATACITE_ENABLED
+        doi = record["_source"]["pids"]["doi"]["identifier"]
+    except KeyError:
+        doi = None
+
     return LOMToOAIXMLSerializer(
         metadata=record["_source"]["metadata"],
         lom_id=record["_source"]["id"],
         oaiserver_id_prefix=current_app.config.get("OAISERVER_ID_PREFIX"),
-        doi=record["_source"]["pids"]["doi"]["identifier"],
+        doi=doi,
     ).dump_obj()
 
 
