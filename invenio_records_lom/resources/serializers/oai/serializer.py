@@ -73,6 +73,9 @@ class LOMToOAIXMLSerializer:
     @property
     def repository_doi_identifier(self):
         """Create the repository doi identifier."""
+        if self.doi is None:
+            return []
+
         jsn = {
             "catalog": "DOI",
             "entry": {
