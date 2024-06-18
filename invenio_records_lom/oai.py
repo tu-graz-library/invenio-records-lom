@@ -46,3 +46,8 @@ def getrecord_fetcher(record_id):
         raise PIDDoesNotExistError("lomid", None) from error
 
     return result.to_dict()
+
+
+def getrecord_sets_fetcher(_):
+    """Fetch sets of the record."""
+    return []
