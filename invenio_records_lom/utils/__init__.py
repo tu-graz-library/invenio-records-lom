@@ -13,8 +13,10 @@ from .util import (
     DotAccessWrapper,
     LOMDuplicateRecordError,
     check_about_duplicate,
+    create_record,
     get_learningresourcetypedict,
     get_oefosdict,
+    update_record,
 )
 from .vcard import make_lom_vcard
 
@@ -27,5 +29,7 @@ __all__ = (
     "make_lom_vcard",
     "build_record_unique_id",
     "check_about_duplicate",
+    "create_record",
+    "update_record",
     "LOMDuplicateRecordError",
 )
