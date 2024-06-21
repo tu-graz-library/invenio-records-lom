@@ -7,16 +7,21 @@
 
 """Utilities for creation of LOM-compliant metadata."""
 
-
-import re
 from collections.abc import MutableMapping
 from csv import reader
 from importlib import resources
 from json import load
+from pathlib import Path
+from re import compile as re_compile
+from re import sub
+from time import sleep
 from typing import Any, Iterator, Optional, Union
 
+from flask_principal import Identity
+from invenio_records_resources.services.base import Service
 from invenio_search import RecordsSearch
 from invenio_search.engine import dsl
+from marshmallow.exceptions import ValidationError
 
 
 class DotAccessWrapper(MutableMapping):
@@ -223,7 +228,7 @@ def standardize_url(url: str) -> str:
     If `url`'s scheme is "http" or "https", make it "https".
     Also ensure existence of a trailing "/".
     """
-    pattern = re.compile("^https?://(.*?)/?$")
+    pattern = re_compile("^https?://(.*?)/?$")
     if m := pattern.match(url):
         middle = m.group(1)  # excludes initial "https://", excludes trailing "/"
         return f"https://{middle}/"
@@ -265,3 +270,78 @@ def check_about_duplicate(identifier: str, catalog: str):
             catalog=catalog,
             id_=results[0]["id"],
         )
+
+
+def add_file_to_record(
+    lomid,
+    file_path,
+    file_service,
+    identity,
+):
+    """Add the file to the record."""
+    file_ = Path(file_path)
+    filename = sub(r"-([^-]*?)\.", r".", file_.name)
+    data = [{"key": filename}]
+
+    with file_.open(mode="rb") as file_pointer:
+        file_service.init_files(id_=lomid, identity=identity, data=data)
+        file_service.set_file_content(
+            id_=lomid, file_key=filename, identity=identity, stream=file_pointer
+        )
+        file_service.commit_file(id_=lomid, file_key=filename, identity=identity)
+
+
+def create_record(
+    service: Service,  # services.LOMRecordService
+    data: dict,
+    file_paths: list,
+    identity: Identity,
+    *,
+    do_publish: bool = True,
+):
+    """Create record."""
+    data["files"] = {"enabled": len(file_paths) > 0}
+    data["access"] = {
+        "access": {
+            "record": "public",
+            "files": "public",
+        },
+    }
+
+    draft = service.create(data=data, identity=identity)
+
+    try:
+        for file_path in file_paths:
+            add_file_to_record(
+                lomid=draft.id,
+                file_path=file_path,
+                file_service=service.draft_files,
+                identity=identity,
+            )
+
+        if do_publish:
+            # to prevent the race condition bug.
+            # see https://github.com/inveniosoftware/invenio-rdm-records/issues/809
+            sleep(0.5)
+
+            return service.publish(id_=draft.id, identity=identity)
+    except (FileNotFoundError, ValidationError) as error:
+        service.delete_draft(id_=draft.id, identity=identity)
+        raise error
+
+    return draft
+
+
+def update_record(
+    pid: str,
+    service: Service,  # services.LOMRecordService
+    data: dict,
+    identity: Identity,
+    *,
+    do_publish: bool = True,
+):
+    """Update record."""
+    service.update_draft(id_=pid, data=data, identity=identity)
+
+    if do_publish:
+        service.publish(id_=pid, identity=identity)
