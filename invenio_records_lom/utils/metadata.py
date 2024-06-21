@@ -24,6 +24,25 @@ from .util import (
 )
 
 
+class LOMRecordData:
+    """LOM record data."""
+
+    def __init__(
+        self,
+        resource_type=None,
+        pids=None,
+        metadata=None,
+        **kwargs: dict,
+    ) -> None:
+        """Construct."""
+        self.resource_type = resource_type
+        self.pids = pids
+        self.metadata = (
+            metadata if not isinstance(metadata, LOMMetadata) else LOMMetadata(metadata)
+        )
+        self.kwargs = kwargs
+
+
 class BaseLOMMetadata:
     """Base LOM Metadata."""
 
