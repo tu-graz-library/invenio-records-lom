@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2021-2023 Graz University of Technology.
+# Copyright (C) 2021-2024 Graz University of Technology.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -56,6 +56,14 @@ class LOMFileDraftMetadata(db.Model, RecordMetadataBase, FileRecordModelMixin):
     __record_model_cls__ = LOMDraftMetadata
 
 
+class RDMMediaFileDraftMetadata(db.Model, RecordMetadataBase, FileRecordModelMixin):
+    """File associated with a draft."""
+
+    __record_model_cls__ = LOMDraftMetadata
+
+    __tablename__ = "rdm_drafts_media_files"
+
+
 class LOMRecordMetadata(db.Model, RecordMetadataBase, ParentRecordMixin):
     """Flask-SQLAlchemy model for "lom_records_metadata"-SQL-table."""
 
@@ -84,6 +92,17 @@ class LOMFileRecordMetadata(db.Model, RecordMetadataBase, FileRecordModelMixin):
 
     __record_model_cls__ = LOMRecordMetadata
 
+    __versioned__ = {}
+
+
+class RDMMediaFileRecordMetadata(db.Model, RecordMetadataBase, FileRecordModelMixin):
+    """File associated with a record."""
+
+    __record_model_cls__ = LOMRecordMetadata
+
+    __tablename__ = "rdm_records_media_files"
+
+    # Enable versioning
     __versioned__ = {}
 
 

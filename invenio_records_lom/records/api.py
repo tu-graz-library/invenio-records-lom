@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2021 Graz University of Technology.
+# Copyright (C) 2021-2024 Graz University of Technology.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -27,6 +27,9 @@ Use flask.current_app['invenio-records-lom'].records_service to interact with.
 from invenio_communities.records.records.systemfields import CommunitiesField
 from invenio_drafts_resources.records import Draft, Record
 from invenio_drafts_resources.records.api import ParentRecord
+from invenio_drafts_resources.services.records.components.media_files import (
+    MediaFilesAttrConfig,
+)
 from invenio_pidstore.models import PIDStatus
 from invenio_rdm_records.records.systemfields import (
     DraftStatus,
@@ -50,8 +53,18 @@ from invenio_records_resources.records.systemfields import (
 from invenio_requests.records.api import Request
 from invenio_requests.records.systemfields.relatedrecord import RelatedRecord
 
-from . import models
 from .dumpers import LomStatisticsDumperExt
+from .models import (
+    LOMDraftMetadata,
+    LOMFileDraftMetadata,
+    LOMFileRecordMetadata,
+    LOMMediaFileDraftMetadata,
+    LOMMediaFileRecordMetadata,
+    LOMParentCommunity,
+    LOMParentMetadata,
+    LOMRecordMetadata,
+    LOMVersionsState,
+)
 from .systemfields import (
     LOMDraftRecordIdProvider,
     LOMPIDFieldContext,
@@ -67,7 +80,7 @@ from .systemfields import (
 class LOMParent(ParentRecord):
     """For representing entries from the 'lom_parents_metadata'-SQL-table."""
 
-    model_cls = models.LOMParentMetadata
+    model_cls = LOMParentMetadata
 
     pid = PIDField(
         key="id",
@@ -80,15 +93,25 @@ class LOMParent(ParentRecord):
     )
     access = ParentRecordAccessField()
     review = RelatedRecord(Request, keys=["type", "receiver", "status"])
-    communities = CommunitiesField(models.LOMParentCommunity)
+    communities = CommunitiesField(LOMParentCommunity)
 
 
 class LOMFileDraft(FileRecord):
     """For representing entries from the 'lom_drafts_files'-SQL-table."""
 
-    model_cls = models.LOMFileDraftMetadata
+    model_cls = LOMFileDraftMetadata
     # LOMFileDraft and LOMDraft depend on each other, monkey-patch record_cls in later
     record_cls = None  # defined below
+
+
+class LOMMediaFileDraft(FileRecord):
+    """File associated with a draft."""
+
+    model_cls = LOMMediaFileDraftMetadata
+    record_cls = None  # defined below
+
+    # Stores record files processor information
+    processor = DictField(clear_none=True, create_if_missing=True)
 
 
 class RelationsMeta(type):
@@ -126,9 +149,9 @@ class LOMRecordMeta(type(Record), RelationsMeta):
 class LOMDraft(Draft, metaclass=LOMRecordMeta):
     """For representing entries from the 'lom_drafts_metadata'-SQL-table."""
 
-    model_cls = models.LOMDraftMetadata
+    model_cls = LOMDraftMetadata
     parent_record_cls = LOMParent
-    versions_model_cls = models.LOMVersionsState
+    versions_model_cls = LOMVersionsState
 
     dumper = SearchDumper(
         extensions=[
@@ -150,6 +173,16 @@ class LOMDraft(Draft, metaclass=LOMRecordMeta):
         delete=False,
         store=False,
     )
+    media_files = FilesField(
+        key=MediaFilesAttrConfig["_files_attr_key"],
+        bucket_id_attr=MediaFilesAttrConfig["_files_bucket_id_attr_key"],
+        bucket_attr=MediaFilesAttrConfig["_files_bucket_attr_key"],
+        store=False,
+        dump=False,
+        file_cls=LOMMediaFileDraft,
+        # Don't delete, we'll manage in the service
+        delete=False,
+    )
     access = RecordAccessField()
     bucket_id = ModelField(dump=False)
     bucket = ModelField(dump=False)
@@ -168,17 +201,27 @@ LOMFileDraft.record_cls = LOMDraft
 class LOMFileRecord(FileRecord):
     """For representing entries from the 'lom_records_files_metadata'-SQL-table."""
 
-    model_cls = models.LOMFileRecordMetadata
+    model_cls = LOMFileRecordMetadata
     # LOMFileRecord and LOMRecord depend on each other, monkey-patch this in later
     record_cls = None  # defined below
+
+
+class LOMMediaFileRecord(FileRecord):
+    """Example record file API."""
+
+    model_cls = LOMMediaFileRecordMetadata
+    record_cls = None  # defined below
+
+    # Stores record files processor information
+    processor = DictField(clear_none=True, create_if_missing=True)
 
 
 class LOMRecord(Record, metaclass=LOMRecordMeta):
     """For representing entries from the 'lom_records_metadata'-SQL-table."""
 
-    model_cls = models.LOMRecordMetadata
+    model_cls = LOMRecordMetadata
     parent_record_cls = LOMParent
-    versions_model_cls = models.LOMVersionsState
+    versions_model_cls = LOMVersionsState
 
     pid = PIDField(
         key="id",
@@ -194,6 +237,18 @@ class LOMRecord(Record, metaclass=LOMRecordMeta):
         create=False,
         delete=False,
         store=False,
+    )
+    media_files = FilesField(
+        key=MediaFilesAttrConfig["_files_attr_key"],
+        bucket_id_attr=MediaFilesAttrConfig["_files_bucket_id_attr_key"],
+        bucket_attr=MediaFilesAttrConfig["_files_bucket_attr_key"],
+        store=False,
+        dump=False,
+        file_cls=LOMMediaFileRecord,
+        # Don't create
+        create=False,
+        # Don't delete, we'll manage in the service
+        delete=False,
     )
     access = RecordAccessField()
     bucket_id = ModelField(dump=False)
