@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2021 Graz University of Technology.
+# Copyright (C) 2021-2024 Graz University of Technology.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -24,6 +24,7 @@ from invenio_rdm_records.services.components import (
 )
 from invenio_records_resources.services.uow import TaskOp
 
+from ..utils import LOMMetadata
 from .tasks import register_or_update_pid
 
 
@@ -90,6 +91,14 @@ class ResourceTypeComponent(ServiceComponent):
 
 class LOMPIDsComponent(PIDsComponent):
     """LOM Sevice component for PIDs."""
+
+    def create(self, identity, data=None, record=None, errors=None):
+        """This method is called on draft creation."""
+        super().create(identity, data, record, errors)
+
+        metadata = LOMMetadata(data["metadata"])
+        metadata.append_identifier(record.pid.pid_value, catalog="repo-pid")
+        record.metadata = metadata.json
 
     # overwrite `publish`` to use the celery-task from this package
     # this was copied from its parent class, except for its last line
