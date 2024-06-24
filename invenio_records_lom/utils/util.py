@@ -18,12 +18,13 @@ from time import sleep
 from typing import Any, Iterator, Optional, Union
 
 from flask_principal import Identity
+from invenio_drafts_resources.records import Draft
+from invenio_records_resources.services.base import Service
 from invenio_search import RecordsSearch
 from invenio_search.engine import dsl
 from marshmallow.exceptions import ValidationError
 
-from ..records import LOMDraft
-from ..services import LOMRecordService
+# from .. import records, services  # due to circular imports no direct import possible
 
 
 class DotAccessWrapper(MutableMapping):
@@ -294,13 +295,13 @@ def add_file_to_record(
 
 
 def create_record(
-    service: LOMRecordService,
+    service: Service,  # services.LOMRecordService
     data: dict,
     file_paths: list,
     identity: Identity,
     *,
     do_publish: bool = True,
-    pre_created_draft: LOMDraft = None,
+    pre_created_draft: Draft = None,  # records.LOMDraft
 ):
     """Create record."""
     if pre_created_draft:
