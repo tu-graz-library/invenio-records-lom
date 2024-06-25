@@ -24,7 +24,7 @@ from .util import (
 )
 
 
-class LOMRecordData:
+class LOMRecordData(dict):
     """LOM record data."""
 
     def __init__(
@@ -35,12 +35,23 @@ class LOMRecordData:
         **kwargs: dict,
     ) -> None:
         """Construct."""
+        self.update(**kwargs)
         self.resource_type = resource_type
         self.pids = pids
         self.metadata = (
-            metadata if not isinstance(metadata, LOMMetadata) else LOMMetadata(metadata)
+            metadata
+            if isinstance(metadata, LOMMetadata)
+            else LOMMetadata(metadata, overwritable=True)
         )
-        self.kwargs = kwargs
+
+    @property
+    def json(self) -> dict:
+        """json"""
+        return {
+            "pids": self.pids,
+            "metadata": self.metadata.json,
+            "resource_type": self.resource_type,
+        }
 
 
 class BaseLOMMetadata:
@@ -213,7 +224,7 @@ class LOMMetadata(BaseLOMMetadata):  # pylint: disable=too-many-public-methods
     def append_course(self, course: LOMCourseMetadata) -> None:
         """Append course."""
         # pylint: disable-next=unsupported-membership-test
-        if "courses" not in self.record["metadata"]:
+        if "courses" not in self.record:
             self.record["courses"] = []
 
         courses = self.record["courses"]
