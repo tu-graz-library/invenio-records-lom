@@ -305,7 +305,7 @@ def create_record(
 ):
     """Create record."""
     if pre_created_draft:
-        draft = pre_created_draft
+        draft = service.update_draft(identity, id_=pre_created_draft.id, data=data)
     else:
         are_files = len(file_paths) > 0
         draft = service.create(data=data, identity=identity, files=are_files)
