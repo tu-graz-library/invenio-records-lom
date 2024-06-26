@@ -94,6 +94,8 @@ class LOMPIDsComponent(PIDsComponent):
 
     def create(self, identity, data=None, record=None, errors=None):
         """This method is called on draft creation."""
+        super().create(identity, data, record, errors)
+
         metadata = LOMMetadata(data["metadata"])
         metadata.append_identifier(record.id, catalog="repo-pid")
         data["metadata"] = metadata.json
