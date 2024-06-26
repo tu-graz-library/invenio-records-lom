@@ -46,7 +46,7 @@ class LOMRecordData(dict):
 
     @property
     def json(self) -> dict:
-        """json"""
+        """Json."""
         return {
             "pids": self.pids,
             "metadata": self.metadata.json,

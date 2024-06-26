@@ -98,7 +98,7 @@ class LOMPIDsComponent(PIDsComponent):
 
         metadata = LOMMetadata(data["metadata"])
         metadata.append_identifier(record.id, catalog="repo-pid")
-        data["metadata"] = metadata.json
+        record.metadata = metadata.json
 
     # overwrite `publish`` to use the celery-task from this package
     # this was copied from its parent class, except for its last line
