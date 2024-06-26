@@ -553,7 +553,7 @@ class LOMMetadata(BaseLOMMetadata):  # pylint: disable=too-many-public-methods
     def get_rights(self, url_only=False) -> dict | str:
         """Get rights."""
         if "rights" not in self.record:
-            return {}
+            return "" if url_only else {}
 
         if url_only:
             try:
