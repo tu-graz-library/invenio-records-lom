@@ -107,6 +107,7 @@ def test_create_draft(service, db, identity, access):  # pylint: disable=too-man
 
     # TODO: check the necessity of this
     del data["metadata"]["type"]
+    del json["metadata"]["general"]["identifier"]
     assert json["metadata"] == data["metadata"]
     assert "access" in json
     assert json["access"]["files"] == access["files"]
@@ -165,6 +166,7 @@ def test_publish(service, db, identity, access):  # pylint: disable=too-many-loc
     json_pid = general["identifier"][0]["entry"]["langstring"]["#text"]
     assert json_pid == record_pid.pid_value
 
+    del json["metadata"]["general"]["identifier"]
     assert json["metadata"] == data["metadata"]
     assert "access" in json
     assert json["access"]["files"] == access["files"]
