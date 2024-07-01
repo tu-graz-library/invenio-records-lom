@@ -18,13 +18,10 @@ from time import sleep
 from typing import Any, Iterator, Optional, Union
 
 from flask_principal import Identity
-from invenio_drafts_resources.records import Draft
 from invenio_records_resources.services.base import Service
 from invenio_search import RecordsSearch
 from invenio_search.engine import dsl
 from marshmallow.exceptions import ValidationError
-
-# from .. import records, services  # due to circular imports no direct import possible
 
 
 class DotAccessWrapper(MutableMapping):
@@ -301,14 +298,10 @@ def create_record(
     identity: Identity,
     *,
     do_publish: bool = True,
-    pre_created_draft: Draft = None,  # records.LOMDraft
 ):
     """Create record."""
-    if pre_created_draft:
-        draft = service.update_draft(identity, id_=pre_created_draft.id, data=data)
-    else:
-        are_files = len(file_paths) > 0
-        draft = service.create(data=data, identity=identity, files=are_files)
+    are_files = len(file_paths) > 0
+    draft = service.create(data=data, identity=identity, files=are_files)
 
     try:
         for file_path in file_paths:
@@ -330,3 +323,18 @@ def create_record(
         raise error
 
     return draft
+
+
+def update_record(
+    pid: str,
+    service: Service,  # services.LOMRecordService
+    data: dict,
+    identity: Identity,
+    *,
+    do_publish: bool = True,
+):
+    """Update record."""
+    service.update_draft(id_=pid, data=data, identity=identity)
+
+    if do_publish:
+        service.publish(id_=pid, identity=identity)
