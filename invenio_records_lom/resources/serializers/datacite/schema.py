@@ -6,7 +6,7 @@
 # under the terms of the MIT License; see LICENSE file for more details.
 
 """Schemas for datacite."""
-from __future__ import annotations
+
 
 import arrow
 from flask import current_app
@@ -26,26 +26,26 @@ class LOMToDataCite44Schema(Schema):
     creators = fields.Method("get_creators")
     titles = fields.Method("get_titles")
     publisher = fields.Method("get_publisher")
-    publicationYear = fields.Method("get_publicationYear")
+    publicationYear = fields.Method("get_publication_year")  # noqa: N815
     types = fields.Constant(
         {
             "resourceType": "Educational Resource",
             "resourceTypeGeneral": "Other",
-        }
+        },
     )
 
     contributors = fields.Method("get_contributors")
     dates = fields.Method("get_dates")
     language = fields.Method("get_language")
-    relatedIdentifiers = fields.Method("get_relatedIdentifiers")
+    relatedIdentifiers = fields.Method("get_related_identifiers")  # noqa: N815
     sizes = fields.Method("get_sizes")
     formats = fields.Method("get_formats")
     version = fields.Method("get_version")
-    rightsList = fields.Method("get_rightsList")
+    rightsList = fields.Method("get_rights_list")  # noqa: N815
 
-    schemaVersion = fields.Constant("http://datacite.org/schema/kernel-4")
+    schemaVersion = fields.Constant("http://datacite.org/schema/kernel-4")  # noqa: N815
 
-    def get_identifiers(self, obj: LOMRecord):
+    def get_identifiers(self, obj: LOMRecord) -> list:
         """Get list of (main and alternate) identifiers."""
         serialized_identifiers = []
 
@@ -55,7 +55,7 @@ class LOMToDataCite44Schema(Schema):
                 {
                     "identifier": pid_info["identifier"],  # e.g. 10.1234/foo
                     "identifierType": scheme.upper(),  # e.g. 'DOI', 'ISBN'
-                }
+                },
             )
 
         # identifiers from LOM-metadata
@@ -71,7 +71,7 @@ class LOMToDataCite44Schema(Schema):
 
         return serialized_identifiers
 
-    def get_creators(self, obj: LOMRecord):
+    def get_creators(self, obj: LOMRecord) -> list:
         """Get list of creator-dicts."""
         contributes = obj["metadata"].get("lifecycle", {}).get("contribute", [])
         entities = []
@@ -79,41 +79,44 @@ class LOMToDataCite44Schema(Schema):
             entities.extend(contribute.get("entity", []))
         return [{"name": entity} for entity in entities]
 
-    def get_titles(self, obj: LOMRecord):
+    def get_titles(self, obj: LOMRecord) -> list:
         """Get list of title-dicts."""
         title = obj["metadata"].get("general", {}).get("title", None)
         if title is None:
             return []
         return [{"title": get_text(title), "lang": get_lang(title)}]
 
-    def get_publisher(self, obj: LOMRecord):  # pylint: disable=unused-argument
+    def get_publisher(self, obj: LOMRecord) -> str:  # noqa: ARG002
         """Get publisher."""
         return current_app.config["LOM_PUBLISHER"]
 
-    def get_publicationYear(self, obj: LOMRecord):
+    def get_publication_year(self, obj: LOMRecord) -> str:
         """Get publication year."""
         contributes = obj["metadata"].get("lifecycle", {}).get("contribute", [])
         publish_dates = []
         for contribute in contributes:
-            role = (  # pylint: disable=duplicate-code
+            role = (
                 contribute.get("role", {})
                 .get("value", {})
                 .get("langstring", {})
                 .get("#text", "")
             )
-            if role.lower() == "publisher":
-                if publish_date := contribute.get("date", {}).get("dateTime"):
-                    publish_dates.append(publish_date)
+            publish_date = contribute.get("date", {}).get("dateTime")
+            if role.lower() == "publisher" and publish_date:
+                publish_dates.append(publish_date)
 
         if publish_dates:
             year = min(arrow.get(publish_date).year for publish_date in publish_dates)
         else:
-            # from datacite specification: "For resources that do not have a standard publication year value, DataCite recommends that PublicationYear should include the date that is preferred for use in a citation."
+            # from datacite specification: "For resources that do not have a
+            # standard publication year value, DataCite recommends that
+            # PublicationYear should include the date that is preferred for use
+            # in a citation."
             year = arrow.now().year
 
         return str(year)
 
-    def get_contributors(self, obj: LOMRecord):
+    def get_contributors(self, obj: LOMRecord) -> list:
         """Get list of contributor-dicts."""
         contributes = obj["metadata"].get("lifeCycle", {}).get("contribute", [])
         contributors: list[dict[str, str]] = []
@@ -126,14 +129,14 @@ class LOMToDataCite44Schema(Schema):
                 contributors.append(contributor)
         return contributors or missing
 
-    def get_dates(self, obj: LOMRecord):
+    def get_dates(self, obj: LOMRecord) -> list:
         """Get list of date-dicts."""
         contributes = obj["metadata"].get("lifeCycle", {}).get("contribute", [])
         creator_dates = []
 
         for contribute in contributes:
             if date := contribute.get("date", {}).get("dateTime"):
-                creator_dates.append(arrow.get(date))
+                creator_dates.append(arrow.get(date))  # noqa: PERF401
 
         if not creator_dates:
             return missing
@@ -146,7 +149,7 @@ class LOMToDataCite44Schema(Schema):
             date = f"{first_date.date()}/{last_date.date()}"
         return [{"date": date, "dateType": "Created"}]
 
-    def get_language(self, obj: LOMRecord):
+    def get_language(self, obj: LOMRecord) -> str:
         """Get language."""
         languages = obj["metadata"].get("general", {}).get("language", [])
         # LOM allows the special value "none" as language, but datacite does not
@@ -155,9 +158,9 @@ class LOMToDataCite44Schema(Schema):
             return languages[0]
         return missing
 
-    def get_relatedIdentifiers(self, obj: LOMRecord):
+    def get_related_identifiers(self, obj: LOMRecord) -> list:
         """Get list of relatedIdentifier-dicts."""
-        kind_to_relationType = {
+        kind_to_relation_type = {
             "ispartof": "IsPartOf",
             "haspart": "HasPart",
             "isversionof": "IsVersionOf",
@@ -188,27 +191,29 @@ class LOMToDataCite44Schema(Schema):
                     {
                         "relatedIdentifier": get_text(identifier["entry"]),
                         "relatedIdentifierType": id_type,
-                        "relationType": kind_to_relationType[get_text(kind_langstring)],
-                    }
+                        "relationType": kind_to_relation_type[
+                            get_text(kind_langstring)
+                        ],
+                    },
                 )
         return relationdicts or missing
 
-    def get_sizes(self, obj: LOMRecord):
+    def get_sizes(self, obj: LOMRecord) -> list[str]:
         """Get list of sizes."""
         if size := obj["metadata"].get("technical", {}).get("size"):
             return [str(size)]
         return missing
 
-    def get_formats(self, obj: LOMRecord):
+    def get_formats(self, obj: LOMRecord) -> str:
         """Get list of formats."""
         return obj["metadata"].get("technical", {}).get("format", missing)
 
-    def get_version(self, obj: LOMRecord):
+    def get_version(self, obj: LOMRecord) -> str:
         """Get version."""
         version_langstring = obj["metadata"].get("lifeCycle", {}).get("version", {})
         return version_langstring.get("langstring", {}).get("#text", missing)
 
-    def get_rightsList(self, obj: LOMRecord):
+    def get_rights_list(self, obj: LOMRecord) -> list:
         """Get list of rights-dicts."""
         rights = obj["metadata"].get("rights", {})
         if description_langstring := rights.get("description"):

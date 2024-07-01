@@ -10,7 +10,7 @@ from __future__ import annotations
 
 from itertools import count
 
-import click
+from click import group, option, secho
 from faker import Faker
 from flask.cli import with_appcontext
 from invenio_access.permissions import system_identity
@@ -21,40 +21,42 @@ from .records.models import LOMRecordMetadata
 from .resources.serializers.oai.schema import LOMToOAISchema
 
 
-@click.group()
-def lom():
+@group()
+def lom() -> None:
     """CLI-group for "invenio lom" commands."""
 
 
 @lom.command("rebuild-index")
 @with_appcontext
-def rebuild_index():
+def rebuild_index() -> None:
     """Reindex all drafts, records."""
-    click.secho("Reindexing records and drafts...", fg="green")
+    secho("Reindexing records and drafts...", fg="green")
 
     rec_service = current_records_lom.records_service
     rec_service.rebuild_index(identity=system_identity)
 
-    click.secho("Reindexed records!", fg="green")
+    secho("Reindexed records!", fg="green")
 
 
 @lom.command()
 @with_appcontext
-@click.option(
+@option(
     "--pid",
     "-p",
     "pids_to_check",
     default=[],
     multiple=True,
     type=str,
-    help="PIDs to check. Argument can be used multiple times. If never used, check all records.",
+    help="PIDs to check. If never used, check all records.",
 )
-def check(pids_to_check: tuple[str]):
+def check(pids_to_check: tuple[str]) -> None:
     """Check records in SQL-database against marshmallow-schema for OAI.
 
     Note: this does not guarantee by itself that OAI-PMH API works correctly, since
-    (1) Records in opensearch might not mirror records in SQL-database, call `invenio lom reindex` to remedy this.
-    (2) Records that pass OAI-schema verification might still not play nicely with OAI-PMH harvesters
+    (1) Records in opensearch might not mirror records in SQL-database, call `invenio
+        lom reindex` to remedy this.
+    (2) Records that pass OAI-schema verification might still not play nicely with
+        OAI-PMH harvesters
     That said, passing OAI-schema *is* a prerequisite for OAI-PMH API working correctly
     """
     json_by_pid = {}
@@ -71,19 +73,19 @@ def check(pids_to_check: tuple[str]):
 
     for pid in pids_to_check:
         if pid not in json_by_pid:
-            click.secho(f"{pid}: could not find a record to this pid", fg="red")
+            secho(f"{pid}: could not find a record to this pid", fg="red")
             continue
         try:
             json = json_by_pid[pid]
             LOMToOAISchema().load(json.get("metadata", {}))
-            click.secho(f"{pid}: Success", fg="green")
-        except Exception as e:  # pylint: disable=broad-exception-caught
-            click.secho(f"{pid}: {e!r}", fg="red")
+            secho(f"{pid}: Success", fg="green")
+        except Exception as e:  # noqa: BLE001
+            secho(f"{pid}: {e!r}", fg="red")
 
 
 @lom.command()
 @with_appcontext
-@click.option(
+@option(
     "--number",
     "-n",
     default=100,
@@ -91,8 +93,8 @@ def check(pids_to_check: tuple[str]):
     type=int,
     help="Number of records to be created.",
 )
-@click.option("--seed", "-s", default=42, type=int, help="Seed for RNG.")
-@click.option(
+@option("--seed", "-s", default=42, type=int, help="Seed for RNG.")
+@option(
     "--backend",
     "-b",
     default=False,
@@ -100,9 +102,9 @@ def check(pids_to_check: tuple[str]):
     is_flag=True,
     help="Create in backend for large datasets",
 )
-def demo(number, seed, backend):
+def demo(number: int, seed: int, *, backend: bool) -> None:
     """Publish `number` fake LOM records to the database, for demo purposes."""
-    click.secho(f"Creating {number} LOM demo records", fg="green")
+    secho(f"Creating {number} LOM demo records", fg="green")
 
     fake = Faker()
     Faker.seed(seed)
@@ -113,14 +115,14 @@ def demo(number, seed, backend):
         else:
             publish_fake_record(fake)
 
-    click.secho("Published fake LOM records to the database!", fg="green")
+    secho("Published fake LOM records to the database!", fg="green")
 
 
 @lom.command()
 @with_appcontext
-def reindex():
+def reindex() -> None:
     """Reindex all published records from SQL-database in opensearch-indices."""
-    click.secho("Reindexing LOM records...", fg="green")
+    secho("Reindexing LOM records...", fg="green")
 
     record_ids = [
         record.json["id"]
@@ -134,4 +136,4 @@ def reindex():
         record_api_object = service.record_cls.pid.resolve(record_id)
         indexer.index(record_api_object)
 
-    click.secho("Successfully reindexed LOM records!", fg="green")
+    secho("Successfully reindexed LOM records!", fg="green")

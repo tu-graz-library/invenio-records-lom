@@ -1,24 +1,33 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2021 Graz University of Technology.
+# Copyright (C) 2021-2024 Graz University of Technology.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
 """Record services configured for LOM-use."""
 
+
+from flask_principal import Identity
 from invenio_rdm_records.services import RDMRecordService
-from invenio_records_resources.services.uow import unit_of_work
+from invenio_records_resources.services.records.results import RecordItem
+from invenio_records_resources.services.uow import UnitOfWork, unit_of_work
 
 from ..utils import LOMMetadata
 
 
-# pylint: disable-next=abstract-method
 class LOMRecordService(RDMRecordService):
     """RecordService configured for LOM-use."""
 
     @unit_of_work()
-    def create(self, identity, data, uow=None, expand=False):
+    def create(
+        self,
+        identity: Identity,
+        data: dict,
+        uow: UnitOfWork = None,
+        *,
+        expand: bool = False,
+    ) -> RecordItem:
         """Create."""
         draft_item = super().create(identity, data, uow=uow, expand=expand)
 

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2021 Graz University of Technology.
+# Copyright (C) 2021-2024 Graz University of Technology.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -14,16 +14,16 @@ from invenio_rdm_records.resources import RDMRecordResource
 class LOMRecordResource(RDMRecordResource):
     """LOM Record resource."""
 
-    def create_url_rules(self):
+    def create_url_rules(self) -> list:
         """Create the URL rules for the record resource."""
 
-        def s(route_str):
+        def s(route: str) -> str:
             """Suffix a route with the URL prefix."""
-            return f"{route_str}{self.config.url_prefix}"
+            return f"{route}{self.config.url_prefix}"
 
-        def prefix(route_str):
+        def prefix(route: str) -> str:
             """Prefix a route with `self.config.prefix`."""
-            return f"{self.config.url_prefix}{route_str}"
+            return f"{self.config.url_prefix}{route}"
 
         routes = self.config.routes
         return [

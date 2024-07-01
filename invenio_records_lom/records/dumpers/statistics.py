@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# # Copyright (C) 2024 Graz University of Technology.
+# Copyright (C) 2024 Graz University of Technology.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -23,7 +23,7 @@ class LomStatisticsDumperExt(StatisticsDumperExt):
     the record schema to dump them if present.
     """
 
-    def dump(self, record, data):
+    def dump(self, record, data: dict) -> None:  # noqa: ANN001
         """Dump the download & view statistics to the data dictionary."""
         if record.is_draft:
             return
@@ -34,7 +34,8 @@ class LomStatisticsDumperExt(StatisticsDumperExt):
         try:
             parent_data = dict_lookup(data, self.keys, parent=True)
             parent_data[self.key] = LomStatistics.get_record_stats(
-                recid=recid, parent_recid=parent_recid
+                recid=recid,
+                parent_recid=parent_recid,
             )
         except KeyError as e:
             current_app.logger.warning(e)

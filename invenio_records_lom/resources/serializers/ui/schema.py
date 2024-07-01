@@ -6,11 +6,9 @@
 # under the terms of the MIT License; see LICENSE file for more details.
 
 """Schemas for ui."""
-# TODO: remove the following lines after moving to python3.9
-# allow `list[dict]` annotation, works without future-import for python>=3.9
-from __future__ import annotations
 
-import re
+from re import search
+from types import MappingProxyType
 
 from flask import current_app
 from flask_resources import BaseObjectSchema
@@ -30,33 +28,49 @@ from ..utils import get_newest_part, get_related, get_text
 class Title(fields.Field):
     """Title Field."""
 
-    def _serialize(self, value, attr, obj, **kwargs):
+    def _serialize(
+        self,
+        value,  # noqa: ANN001
+        attr,  # noqa: ANN001, ARG002
+        obj,  # noqa: ANN001, ARG002
+        **kwargs: dict,  # noqa: ARG002
+    ) -> str:
         """Serialize."""
-        # TODO
-        # checkout how to get the actual preferred language and show that string if it exists!
+        # TODO: checkout how to get the actual preferred language and show that
+        # string if it exists!
         return get_text(value)
 
 
 class Contributors(fields.Field):
     """Contributors Field."""
 
-    def _serialize(self, value, attr, obj, **kwargs):
+    def _serialize(
+        self,
+        value,  # noqa: ANN001
+        attr,  # noqa: ANN001, ARG002
+        obj,  # noqa: ANN001, ARG002
+        **kwargs: dict,  # noqa: ARG002
+    ) -> list[dict]:
         """Serialize."""
-        contributors = []
-        for sub_obj in value:
-            contributors.append(
-                {
-                    "fullname": sub_obj["entity"],
-                    "role": get_text(sub_obj["role"]["value"]),
-                }
-            )
-        return contributors
+        return [
+            {
+                "fullname": sub_obj["entity"],
+                "role": get_text(sub_obj["role"]["value"]),
+            }
+            for sub_obj in value
+        ]
 
 
 class GeneralDescriptions(fields.Field):
     """General Descriptions Field."""
 
-    def _serialize(self, value, attr, obj, **kwargs):
+    def _serialize(
+        self,
+        value,  # noqa: ANN001
+        attr,  # noqa: ANN001, ARG002
+        obj,  # noqa: ANN001, ARG002
+        **kwargs: dict,  # noqa: ARG002
+    ) -> None:
         """Serialize."""
         return list(map(get_text, value))
 
@@ -64,7 +78,13 @@ class GeneralDescriptions(fields.Field):
 class EducationalDescriptions(fields.Field):
     """Educational Descriptions Field."""
 
-    def _serialize(self, value, attr, obj, **kwargs):
+    def _serialize(
+        self,
+        value,  # noqa: ANN001
+        attr,  # noqa: ANN001, ARG002
+        obj,  # noqa: ANN001, ARG002
+        **kwargs: dict,  # noqa: ARG002
+    ) -> None:
         """Serialize."""
         return list(map(get_text, value))
 
@@ -72,7 +92,13 @@ class EducationalDescriptions(fields.Field):
 class Location(fields.Field):
     """Location Field."""
 
-    def _serialize(self, value, attr, obj, **kwargs):
+    def _serialize(
+        self,
+        value,  # noqa: ANN001
+        attr,  # noqa: ANN001, ARG002
+        obj,  # noqa: ANN001, ARG002
+        **kwargs: dict,  # noqa: ARG002
+    ) -> None:
         """Serialize."""
         return value["#text"]
 
@@ -80,7 +106,13 @@ class Location(fields.Field):
 class Rights(fields.Field):
     """Rights Field."""
 
-    def _serialize(self, value, attr, obj, **kwargs):
+    def _serialize(
+        self,
+        value,  # noqa: ANN001
+        attr,  # noqa: ANN001, ARG002
+        obj,  # noqa: ANN001, ARG002
+        **kwargs: dict,  # noqa: ARG002
+    ) -> None:
         """Serialize."""
         right = {}
         value = value or {}
@@ -90,7 +122,7 @@ class Rights(fields.Field):
                 id_ = "CC0"
                 icon = "cc-cc0-icon"
             else:
-                result = re.search("licenses/([a-z-]+)/.*", value["url"])
+                result = search("licenses/([a-z-]+)/.*", value["url"])
                 id_ = f"CC {result.group(1).upper()}"
                 icon = f"{id_.lower().replace(' ', '-')}-icon"
 
@@ -131,9 +163,11 @@ class LOMUIBaseSchema(BaseObjectSchema):
 
     contributors = fields.Method("get_contributors")
 
-    generalDescriptions = fields.Method("get_general_descriptions")
+    generalDescriptions = fields.Method("get_general_descriptions")  # noqa: N815
 
-    educationalDescriptions = fields.Method("get_educational_descriptions")
+    educationalDescriptions = fields.Method(  # noqa: N815
+        "get_educational_descriptions",
+    )
 
     courses = fields.Method("get_courses")
 
@@ -141,22 +175,22 @@ class LOMUIBaseSchema(BaseObjectSchema):
 
     doi = fields.Method("get_doi")
 
-    def get_contributors(self, obj: dict):
+    def get_contributors(self, obj: dict) -> list[dict]:
         """Get contributors."""
         ui_contributors = []
         for lom_contribute in (
             obj["metadata"].get("lifecycle", {}).get("contribute", [])
         ):
             for entity in lom_contribute.get("entity", []):
-                ui_contributors.append(
+                ui_contributors.append(  # noqa: PERF401
                     {
                         "fullname": entity,
                         "role": get_text(lom_contribute["role"]["value"]),
-                    }
+                    },
                 )
         return ui_contributors
 
-    def get_general_descriptions(self, obj: dict):
+    def get_general_descriptions(self, obj: dict) -> list[str]:
         """Get general descriptions."""
         return [
             get_text(desc)
@@ -164,38 +198,37 @@ class LOMUIBaseSchema(BaseObjectSchema):
             if get_text(desc)
         ]
 
-    def get_educational_descriptions(self, obj: dict):
+    def get_educational_descriptions(self, obj: dict) -> list[str]:
         """Get educational descriptions."""
         descriptions = obj["metadata"].get("educational", {}).get("description", [])
         if isinstance(descriptions, dict):
-            # TODO: sometimes `metadata.educational.description` is made :list[langstring], other times :langstring, unify this!
+            # TODO: sometimes `metadata.educational.description` is made
+            # :list[langstring], other times :langstring, unify this!
             descriptions = [descriptions]
         return [get_text(desc) for desc in descriptions if get_text(desc)]
 
-    def get_courses(self, obj: dict):
+    def get_courses(self, obj: dict) -> list[dict]:
         """Get courses."""
         courses = obj["metadata"].get("courses", [])
-        out = []
-        for course in courses:
-            out.append(
-                {
-                    "title": get_text(course["course"]["title"]),
-                    "version": get_text(course["course"]["version"]),
-                }
-            )
-        return out
+        return [
+            {
+                "title": get_text(course["course"]["title"]),
+                "version": get_text(course["course"]["version"]),
+            }
+            for course in courses
+        ]
 
-    def get_classifications(self, obj: dict):
+    def get_classifications(self, obj: dict) -> list[str]:
         """Get classifications."""
         out = []
 
         for classification in obj["metadata"].get("classification", []):
             for taxon in classification.get("taxonpath", []):
-                out.append(get_text(taxon["taxon"][-1]["entry"]))
+                out.append(get_text(taxon["taxon"][-1]["entry"]))  # noqa: PERF401
 
         return out
 
-    def get_doi(self, obj: dict):
+    def get_doi(self, obj: dict) -> str:
         """Get DOI."""
         prefix = current_app.config["DATACITE_PREFIX"]
         pid = obj["id"]
@@ -217,9 +250,10 @@ class LOMUIUnitSchema(LOMUIBaseSchema):
 class LOMUICourseSchema(LOMUIBaseSchema):
     """Schema for dumping html-template data to a record of resource_type "course"."""
 
-    def get_contributors(self, obj: dict):
+    def get_contributors(self, obj: dict) -> list[dict]:
         """Get contributors, overwrites parent-class's `get_contributors`."""
-        # courses don't store contribution-information, try to get from associated unints instead
+        # courses don't store contribution-information, try to get from
+        # associated unints instead
         ui_contributors = []
         for unit in get_related(obj, relation_kind="haspart"):
             if "metadata" not in unit:
@@ -230,9 +264,13 @@ class LOMUICourseSchema(LOMUIBaseSchema):
 
         return ui_contributors
 
-    def get_general_descriptions(self, obj: dict):
-        """Get general descriptions, overwrite parent-class's `get_general_descriptions`."""
-        # courses don't store description-information, try to get from newest associated unit instead
+    def get_general_descriptions(self, obj: dict) -> list[str]:
+        """Get general descriptions.
+
+        Overwrite parent-class's `get_general_descriptions`.
+        """
+        # courses don't store description-information, try to get from newest
+        # associated unit instead
         newest_unit = get_newest_part(obj)
         if "metadata" not in newest_unit:
             # in this case, relations of obj have not been dereferenced
@@ -240,9 +278,13 @@ class LOMUICourseSchema(LOMUIBaseSchema):
             return []
         return super().get_general_descriptions(newest_unit)
 
-    def get_educational_descriptions(self, obj: dict):
-        """Get educational descriptions, overwrite parent-class's `get_educational_descriptions`."""
-        # courses don't store description-information, try to get from newest associated unit instead
+    def get_educational_descriptions(self, obj: dict) -> list[str]:
+        """Get educational descriptions.
+
+        Overwrite parent-class's `get_educational_descriptions`.
+        """
+        # courses don't store description-information, try to get from newest
+        # associated unit instead
         newest_unit = get_newest_part(obj)
         if "metadata" not in newest_unit:
             # in this case, relations of obj have not been dereferenced
@@ -256,17 +298,25 @@ class LOMUIUploadSchema(LOMUIFileSchema):
 
 
 class LOMUIRecordSchema(OneOfSchema):
-    """Delegates to different schemas depending on data_to_serialize["resource_type"]."""
+    """Delegates to different schemas.
+
+    Depending on data_to_serialize["resource_type"]
+    """
 
     type_field = "resource_type"
-    type_schemas = {
-        "file": LOMUIFileSchema,
-        "unit": LOMUIUnitSchema,
-        "course": LOMUICourseSchema,
-        "link": LOMUILinkSchema,
-        "upload": LOMUIUploadSchema,
-    }
+    type_schemas = MappingProxyType(
+        {
+            "file": LOMUIFileSchema,
+            "unit": LOMUIUnitSchema,
+            "course": LOMUICourseSchema,
+            "link": LOMUILinkSchema,
+            "upload": LOMUIUploadSchema,
+        },
+    )
 
-    def get_obj_type(self, obj):
-        """Get type of `obj`, which is used as a key to look up a schema within type_schemas."""
+    def get_obj_type(self, obj: dict) -> str:
+        """Get type of `obj`.
+
+        Which is used as a key to look up a schema within type_schemas
+        """
         return obj["resource_type"]

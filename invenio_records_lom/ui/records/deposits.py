@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2022-2023 Graz University of Technology.
+# Copyright (C) 2022-2024 Graz University of Technology.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -24,7 +24,7 @@ from .decorators import (
 )
 
 
-def get_deposit_template_context(**extra_form_config_kwargs) -> dict:
+def get_deposit_template_context(**extra_form_config_kwargs: dict) -> dict:
     """Get context for deposit-template from db, current_app.config."""
     app_config = current_app.config
     locale = str(current_i18n.locale)
@@ -65,30 +65,30 @@ def get_deposit_template_context(**extra_form_config_kwargs) -> dict:
     }
     format_vocabulary = {
         "application/epub+zip": {
-            "name": "application/epub+zip - Electronic Publication (.epub)"
+            "name": "application/epub+zip - Electronic Publication (.epub)",
         },
         "application/gzip": {
-            "name": "application/gzip - GZip Compressed Archive (.gz)"
+            "name": "application/gzip - GZip Compressed Archive (.gz)",
         },
         "application/json": {"name": "application/json - JSON format (.json)"},
         "application/msword": {"name": "application/msword - Microsoft Word (.doc)"},
         "application/octet-stream": {
-            "name": "application/octet-stream - Other Binary Documents"
+            "name": "application/octet-stream - Other Binary Documents",
         },
         "application/pdf": {
-            "name": "application/pdf - Adobe Portable Document Format (.pdf)"
+            "name": "application/pdf - Adobe Portable Document Format (.pdf)",
         },
         "application/vnd.ms-excel": {
-            "name": "application/vnd.ms-excel - Microsoft Excel (.xls)"
+            "name": "application/vnd.ms-excel - Microsoft Excel (.xls)",
         },
         "application/vnd.ms-powerpoint": {
-            "name": "application/vnd.ms-powerpoint - Microsoft PowerPoint (.ppt)"
+            "name": "application/vnd.ms-powerpoint - Microsoft PowerPoint (.ppt)",
         },
         "application/xml": {"name": "application/xml - XML (.xml)"},
         "application/zip": {"name": "application/zip - ZIP Archive (.zip)"},
         "audio/aac": {"name": "audio/aac - AAC Audio (.aac)"},
         "audio/midi": {
-            "name": "audio/midi - Musical Instrument Digital Interface (.midi, .mid)"
+            "name": "audio/midi - Musical Instrument Digital Interface (.midi, .mid)",
         },
         "audio/mpeg": {"name": "audio/mpeg - MP3 Audio (.mp3)"},
         "audio/wav": {"name": "audio/wav - Waveform Audio Format (.wav)"},
@@ -138,7 +138,7 @@ def get_deposit_template_context(**extra_form_config_kwargs) -> dict:
     }
     # sort `resourcetype_vocabulary` by name
     resourcetype_vocabulary = dict(
-        sorted(resourcetype_vocabulary.items(), key=lambda item: item[1]["name"])
+        sorted(resourcetype_vocabulary.items(), key=lambda item: item[1]["name"]),
     )
 
     return {
@@ -147,11 +147,12 @@ def get_deposit_template_context(**extra_form_config_kwargs) -> dict:
             "autocomplete_names": "search",
             "current_locale": str(current_i18n.locale),
             "decimal_size_display": app_config.get(
-                "APP_RDM_DISPLAY_DECIMAL_FILE_SIZES", True
+                "APP_RDM_DISPLAY_DECIMAL_FILE_SIZES",
+                True,
             ),
             "default_locale": app_config.get("BABEL_DEFAULT_LOCALE", "en"),
-            "links": {},  # TODO
-            "pids": [],  # TODO
+            "links": {},
+            "pids": [],
             "quota": app_config.get("APP_RDM_DEPOSIT_FORM_QUOTA"),
             "vocabularies": {
                 "contributor": contributor_vocabulary,
@@ -207,14 +208,16 @@ def deposit_create() -> str:
 @pass_draft(expand=True)
 @pass_draft_files
 def deposit_edit(
-    pid_value: str, draft: RecordItem = None, draft_files: FileList = None
+    pid_value: str,
+    draft: RecordItem = None,
+    draft_files: FileList = None,
 ) -> str:
     """Edit an existing deposit."""
     files_dict = None if draft_files is None else draft_files.to_dict()
     record = draft.to_dict()
 
     template_context = get_deposit_template_context(
-        createUrl=f"/api/oer/records/{pid_value}/draft"
+        createUrl=f"/api/oer/records/{pid_value}/draft",
     )
     return render_template(
         "invenio_records_lom/records/deposit.html",
@@ -228,10 +231,11 @@ def deposit_edit(
 
 @login_required
 @pass_is_oer_certified
-def uploads(is_oer_certified: bool = False):
+def uploads(*, is_oer_certified: bool = False) -> str:
     """Show overview of lom-records uploaded by user, upload further records."""
     avatar_url = current_user_resources.users_service.links_item_tpl.expand(
-        g.identity, current_user
+        g.identity,
+        current_user,
     )["avatar"]
 
     if is_oer_certified:
@@ -241,9 +245,10 @@ def uploads(is_oer_certified: bool = False):
 
     return render_template(
         template,
-        # TODO: newer versions of the original template now also take `searchbar_config` here
+        # TODO: newer versions of the original template now also take `searchbar_config`
+        # here
         # see `invenio_app_rdm/users_ui/views/dashboard.py:uploads`
         # also see `invenio_app_rdm/users_ui/templates/uploads.html`
-        # searchbar_config={"searchUrl": ...},
+        # searchbar_config={"searchUrl": ...}, #noqa: ERA001
         user_avatar=avatar_url,
     )

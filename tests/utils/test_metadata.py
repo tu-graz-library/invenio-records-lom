@@ -1,15 +1,18 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2022 Graz University of Technology.
+# Copyright (C) 2022-2024 Graz University of Technology.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
+
 """Utils tests."""
+
+
 from invenio_records_lom.utils import DotAccessWrapper, LOMMetadata
 
 
-def test_wrapper():
+def test_wrapper() -> None:
     """Test wrapper."""
     data = {
         "a": {
@@ -39,7 +42,7 @@ def test_wrapper():
     assert "a.e" in wrapper  # containment check
 
 
-def test_oefosdict_getter():
+def test_oefosdict_getter() -> None:
     """Test loading OEFOS-dict."""
     oefos_dict_de = LOMMetadata.oefosdict_by_language["de"]
     oefos_dict_en = LOMMetadata.oefosdict_by_language["en"]

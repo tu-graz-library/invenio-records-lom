@@ -8,7 +8,7 @@
 """Celery tasks for LOM module."""
 
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from celery import shared_task
 from invenio_access.permissions import system_identity
@@ -21,7 +21,7 @@ from ..proxies import current_records_lom
 
 
 @shared_task(ignore_result=True)
-def register_or_update_pid(recid: str, scheme: str):
+def register_or_update_pid(recid: str, scheme: str) -> None:
     """Update PID on remote providers."""
     current_records_lom.records_service.pids.register_or_update(
         id_=recid,
@@ -31,15 +31,17 @@ def register_or_update_pid(recid: str, scheme: str):
 
 
 @shared_task(ignore_result=True)
-def lom_reindex_stats(stats_indices):
+def lom_reindex_stats(stats_indices: list) -> str:
     """Reindex the documents where the stats have changed."""
     bm = BookmarkAPI(current_search_client, "lom_stats_reindex", "day")
     last_run = bm.get_bookmark()
     if not last_run:
-        # If this is the first time that we run, let's do it for the documents of the last week
-        last_run = (datetime.utcnow() - timedelta(days=7)).isoformat()
-    reindex_start_time = datetime.utcnow().isoformat()
-    indices = ",".join(map(lambda x: prefix_index(x) + "*", stats_indices))
+        # If this is the first time that we run, let's do it for the documents
+        # of the last week
+        last_run = (datetime.now(timezone.UTC) - timedelta(days=7)).isoformat()
+
+    reindex_start_time = datetime.now(timezone.UTC).isoformat()
+    indices = ",".join(f"{prefix_index(x)}*" for x in stats_indices)
 
     all_parents = set()
     query = dsl.Search(
