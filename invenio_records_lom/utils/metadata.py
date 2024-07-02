@@ -239,6 +239,13 @@ class LOMMetadata(BaseLOMMetadata):  # pylint: disable=too-many-public-methods
         if course.record["course.version"] not in versions:
             self.record["courses"].append(course.record.data)
 
+    def get_courses(self) -> list:
+        """Get courses."""
+        try:
+            return self.record["courses"]
+        except KeyError:
+            return []
+
     ###############
     #
     # methods for manipulating LOM's `general` (1) category
