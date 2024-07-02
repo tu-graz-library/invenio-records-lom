@@ -82,6 +82,10 @@ class BaseLOMMetadata:
         """Append `value` to `self.record[key]` if not already appended."""
         self.record.setdefault(parent_key, [])
         parent = self.record[parent_key]
+
+        if not isinstance(parent, list):
+            parent = [parent]
+
         if value not in parent:
             parent.append(value)
 
