@@ -24,6 +24,36 @@ from .util import (
 )
 
 
+class LOMRecordData(dict):
+    """LOM record data."""
+
+    def __init__(
+        self,
+        resource_type=None,
+        pids=None,
+        metadata=None,
+        **kwargs: dict,
+    ) -> None:
+        """Construct."""
+        self.update(**kwargs)
+        self.resource_type = resource_type
+        self.pids = pids
+        self.metadata = (
+            metadata
+            if isinstance(metadata, LOMMetadata)
+            else LOMMetadata(metadata, overwritable=True)
+        )
+
+    @property
+    def json(self) -> dict:
+        """Json."""
+        return {
+            "pids": self.pids,
+            "metadata": self.metadata.json,
+            "resource_type": self.resource_type,
+        }
+
+
 class BaseLOMMetadata:
     """Base LOM Metadata."""
 
