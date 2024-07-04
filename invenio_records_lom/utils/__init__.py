@@ -7,7 +7,7 @@
 
 """Utilities for creation of LOM-compliant metadata."""
 
-from .metadata import LOMCourseMetadata, LOMMetadata
+from .metadata import LOMCourseMetadata, LOMMetadata, LOMRecordData
 from .statistics import build_record_unique_id
 from .util import (
     DotAccessWrapper,
@@ -26,6 +26,7 @@ __all__ = (
     "get_oefosdict",
     "LOMMetadata",
     "LOMCourseMetadata",
+    "LOMRecordData",
     "make_lom_vcard",
     "build_record_unique_id",
     "check_about_duplicate",
