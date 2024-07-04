@@ -224,7 +224,7 @@ class LOMMetadata(BaseLOMMetadata):  # pylint: disable=too-many-public-methods
     def append_course(self, course: LOMCourseMetadata) -> None:
         """Append course."""
         # pylint: disable-next=unsupported-membership-test
-        if "courses" not in self.record["metadata"]:
+        if "courses" not in self.record:
             self.record["courses"] = []
 
         courses = self.record["courses"]
