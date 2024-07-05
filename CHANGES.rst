@@ -7,6 +7,19 @@
 Changes
 =======
 
+Version v0.16.0 (release 2024-07-05)
+
+- upgrade: add script to upgrade parent
+- metadata: add method get_courses
+- fix: deduped assume parent is a list
+- fix: metadata rights not exists use param
+- fix: missed removing metadata attribute usage
+- utils: add LOMRecordData class
+- utils: add create_record and update_record func
+- services: move add identifier to components
+- setup: move to python3.12 only
+
+
 Version v0.15.2 (release 2024-06-18)
 
 - oai: add missing function for getrecords
