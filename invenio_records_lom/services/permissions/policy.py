@@ -14,18 +14,18 @@ from invenio_rdm_records.services.generators import (
     IfRestricted,
     RecordOwners,
 )
-from invenio_rdm_records.services.permissions import RDMRecordPermissionPolicy
 from invenio_records_permissions.generators import (
     AnyUser,
     AuthenticatedUser,
     IfConfig,
     SystemProcess,
 )
+from invenio_records_permissions.policies.records import RecordPermissionPolicy
 
 from .generators import OERCertifiedUsers, OERCurators
 
 
-class LOMRecordPermissionPolicy(RDMRecordPermissionPolicy):
+class LOMRecordPermissionPolicy(RecordPermissionPolicy):
     """Flask-principal style permissions for LOM record services.
 
     Note that the invenio_access.Permission parent-class always adds
