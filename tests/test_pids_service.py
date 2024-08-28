@@ -88,7 +88,7 @@ def test_register_pid(
 ) -> None:
     """Register a pid."""
 
-    def public_doi(self, metadata, url, doi) -> None:  # noqa: ANN001, ARG001
+    def public_doi(self, metadata, url, doi) -> None:  # noqa: ANN001
         """Mock doi publication."""
 
     mocker.patch(
