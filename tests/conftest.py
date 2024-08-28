@@ -57,7 +57,7 @@ def create_app() -> None:
     return invenio_create_app
 
 
-@pytest.fixture()
+@pytest.fixture
 def cli_location(db: SQLAlchemy) -> None:
     """Fixture for invenio file-location.
 
@@ -76,7 +76,7 @@ def cli_location(db: SQLAlchemy) -> None:
     shutil.rmtree(uri)
 
 
-@pytest.fixture()
+@pytest.fixture
 def identity() -> None:
     """Identity fixture with rights to interact with service."""
     i = Identity(1)
@@ -86,7 +86,7 @@ def identity() -> None:
     return i
 
 
-@pytest.fixture()
+@pytest.fixture
 def service(base_app: Flask, location: Location) -> LOMRecordService:  # noqa: ARG001
     """Service fixture."""
     return base_app.extensions["invenio-records-lom"].records_service
