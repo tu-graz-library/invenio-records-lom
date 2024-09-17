@@ -59,12 +59,13 @@ class LOMRecordResourceConfig(RecordResourceConfig):
         },
     )
 
-    request_view_args = MappingProxyType(
-        {
-            "pid_value": fields.Str(),
-            "scheme": fields.Str(),
-        },
-    )
+    # `flask_resources.parser.RequestParser.__init__` requires
+    # `isinstance(request_view_args, dict)` to treat this correctly
+    # this still *should* probably be read-only, but that would require upstream-changes
+    request_view_args = {  # noqa: RUF012
+        "pid_value": fields.Str(),
+        "scheme": fields.Str(),
+    }
 
     response_handlers = record_serializer
 
