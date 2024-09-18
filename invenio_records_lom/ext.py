@@ -116,6 +116,11 @@ def finalize_app(app: Flask) -> None:
     register_lom_dashboard_tab()
 
 
+def api_finalize_app(app: Flask) -> None:
+    """Finalize app for api."""
+    init(app)
+
+
 def init(app: Flask) -> None:
     """Init app by registering services."""
     # Register services - cannot be done in extension because
