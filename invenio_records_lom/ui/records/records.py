@@ -158,12 +158,14 @@ def record_export(
 @pass_record_or_draft
 @pass_file_metadata
 def record_file_preview(  # noqa: ANN201
-    record: RecordItem | None = None,  # noqa: ARG001
     pid_value: str | None = None,
+    record: RecordItem | None = None,  # noqa: ARG001
     pid_type: str = "recid",  # noqa: ARG001
     file_metadata: FileItem | None = None,
     *,
     is_preview: bool | None = False,
+    include_deleted: bool | None = False,  # noqa: ARG001
+    **__,  # noqa: ANN003
 ):
     """Render a preview of the specified file."""
     file_previewer = file_metadata.data.get("previewer")
