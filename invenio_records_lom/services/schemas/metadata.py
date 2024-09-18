@@ -74,7 +74,14 @@ class LangstringField(fields.Field):
         self.lang_exists = lang_exists
         self.validate_lang_existence = validate_lang_existence
 
-    def _deserialize(self, value, **__: dict) -> dict:  # noqa: C901, ANN001
+    # function-signature mirrors that of all marshmallow `Field`s
+    def _deserialize(  # noqa: C901
+        self,
+        value,  # noqa: ANN001
+        attr,  # noqa: ANN001, ARG002
+        data,  # noqa: ANN001, ARG002
+        **kwargs,  # noqa: ANN003, ARG002
+    ) -> dict:
         if not isinstance(value, dict):
             msg = "invalid_outer_type"
             raise self.make_error(msg)
