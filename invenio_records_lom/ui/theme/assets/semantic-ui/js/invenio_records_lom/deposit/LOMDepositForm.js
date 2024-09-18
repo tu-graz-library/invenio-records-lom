@@ -3,7 +3,6 @@
 // invenio-records-lom is free software; you can redistribute it and/or modify it
 // under the terms of the MIT License; see LICENSE file for more details.
 
-import React, { createRef } from "react";
 import {
   DeleteButton,
   DepositFormApp,
@@ -14,7 +13,8 @@ import {
   PublishButton,
   SaveButton,
 } from "@js/invenio_rdm_records";
-//} from "@js/invenio_rdm_records"; // reserve doi is not working with error: setSubmitContext is not a function
+import { i18next } from "@translations/invenio_records_lom/i18next";
+import React, { createRef } from "react";
 import { AccordionField } from "react-invenio-forms";
 import {
   Card,
@@ -26,21 +26,29 @@ import {
   Ref,
   Sticky,
 } from "semantic-ui-react";
-import { i18next } from "@translations/invenio_records_lom/i18next";
 
-import {
-  OptionalAccordion,
-  RequiredAccordion,
-  TestAccordion,
-} from "./components";
-import { DebugApiClient } from "./debug";
+import { OptionalAccordion, RequiredAccordion } from "./components";
 import { LOMDepositRecordSerializer } from "./serializers";
 
-// TODO: convert to function copmponent
+const LOM_BASE_HEADERS = {
+  json: { "Content-Type": "application/json" },
+  "vnd+json": {
+    "Content-Type": "application/json",
+    Accept: "application/vnd.inveniolom.v1+json",
+  },
+  "octet-stream": { "Content-Type": "application/octet-stream" },
+};
+
+// TODO: convert to function component
 export default class LOMDepositForm extends React.Component {
   constructor(props) {
     super(props);
     this.config = props.config || {};
+    this.config.apiHeaders = Object.assign(
+      {},
+      LOM_BASE_HEADERS,
+      props.config.apiHeaders
+    );
 
     // check if files are present
     this.noFiles = false;
@@ -67,9 +75,6 @@ export default class LOMDepositForm extends React.Component {
         preselectedCommunity={undefined}
         record={this.props.record}
         // below arguments overwrite default-behavior
-        apiClient={
-          new DebugApiClient(this.props.config.createUrl, recordSerializer)
-        }
         recordSerializer={recordSerializer}
         // apiClient={new LOMDepositApiClient()}  // defaults to RDM
         // fileApiClient={new LOMDepositFileApiClient()}  // defaults to RDMDepositFileApiClient

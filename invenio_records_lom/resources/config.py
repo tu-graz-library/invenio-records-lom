@@ -17,7 +17,7 @@ from marshmallow import fields
 
 from .serializers import LOMToUIJSONSerializer
 
-record_serializer = {
+record_serializers = {
     "application/json": ResponseHandler(JSONSerializer()),
     "application/vnd.inveniolom.v1+json": ResponseHandler(LOMToUIJSONSerializer()),
 }
@@ -30,6 +30,13 @@ class LOMDraftFilesResourceConfig(FileResourceConfig):
 
     blueprint_name = "lom_draft_files"
     url_prefix = f"{url_prefix}/<pid_value>/draft"
+
+    response_handlers = {  # noqa: RUF012
+        "application/vnd.inveniolom.v1+json": FileResourceConfig.response_handlers[
+            "application/json"
+        ],
+        **FileResourceConfig.response_handlers,
+    }
 
 
 class LOMRecordFilesResourceConfig(FileResourceConfig):
@@ -66,7 +73,7 @@ class LOMRecordResourceConfig(RecordResourceConfig):
         },
     )
 
-    response_handlers = record_serializer
+    response_handlers = record_serializers
 
 
 class LOMIIIFResourceConfig(IIIFResourceConfig):
