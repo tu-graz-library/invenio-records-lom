@@ -125,7 +125,7 @@ export default class LOMDepositForm extends React.Component {
                   decimalSizeDisplay={this.config.decimal_size_display}
                 />
               </AccordionField>
-              <RequiredAccordion />
+              <RequiredAccordion config={this.config} />
               <OptionalAccordion />
               {/*<TestAccordion />*/}
             </Grid.Column>
@@ -160,7 +160,7 @@ export default class LOMDepositForm extends React.Component {
                         </Grid.Column>
 
                         <Grid.Column width={16} className="pt-10">
-                          <PublishButton fluid />
+                          <PublishButton fluid record={{}}/>
                         </Grid.Column>
                       </Grid>
                     </Card.Content>

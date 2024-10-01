@@ -3,7 +3,7 @@
 // invenio-records-lom is free software; you can redistribute it and/or modify it
 // under the terms of the MIT License; see LICENSE file for more details.
 
-import React from "react";
+import React, { Fragment } from "react";
 import { AccordionField, ArrayField, FieldLabel } from "react-invenio-forms";
 import { PIDField } from "@js/invenio_rdm_records";
 import { useSelector } from "react-redux";
@@ -18,10 +18,11 @@ import {
   TitledTextField,
 } from "./fields";
 
-export function RequiredAccordion(props) {
+export function RequiredAccordion({config}) {
   // record.is_published should be one of `true`, `false`, `null` (counts as false)
   const recordIsPublished =
     useSelector((state) => state?.deposit?.record?.is_published) === true;
+  const doiIsEnabled = config.pids.some(pid => pid.scheme==="doi");
 
   return (
     <AccordionField
@@ -42,32 +43,34 @@ export function RequiredAccordion(props) {
         </>
       }
     >
-      <PIDField
-        btnLabelDiscardPID={i18next.t("Cancel DOI reservation.")}
-        btnLabelGetPID={i18next.t("Reserve a DOI.")}
-        canBeManaged={true}
-        canBeUnmanaged={true}
-        fieldPath="pids.doi"
-        fieldLabel={
-          <>
-            <Icon color="red" name="asterisk" />
-            <Icon name="book" />
-            {i18next.t("Digital Object Identifier")}
-          </>
-        }
-        isEditingPublishedRecord={recordIsPublished}
-        managedHelpText={i18next.t(
-          "Reserved DOIs are registered when publishing your upload."
-        )}
-        pidIcon={null}
-        pidLabel={i18next.t("DOI")}
-        pidPlaceholder={i18next.t("Enter your existing DOI here.")}
-        pidType="doi"
-        required={false} // this field is required, but the red asterisk is added via the fieldLabel prop...
-        unmanagedHelpText={i18next.t(
-          "A DOI allows your upload to be unambiguously cited. It is of form `10.1234/foo.bar`."
-        )}
-      />
+      {doiIsEnabled && (
+        <PIDField
+          btnLabelDiscardPID={i18next.t("Cancel DOI reservation.")}
+          btnLabelGetPID={i18next.t("Reserve a DOI.")}
+          canBeManaged={true}
+          canBeUnmanaged={true}
+          fieldPath="pids.doi"
+          fieldLabel={
+            <>
+              <Icon color="red" name="asterisk" />
+              <Icon name="book" />
+              {i18next.t("Digital Object Identifier")}
+            </>
+          }
+          isEditingPublishedRecord={recordIsPublished}
+          managedHelpText={i18next.t(
+            "Reserved DOIs are registered when publishing your upload."
+          )}
+          pidIcon={null}
+          pidLabel={i18next.t("DOI")}
+          pidPlaceholder={i18next.t("Enter your existing DOI here.")}
+          pidType="doi"
+          required={false} // this field is required, but the red asterisk is added via the fieldLabel prop...
+          unmanagedHelpText={i18next.t(
+            "A DOI allows your upload to be unambiguously cited. It is of form `10.1234/foo.bar`."
+          )}
+        />
+      )}
       <TitledTextField
         fieldPath="metadata.form.title"
         iconName="book"
