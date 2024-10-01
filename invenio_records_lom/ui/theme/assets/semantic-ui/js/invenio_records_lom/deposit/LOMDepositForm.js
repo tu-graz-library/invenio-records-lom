@@ -160,7 +160,7 @@ export default class LOMDepositForm extends React.Component {
                         </Grid.Column>
 
                         <Grid.Column width={16} className="pt-10">
-                          <PublishButton fluid />
+                          <PublishButton fluid record={{}}/>
                         </Grid.Column>
                       </Grid>
                     </Card.Content>
