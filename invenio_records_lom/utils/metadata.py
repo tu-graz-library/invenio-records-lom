@@ -159,38 +159,6 @@ class LOMMetadata(BaseLOMMetadata):  # pylint: disable=too-many-public-methods
         },
     )
 
-    @classmethod
-    def create(
-        cls,
-        resource_type: str,
-        metadata: dict | None = None,
-        access: str = "public",
-        pids: dict | None = None,
-        *,
-        overwritable: bool = False,
-    ) -> BaseLOMMetadata:
-        """Create `cls` with a json that is compatible with invenio-databases.
-
-        :param str resource_type: One of `current_app.config["LOM_RESOURCE_TYPES"]`
-        :param dict metadata: The metadata to be wrapped
-        :param str access: One of "public", "restricted"
-        :param dict pids: For adding external pids
-        """
-        files_enabled = resource_type in ["file", "upload"]
-        access_dict = {
-            "embargo": {},
-            "files": access,
-            "record": access,
-        }
-        record_json = {
-            "access": access_dict,
-            "files": {"enabled": files_enabled},
-            "metadata": metadata or {},
-            "pids": pids or {},
-            "resource_type": resource_type,
-        }
-        return cls(record_json, overwritable=overwritable)
-
     ###############
     #
     # methods for manipulating LOM's `course` category
@@ -710,3 +678,32 @@ class LOMRecordData(dict):
             "resource_type": self.resource_type,
             **self,
         }
+
+    @classmethod
+    def create(
+        cls,
+        resource_type: str,
+        metadata: dict | None = None,
+        access: str = "public",
+        pids: dict | None = None,
+    ) -> "LOMRecordData":
+        """Create `cls` with a json that is compatible with invenio-databases.
+
+        :param str resource_type: One of `current_app.config["LOM_RESOURCE_TYPES"]`
+        :param dict metadata: The metadata to be wrapped
+        :param str access: One of "public", "restricted"
+        :param dict pids: For adding external pids
+        """
+        files_enabled = resource_type in ["file", "upload"]
+        access_dict = {
+            "embargo": {},
+            "files": access,
+            "record": access,
+        }
+        return cls(
+            resource_type=resource_type,
+            pids=pids or {},
+            metadata=metadata or {},
+            access=access_dict,
+            files={"enabled": files_enabled},
+        )
