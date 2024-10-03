@@ -708,4 +708,5 @@ class LOMRecordData(dict):
             "pids": self.pids,
             "metadata": self.metadata.json,
             "resource_type": self.resource_type,
+            **self,
         }
