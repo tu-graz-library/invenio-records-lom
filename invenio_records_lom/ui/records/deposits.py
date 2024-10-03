@@ -15,7 +15,7 @@ from invenio_records_resources.services.records.results import RecordItem
 from invenio_users_resources.proxies import current_user_resources
 
 from ...proxies import current_records_lom
-from ...utils import LOMMetadata, get_oefosdict
+from ...utils import DotAccessWrapper, LOMRecordData, get_oefosdict
 from .decorators import (
     pass_draft,
     pass_draft_files,
@@ -178,19 +178,23 @@ def deposit_create() -> str:
     pids = {}
     if "doi" in service_config.pids_providers:
         pids = {"doi": {"provider": "external", "identifier": ""}}
-    empty_metadata: LOMMetadata = LOMMetadata.create(
+    empty_record: LOMRecordData = LOMRecordData.create(
         resource_type="upload",
         pids=pids,
     )
-    empty_metadata.record["status"] = "draft"
-    defaults = current_app.config.get("LOM_DEPOSIT_FORM_DEFAULTS", {})
-    for dotted_key, value in defaults.items():
-        empty_metadata.record.setdefault(dotted_key, value)
+    empty_record["status"] = "draft"
 
     # insert default-publisher from config (if exists)
     app_config = current_app.config
     if default_publisher := app_config.get("LOM_PUBLISHER"):
-        empty_metadata.append_contribute(default_publisher, role="publisher")
+        empty_record.metadata.append_contribute(default_publisher, role="publisher")
+
+    # update json with defaults
+    defaults = current_app.config.get("LOM_DEPOSIT_FORM_DEFAULTS", {})
+    record_json = empty_record.json
+    record_dot_access = DotAccessWrapper(record_json)
+    for dotted_key, value in defaults.items():
+        record_dot_access.setdefault(dotted_key, value)
 
     template_context: dict = get_deposit_template_context(createUrl="/api/oer")
     return render_template(
@@ -198,7 +202,7 @@ def deposit_create() -> str:
         files=template_context["files"],
         forms_config=template_context["forms_config"],
         # preselectedCommunity=?,
-        record=empty_metadata.json,
+        record=record_json,
         searchbar_config=template_context["searchbar_config"],
     )
 
