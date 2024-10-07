@@ -3,12 +3,12 @@
 // invenio-records-lom is free software; you can redistribute it and/or modify it
 // under the terms of the MIT License; see LICENSE file for more details.
 
+import { DepositRecordSerializer } from "@js/invenio_rdm_records";
 import _cloneDeep from "lodash/cloneDeep";
 import _get from "lodash/get";
 import _pick from "lodash/pick";
 import _set from "lodash/set";
 import _sortBy from "lodash/sortBy";
-import { DepositRecordSerializer } from "@js/invenio_rdm_records";
 
 // TODO: move `debug` to debug.js
 const debug = (obj) => alert(JSON.stringify(obj, null, 2));

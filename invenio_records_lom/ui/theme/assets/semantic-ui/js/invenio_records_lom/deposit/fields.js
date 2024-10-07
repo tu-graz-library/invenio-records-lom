@@ -6,6 +6,7 @@
 import { i18next } from "@translations/invenio_records_lom/i18next";
 import { getIn, useField, useFormikContext } from "formik";
 import _get from "lodash/get";
+import PropTypes from "prop-types";
 import React from "react";
 import { GroupField } from "react-invenio-forms";
 import { useSelector } from "react-redux";
@@ -21,7 +22,7 @@ import { Button, Form, Icon, Label } from "semantic-ui-react";
 //       DropdownField implicitly adds `.value` internally
 //         ~> look into whether {value: String} vs String is really necessary
 // TODO: validationSchema for instant error-feedback
-// TODO: prop-types and/or doc-strings
+// TODO: doc-strings
 //       doc-string: put above function:
 //           /**
 //             * General function description.
@@ -30,11 +31,6 @@ import { Button, Form, Icon, Label } from "semantic-ui-react";
 //             * @param {String} props.subValue - Description of param
 //             * @returns
 //             */
-//       prop-types: put below React-function:
-//           ReactComp.propTypes = {
-//             fieldPath: PropTypes.string.isrequired,
-//             label: PropTypes.oneOfType(PropTypes.string, PropTypes.node),
-//           }
 // TODO: some fields aren't disabled while submitting...
 // TODO: translations are registered by i18n, but not yet done
 // TODO: fix includesPaths of `ArrayField`s
@@ -49,6 +45,8 @@ export const DebugInfo = ({ fieldPath }) => {
   );
 };
 
+DebugInfo.propTypes = { fieldPath: PropTypes.string.isRequired };
+
 const CloseButton = ({ closeAction }) => {
   return closeAction ? (
     <Form.Field>
@@ -62,6 +60,10 @@ const CloseButton = ({ closeAction }) => {
   ) : null;
 };
 
+CloseButton.propTypes = {
+  closeAction: PropTypes.func,
+};
+
 const FieldLabel = ({ htmlFor, iconName, label, required }) => {
   const icon = iconName ? <Icon name={iconName} /> : null;
   const requiredIcon = required ? <Icon color="red" name="asterisk" /> : null;
@@ -72,6 +74,13 @@ const FieldLabel = ({ htmlFor, iconName, label, required }) => {
       {label}
     </label>
   ) : null;
+};
+
+FieldLabel.propTypes = {
+  htmlFor: PropTypes.string,
+  iconName: PropTypes.string,
+  label: PropTypes.node,
+  required: PropTypes.bool,
 };
 
 export const LeftLabeledTextField = ({
@@ -132,6 +141,16 @@ export const LeftLabeledTextField = ({
   );
 };
 
+LeftLabeledTextField.propTypes = {
+  className: PropTypes.string,
+  debug: PropTypes.bool,
+  fieldPath: PropTypes.string.isRequired,
+  label: PropTypes.node,
+  placeholder: PropTypes.string,
+  required: PropTypes.bool,
+  rows: PropTypes.number,
+};
+
 export const TitledTextField = ({
   closeAction,
   debug,
@@ -165,6 +184,18 @@ export const TitledTextField = ({
       {debug && <DebugInfo fieldPath={fieldPath} />}
     </div>
   );
+};
+
+TitledTextField.propTypes = {
+  closeAction: PropTypes.func.isRequired,
+  debug: PropTypes.bool,
+  fieldPath: PropTypes.string.isRequired,
+  iconName: PropTypes.string,
+  label: PropTypes.node,
+  placeholder: PropTypes.string,
+  required: PropTypes.bool,
+  rows: PropTypes.number,
+  title: PropTypes.node,
 };
 
 const InnerDropdownField = ({
@@ -221,6 +252,14 @@ const InnerDropdownField = ({
   );
 };
 
+InnerDropdownField.propTypes = {
+  className: PropTypes.string,
+  clearable: PropTypes.bool,
+  fieldPath: PropTypes.string.isRequired,
+  placeholder: PropTypes.string,
+  vocabularyName: PropTypes.string.isRequired,
+};
+
 export const DropdownField = ({
   clearable,
   closeAction,
@@ -254,6 +293,18 @@ export const DropdownField = ({
   );
 };
 
+DropdownField.propTypes = {
+  clearable: PropTypes.bool,
+  closeAction: PropTypes.func,
+  debug: PropTypes.bool,
+  fieldPath: PropTypes.string.isRequired,
+  iconName: PropTypes.string,
+  placeholder: PropTypes.string,
+  required: PropTypes.bool,
+  title: PropTypes.node,
+  vocabularyName: PropTypes.string.isRequired,
+};
+
 export const ContributorField = ({ closeAction, debug, fieldPath, vocabularyName }) => {
   return (
     <Form.Field>
@@ -276,4 +327,11 @@ export const ContributorField = ({ closeAction, debug, fieldPath, vocabularyName
       {debug && <DebugInfo fieldPath={fieldPath} />}
     </Form.Field>
   );
+};
+
+ContributorField.propTypes = {
+  closeAction: PropTypes.func.isRequired,
+  debug: PropTypes.bool,
+  fieldPath: PropTypes.string.isRequired,
+  vocabularyName: PropTypes.string.isRequired,
 };
