@@ -36,10 +36,9 @@ export class LOMDepositRecordSerializer extends DepositRecordSerializer {
     let oefosIds = [];
     for (const taxonpath of _get(oefosClassification, "taxonpath", [])) {
       for (const taxon of _get(taxonpath, "taxon", [])) {
-        const match =
-          /https:\/\/w3id.org\/oerbase\/vocabs\/oefos2012\/(\d+)/.exec(
-            taxon.id || ""
-          );
+        const match = /https:\/\/w3id.org\/oerbase\/vocabs\/oefos2012\/(\d+)/.exec(
+          taxon.id || ""
+        );
         if (match) {
           const id = match[1];
           if (!oefosIds.includes(id)) {
@@ -84,9 +83,9 @@ export class LOMDepositRecordSerializer extends DepositRecordSerializer {
     const metadataContributors = formContributors.map(
       ({ role: maybeRoleDict, name: maybeName }) => ({
         role: {
-          source: { langstring: { "#text": "LOMv1.0", lang: "x-none" } },
+          source: { langstring: { "#text": "LOMv1.0", "lang": "x-none" } },
           value: {
-            langstring: { "#text": maybeRoleDict?.value || "", lang: "x-none" },
+            langstring: { "#text": maybeRoleDict?.value || "", "lang": "x-none" },
           },
         },
         entity: [maybeName || ""],
@@ -123,16 +122,13 @@ export class LOMDepositRecordSerializer extends DepositRecordSerializer {
     // filter out classification that previously held oefos, if any
     metadata.classification = metadata.classification.filter(
       (classification) =>
-        !(
-          _get(classification, "purpose.value.langstring.#text") ===
-          "discipline"
-        )
+        !(_get(classification, "purpose.value.langstring.#text") === "discipline")
     );
     // create oefos-classification
     let oefosClassification = {
       purpose: {
-        source: { langstring: { lang: "x-none", "#text": "LOMv1.0" } },
-        value: { langstring: { lang: "x-none", "#text": "discipline" } },
+        source: { langstring: { "lang": "x-none", "#text": "LOMv1.0" } },
+        value: { langstring: { "lang": "x-none", "#text": "discipline" } },
       },
       taxonpath: [],
     };
@@ -145,7 +141,7 @@ export class LOMDepositRecordSerializer extends DepositRecordSerializer {
       oefosClassification.taxonpath.push({
         source: {
           langstring: {
-            lang: "x-none",
+            "lang": "x-none",
             "#text": "https://w3id.org/oerbase/vocabs/oefos2012",
           },
         },
@@ -222,11 +218,7 @@ export class LOMDepositRecordSerializer extends DepositRecordSerializer {
     this.deserializeOefos(record);
 
     // deserialize description
-    form.description = _get(
-      metadata,
-      "general.description.0.langstring.#text",
-      ""
-    );
+    form.description = _get(metadata, "general.description.0.langstring.#text", "");
 
     // deserialize tags
     const tagLangstringObjects = _get(metadata, "general.keyword", []);
@@ -266,7 +258,7 @@ export class LOMDepositRecordSerializer extends DepositRecordSerializer {
     _set(metadata, "general.title", {
       langstring: {
         "#text": _get(metadata, "form.title", ""),
-        lang: this.locale,
+        "lang": this.locale,
       },
     });
 
@@ -278,8 +270,8 @@ export class LOMDepositRecordSerializer extends DepositRecordSerializer {
     }
     _set(metadata, "rights", {
       copyrightandotherrestrictions: {
-        source: { langstring: { "#text": "LOMv1.0", lang: "x-none" } },
-        value: { langstring: { "#text": "yes", lang: "x-none" } },
+        source: { langstring: { "#text": "LOMv1.0", "lang": "x-none" } },
+        value: { langstring: { "#text": "yes", "lang": "x-none" } },
       },
       url: licenseUrl,
       description: {
@@ -304,7 +296,7 @@ export class LOMDepositRecordSerializer extends DepositRecordSerializer {
       source: {
         langstring: {
           "#text": "https://w3id.org/kim/hcrt/scheme",
-          lang: "x-none",
+          "lang": "x-none",
         },
       },
       id: resourcetypeUrl,
@@ -320,7 +312,7 @@ export class LOMDepositRecordSerializer extends DepositRecordSerializer {
     const description = metadata?.form?.description || "";
     if (description) {
       _set(metadata, "general.description.0", {
-        langstring: { "#text": description, lang: this.locale },
+        langstring: { "#text": description, "lang": this.locale },
       });
     } else {
       _set(metadata, "general.description", []);
@@ -334,7 +326,7 @@ export class LOMDepositRecordSerializer extends DepositRecordSerializer {
       tags
         .filter(({ value }) => value)
         .map(({ value }) => ({
-          langstring: { "#text": value, lang: this.locale },
+          langstring: { "#text": value, "lang": this.locale },
         }))
     );
 

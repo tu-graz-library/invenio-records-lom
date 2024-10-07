@@ -5,32 +5,31 @@
 // invenio-records-lom is free software; you can redistribute it and/or modify
 // it under the terms of the MIT License; see LICENSE file for more details.
 
-import React from "react";
-import { parametrize } from "react-overridable";
-import { createSearchAppInit } from "@js/invenio_search_ui";
-import { Button, Divider, Header, Segment, Grid } from "semantic-ui-react";
-import { SearchBar, Sort } from "react-searchkit";
 import {
+  RDMCountComponent,
+  RDMErrorComponent,
   RDMRecordSearchBarContainer,
   RDMRecordSearchBarElement,
   RDMToggleComponent,
-  RDMCountComponent,
-  RDMErrorComponent,
 } from "@js/invenio_app_rdm/search/components";
 import {
-  ContribSearchAppFacets,
-  ContribBucketAggregationElement,
-  ContribBucketAggregationValuesElement,
-} from "@js/invenio_search_ui/components";
+  DashboardResultView,
+  DashboardSearchLayoutHOC,
+} from "@js/invenio_app_rdm/user_dashboard/base";
 import {
   LOMRecordResultsGridItem,
   LOMRecordResultsListItem,
 } from "@js/invenio_records_lom/search/components";
-import { i18next } from "@translations/invenio_records_lom/i18next";
+import { createSearchAppInit } from "@js/invenio_search_ui";
 import {
-  DashboardSearchLayoutHOC,
-  DashboardResultView,
-} from "@js/invenio_app_rdm/user_dashboard/base";
+  ContribBucketAggregationElement,
+  ContribBucketAggregationValuesElement,
+  ContribSearchAppFacets,
+} from "@js/invenio_search_ui/components";
+import { i18next } from "@translations/invenio_records_lom/i18next";
+import React from "react";
+import { parametrize } from "react-overridable";
+import { Button, Divider, Header, Segment } from "semantic-ui-react";
 
 const ContribSearchAppFacetsWithConfig = parametrize(ContribSearchAppFacets, {
   toogle: true,
@@ -46,9 +45,7 @@ export const LOMEmptyResults = (props) => {
       <Segment placeholder textAlign="center" padded="very">
         <Header as="h1" align="center">
           <Header.Content>
-            <Header.Subheader>
-              {i18next.t("Make your first upload!")}
-            </Header.Subheader>
+            <Header.Subheader>{i18next.t("Make your first upload!")}</Header.Subheader>
           </Header.Content>
         </Header>
         <Divider hidden />

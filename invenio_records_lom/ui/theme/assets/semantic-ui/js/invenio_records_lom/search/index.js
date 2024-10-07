@@ -3,18 +3,18 @@
 // invenio-records-lom is free software; you can redistribute it and/or modify it
 // under the terms of the MIT License; see LICENSE file for more details.
 
-import { parametrize } from "react-overridable";
+import {
+  RDMCountComponent,
+  RDMRecordMultipleSearchBarElement,
+  RDMRecordSearchBarContainer,
+  RDMToggleComponent,
+} from "@js/invenio_app_rdm/search/components";
 import { createSearchAppInit } from "@js/invenio_search_ui";
 import {
-  RDMRecordSearchBarContainer,
-  RDMRecordMultipleSearchBarElement,
-  RDMToggleComponent,
-  RDMCountComponent,
-} from "@js/invenio_app_rdm/search/components";
-import {
-  ContribSearchAppFacets,
   ContribBucketAggregationValuesElement,
+  ContribSearchAppFacets,
 } from "@js/invenio_search_ui/components";
+import { parametrize } from "react-overridable";
 import {
   LOMBucketAggregationElement,
   LOMRecordResultsGridItem,

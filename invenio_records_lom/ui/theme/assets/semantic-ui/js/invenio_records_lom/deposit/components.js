@@ -3,18 +3,18 @@
 // invenio-records-lom is free software; you can redistribute it and/or modify it
 // under the terms of the MIT License; see LICENSE file for more details.
 
+import { PIDField } from "@js/invenio_rdm_records";
+import { i18next } from "@translations/invenio_records_lom/i18next";
 import React from "react";
 import { AccordionField, ArrayField, FieldLabel } from "react-invenio-forms";
-import { PIDField } from "@js/invenio_rdm_records";
 import { useSelector } from "react-redux";
 import { Form, Icon } from "semantic-ui-react";
-import { i18next } from "@translations/invenio_records_lom/i18next";
 
 import {
   ContributorField,
   DebugInfo,
-  LeftLabeledTextField,
   DropdownField,
+  LeftLabeledTextField,
   TitledTextField,
 } from "./fields";
 
@@ -45,8 +45,8 @@ export function RequiredAccordion(props) {
       <PIDField
         btnLabelDiscardPID={i18next.t("Cancel DOI reservation.")}
         btnLabelGetPID={i18next.t("Reserve a DOI.")}
-        canBeManaged={true}
-        canBeUnmanaged={true}
+        canBeManaged
+        canBeUnmanaged
         fieldPath="pids.doi"
         fieldLabel={
           <>
@@ -192,7 +192,7 @@ export function TestAccordion(props) {
         "metadata.general.title.langstring.lang",
         "metadata.general.title.langstring.#text",
       ]}
-      label={"Tests"}
+      label="Tests"
     >
       <p>0</p>
       <DebugInfo fieldPath="metadata.form" />

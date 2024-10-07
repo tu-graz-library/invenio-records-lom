@@ -3,11 +3,11 @@
 // invenio-records-lom is free software; you can redistribute it and/or modify it
 // under the terms of the MIT License; see LICENSE file for more details.
 
+import { EditButton } from "@js/invenio_records_lom/components/EditButton";
+import { get, truncate } from "lodash";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
-import { get, truncate } from "lodash";
 import { Card, Icon, Item, Label, Popup } from "semantic-ui-react";
-import { EditButton } from "@js/invenio_records_lom/components/EditButton";
 
 export const LOMBucketAggregationElement = ({ title, containerCmp }) => {
   const [active, setActive] = useState(true);
@@ -32,14 +32,13 @@ export const LOMBucketAggregationElement = ({ title, containerCmp }) => {
   );
 };
 
-
 export const LomStats = ({ uniqueViews, uniqueDownloads }) => {
   return (
     <>
       {uniqueViews != null && (
         <Popup
           size="tiny"
-          content={"Views"}
+          content="Views"
           trigger={
             <Label className="transparent">
               <Icon name="eye" />
@@ -51,7 +50,7 @@ export const LomStats = ({ uniqueViews, uniqueDownloads }) => {
       {uniqueDownloads != null && (
         <Popup
           size="tiny"
-          content={"Downloads"}
+          content="Downloads"
           trigger={
             <Label className="transparent">
               <Icon name="download" />
@@ -78,17 +77,9 @@ export const LOMRecordResultsListItem = ({ result, index }) => {
   const ui = get(result, "ui", {});
   const access = get(ui, "access_status", {});
 
-  const createdDate = get(
-    ui,
-    "created_date_l10n_long",
-    "No creation date found."
-  );
+  const createdDate = get(ui, "created_date_l10n_long", "No creation date found.");
 
-  const publicationDate = get(
-    ui,
-    "created_date_l10n_long",
-    "No update date found."
-  );
+  const publicationDate = get(ui, "created_date_l10n_long", "No update date found.");
 
   const access_id = get(access, "id", "Public");
   const access_status = get(access, "title", "Public");
@@ -99,11 +90,7 @@ export const LOMRecordResultsListItem = ({ result, index }) => {
   const persons = get(ui, "contributors", []);
 
   const title = get(ui, "title", "No title");
-  const version = get(
-    result,
-    "metadata.lifecycle.version.langstring.#text",
-    null
-  );
+  const version = get(result, "metadata.lifecycle.version.langstring.#text", null);
 
   const subjects = [];
 
@@ -126,7 +113,7 @@ export const LOMRecordResultsListItem = ({ result, index }) => {
               {publicationDate} {version ? `(${version})` : null}
             </Label>
             <Label size="tiny" className={`access-status ${access_id}`}>
-              {access_icon && <i className={`icon ${access_icon}`}></i>}
+              {access_icon && <i className={`icon ${access_icon}`} />}
               {access_status}
             </Label>
             <EditButton recid={result.id} onError={handleError} />
@@ -143,9 +130,7 @@ export const LOMRecordResultsListItem = ({ result, index }) => {
             </span>
           ))}
         </Item.Meta>
-        <Item.Description>
-          {truncate(description, { length: 350 })}
-        </Item.Description>
+        <Item.Description>{truncate(description, { length: 350 })}</Item.Description>
         <Item.Extra>
           {subjects.map((subject, index) => (
             <Label key={index} size="tiny">
@@ -158,10 +143,7 @@ export const LOMRecordResultsListItem = ({ result, index }) => {
                 Uploaded on <span>{createdDate}</span>
               </small>
               <small>
-                <LomStats
-                  uniqueViews={uniqueViews}
-                  uniqueDownloads={uniqueDownloads}
-                />
+                <LomStats uniqueViews={uniqueViews} uniqueDownloads={uniqueDownloads} />
               </small>
             </div>
           )}
@@ -173,18 +155,12 @@ export const LOMRecordResultsListItem = ({ result, index }) => {
 
 export const LOMRecordResultsGridItem = ({ result, index }) => {
   const metadata = get(result, ["ui", "metadata", "json"], []);
-  const description = get(
-    metadata,
-    ["summary", "0", "summary"],
-    "No description"
-  );
+  const description = get(metadata, ["summary", "0", "summary"], "No description");
   return (
     <Card fluid key={index} href={`/oer/${result.pid}`}>
       <Card.Content>
         <Card.Header>{result.metadata.json.title_statement.title}</Card.Header>
-        <Card.Description>
-          {truncate(description, { length: 200 })}
-        </Card.Description>
+        <Card.Description>{truncate(description, { length: 200 })}</Card.Description>
       </Card.Content>
     </Card>
   );
