@@ -31,10 +31,10 @@ import { OptionalAccordion, RequiredAccordion } from "./components";
 import { LOMDepositRecordSerializer } from "./serializers";
 
 const LOM_BASE_HEADERS = {
-  json: { "Content-Type": "application/json" },
+  "json": { "Content-Type": "application/json" },
   "vnd+json": {
     "Content-Type": "application/json",
-    Accept: "application/vnd.inveniolom.v1+json",
+    "Accept": "application/vnd.inveniolom.v1+json",
   },
   "octet-stream": { "Content-Type": "application/octet-stream" },
 };
@@ -175,29 +175,18 @@ export default class LOMDepositForm extends React.Component {
                           <Icon name="shield" />
                           {i18next.t("Visibility")}
                           <Popup
-                            trigger={
-                              <Icon className="ml-10" name="info circle" />
-                            }
-                            content={i18next.t(
-                              "OER-uploads are always public."
-                            )}
+                            trigger={<Icon className="ml-10" name="info circle" />}
+                            content={i18next.t("OER-uploads are always public.")}
                           />
                         </label>
                       </Card.Header>
                     </Card.Content>
                     <Card.Content>
-                      <Message
-                        icon
-                        positive
-                        visible
-                        data-test-id="access-message"
-                      >
+                      <Message icon positive visible data-test-id="access-message">
                         <Icon name="lock open" />
                         <Message.Content>
                           <Message.Header>{i18next.t("Public")}</Message.Header>
-                          {i18next.t(
-                            "The record and files are publicly accessible."
-                          )}
+                          {i18next.t("The record and files are publicly accessible.")}
                         </Message.Content>
                       </Message>
                     </Card.Content>

@@ -3,11 +3,9 @@
 // invenio-records-lom is free software; you can redistribute it and/or modify it
 // under the terms of the MIT License; see LICENSE file for more details.
 
-import React, { useState } from "react";
-import { http } from "react-invenio-forms";
-import { Button, Grid, Icon, Message } from "semantic-ui-react";
-import { i18next } from "@translations/invenio_records_lom/i18next";
 import { EditButton } from "@js/invenio_records_lom/components/EditButton";
+import React, { useState } from "react";
+import { Grid, Message } from "semantic-ui-react";
 
 export const LOMRecordManagement = ({ isDraft, permissions, record }) => {
   const [error, setError] = useState("");

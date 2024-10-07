@@ -6,10 +6,10 @@
 import axios from "axios";
 
 const DEBUG_BASE_HEADERS = {
-  json: { "Content-Type": "application/json" },
+  "json": { "Content-Type": "application/json" },
   "vnd+json": {
     "Content-Type": "application/json",
-    Accept: "application/vnd.inveniolom.v1+json",
+    "Accept": "application/vnd.inveniolom.v1+json",
   },
   "octet-stream": { "Content-Type": "application/octet-stream" },
 };
@@ -68,18 +68,12 @@ export class DebugApiClient {
   }
   async publishDraft(draftLinks) {
     return this._createResponse(() =>
-      debugAxiosWithConfig.post(
-        draftLinks.publish,
-        {},
-        { params: { expand: 1 } }
-      )
+      debugAxiosWithConfig.post(draftLinks.publish, {}, { params: { expand: 1 } })
     );
   }
 
   async deleteDraft(draftLinks) {
-    return this._createResponse(() =>
-      debugAxiosWithConfig.delete(draftLinks.self, {})
-    );
+    return this._createResponse(() => debugAxiosWithConfig.delete(draftLinks.self, {}));
   }
 
   async reservePID(draftLinks, pidType) {

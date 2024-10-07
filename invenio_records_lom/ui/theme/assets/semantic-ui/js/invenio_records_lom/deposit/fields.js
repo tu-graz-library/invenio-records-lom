@@ -3,13 +3,13 @@
 // invenio-records-lom is free software; you can redistribute it and/or modify it
 // under the terms of the MIT License; see LICENSE file for more details.
 
+import { i18next } from "@translations/invenio_records_lom/i18next";
 import { getIn, useField, useFormikContext } from "formik";
 import _get from "lodash/get";
 import React from "react";
 import { GroupField } from "react-invenio-forms";
 import { useSelector } from "react-redux";
 import { Button, Form, Icon, Label } from "semantic-ui-react";
-import { i18next } from "@translations/invenio_records_lom/i18next";
 
 // TODO: consider changing invenio `GroupField`s for `Form.Group`
 // TODO: move id for author/publisher from contributor.1 to contributor.1.something
@@ -66,10 +66,7 @@ const FieldLabel = ({ htmlFor, iconName, label, required }) => {
   const icon = iconName ? <Icon name={iconName} /> : null;
   const requiredIcon = required ? <Icon color="red" name="asterisk" /> : null;
   return label || icon ? (
-    <label
-      className="field-label-class invenio-field-label"
-      htmlFor={htmlFor || null}
-    >
+    <label className="field-label-class invenio-field-label" htmlFor={htmlFor || null}>
       {requiredIcon}
       {icon}
       {label}
@@ -102,10 +99,7 @@ export const LeftLabeledTextField = ({
     <Form.Field error={error} className={className} required={required}>
       <div className="ui labeled input">
         {label && (
-          <label
-            className={`ui label${error ? " error" : ""}`}
-            htmlFor={fieldPath}
-          >
+          <label className={`ui label${error ? " error" : ""}`} htmlFor={fieldPath}>
             {label}
           </label>
         )}
@@ -260,17 +254,12 @@ export const DropdownField = ({
   );
 };
 
-export const ContributorField = ({
-  closeAction,
-  debug,
-  fieldPath,
-  vocabularyName,
-}) => {
+export const ContributorField = ({ closeAction, debug, fieldPath, vocabularyName }) => {
   return (
     <Form.Field>
       <GroupField fieldPath={fieldPath}>
         <InnerDropdownField
-          className={"four wide"}
+          className="four wide"
           fieldPath={`${fieldPath}.role`}
           placeholder={i18next.t("Select role")}
           vocabularyName={vocabularyName}

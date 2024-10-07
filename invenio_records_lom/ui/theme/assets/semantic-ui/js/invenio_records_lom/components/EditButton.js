@@ -24,7 +24,7 @@ export const EditButton = ({ recid, onError, className, size, fluid }) => {
         {
           headers: {
             "Content-Type": "application/json",
-            Accept: "application/vnd.inveniolom.v1+json",
+            "Accept": "application/vnd.inveniolom.v1+json",
           },
         }
       );
