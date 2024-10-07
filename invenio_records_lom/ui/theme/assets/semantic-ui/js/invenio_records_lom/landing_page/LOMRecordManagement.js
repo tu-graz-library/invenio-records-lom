@@ -4,6 +4,7 @@
 // under the terms of the MIT License; see LICENSE file for more details.
 
 import { EditButton } from "@js/invenio_records_lom/components/EditButton";
+import PropTypes from "prop-types";
 import React, { useState } from "react";
 import { Grid, Message } from "semantic-ui-react";
 
@@ -32,4 +33,10 @@ export const LOMRecordManagement = ({ isDraft, permissions, record }) => {
       )}
     </Grid>
   );
+};
+
+LOMRecordManagement.propTypes = {
+  isDraft: PropTypes.bool.isRequired,
+  permissions: PropTypes.object.isRequired,
+  record: PropTypes.object.isRequired,
 };

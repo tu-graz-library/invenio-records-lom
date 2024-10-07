@@ -14,6 +14,7 @@ import {
   SaveButton,
 } from "@js/invenio_rdm_records";
 import { i18next } from "@translations/invenio_records_lom/i18next";
+import PropTypes from "prop-types";
 import React, { createRef } from "react";
 import { AccordionField } from "react-invenio-forms";
 import {
@@ -208,3 +209,10 @@ export default class LOMDepositForm extends React.Component {
     );
   }
 }
+
+LOMDepositForm.propTypes = {
+  config: PropTypes.object.isRequired,
+  files: PropTypes.object,
+  permissions: PropTypes.object,
+  record: PropTypes.object.isRequired,
+};

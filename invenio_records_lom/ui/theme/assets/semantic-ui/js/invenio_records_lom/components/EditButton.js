@@ -4,6 +4,7 @@
 // under the terms of the MIT License; see LICENSE file for more details.
 
 import { i18next } from "@translations/invenio_records_lom/i18next";
+import PropTypes from "prop-types";
 import React, { useState } from "react";
 import { http } from "react-invenio-forms";
 import { Button } from "semantic-ui-react";
@@ -47,4 +48,12 @@ export const EditButton = ({ recid, onError, className, size, fluid }) => {
       content={i18next.t("Edit")}
     />
   );
+};
+
+EditButton.propTypes = {
+  className: PropTypes.string,
+  fluid: PropTypes.bool,
+  onError: PropTypes.func.isRequired,
+  recid: PropTypes.string.isRequired,
+  size: PropTypes.string,
 };
