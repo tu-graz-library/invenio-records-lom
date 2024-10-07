@@ -8,6 +8,8 @@
 # Check manifest will not automatically add these two files:
 include .dockerignore
 include .editorconfig
+include .eslintrc.yml
+include .prettierrc
 include .tx/config
 include babel.ini
 prune docs/_build
