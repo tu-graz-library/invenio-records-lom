@@ -37,6 +37,10 @@ LOMBucketAggregationElement.propTypes = {
   title: PropTypes.node.isRequired,
 };
 
+LOMBucketAggregationElement.defaultProps = {
+  containerCmp: null,
+};
+
 export const LomStats = ({ uniqueViews, uniqueDownloads }) => {
   return (
     <>
@@ -163,6 +167,10 @@ LOMRecordResultsListItem.propTypes = {
   result: PropTypes.object.isRequired,
 };
 
+LOMRecordResultsListItem.defaultProps = {
+  index: null,
+};
+
 export const LOMRecordResultsGridItem = ({ result, index }) => {
   const metadata = get(result, ["ui", "metadata", "json"], []);
   const description = get(metadata, ["summary", "0", "summary"], "No description");
@@ -179,4 +187,8 @@ export const LOMRecordResultsGridItem = ({ result, index }) => {
 LOMRecordResultsGridItem.propTypes = {
   index: PropTypes.any,
   result: PropTypes.object.isRequired,
+};
+
+LOMRecordResultsGridItem.defaultProps = {
+  index: null,
 };

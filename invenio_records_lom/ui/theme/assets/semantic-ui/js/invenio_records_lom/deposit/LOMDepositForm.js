@@ -54,7 +54,7 @@ export default class LOMDepositForm extends React.Component {
     // check if files are present
     this.noFiles = false;
     if (
-      !Array.isArray(this.props.files.entries) ||
+      !Array.isArray(this.props.files?.entries) ||
       (!this.props.files.entries.length && this.props.record.is_published)
     ) {
       this.noFiles = true;
@@ -215,4 +215,9 @@ LOMDepositForm.propTypes = {
   files: PropTypes.object,
   permissions: PropTypes.object,
   record: PropTypes.object.isRequired,
+};
+
+LOMDepositForm.defaultProps = {
+  files: null,
+  permissions: null,
 };
