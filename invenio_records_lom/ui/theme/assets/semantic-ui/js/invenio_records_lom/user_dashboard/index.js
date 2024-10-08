@@ -61,7 +61,8 @@ export const LOMEmptyResults = (props) => {
   );
 };
 
-const initSearchApp = createSearchAppInit({
+// per default, this also initializes the search-app (2nd argument, named `autoInit`)
+createSearchAppInit({
   "BucketAggregation.element": ContribBucketAggregationElement,
   "BucketAggregationValues.element": ContribBucketAggregationValuesElement,
   "EmptyResults.element": LOMEmptyResults,

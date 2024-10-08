@@ -25,7 +25,8 @@ const ContribSearchAppFacetsWithConfig = parametrize(ContribSearchAppFacets, {
   toogle: true,
 });
 
-const initSearchApp = createSearchAppInit({
+// per default, this also initializes the search-app (2nd argument, named `autoInit`)
+createSearchAppInit({
   "BucketAggregation.element": LOMBucketAggregationElement,
   "BucketAggregationValues.element": ContribBucketAggregationValuesElement,
   "ResultsGrid.item": LOMRecordResultsGridItem,
