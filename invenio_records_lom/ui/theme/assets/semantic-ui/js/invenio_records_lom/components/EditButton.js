@@ -12,9 +12,6 @@ import { Button } from "semantic-ui-react";
 export const EditButton = ({ recid, onError, className, size, fluid }) => {
   const [loading, setLoading] = useState(false);
 
-  size = size || "small";
-  fluid = fluid || false;
-
   const editThenRedirect = async () => {
     console.log("editThenRedirect");
     setLoading(true);
@@ -56,4 +53,10 @@ EditButton.propTypes = {
   onError: PropTypes.func.isRequired,
   recid: PropTypes.string.isRequired,
   size: PropTypes.string,
+};
+
+EditButton.defaultProps = {
+  className: null,
+  fluid: false,
+  size: "small",
 };

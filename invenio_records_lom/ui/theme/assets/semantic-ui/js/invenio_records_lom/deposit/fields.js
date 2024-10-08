@@ -64,6 +64,8 @@ CloseButton.propTypes = {
   closeAction: PropTypes.func,
 };
 
+CloseButton.defaultProps = { closeAction: null };
+
 const FieldLabel = ({ htmlFor, iconName, label, required }) => {
   const icon = iconName ? <Icon name={iconName} /> : null;
   const requiredIcon = required ? <Icon color="red" name="asterisk" /> : null;
@@ -81,6 +83,13 @@ FieldLabel.propTypes = {
   iconName: PropTypes.string,
   label: PropTypes.node,
   required: PropTypes.bool,
+};
+
+FieldLabel.defaultProps = {
+  htmlFor: null,
+  iconName: null,
+  label: null,
+  required: false,
 };
 
 export const LeftLabeledTextField = ({
@@ -151,6 +160,15 @@ LeftLabeledTextField.propTypes = {
   rows: PropTypes.number,
 };
 
+LeftLabeledTextField.defaultProps = {
+  className: null,
+  debug: false,
+  label: null,
+  placeholder: "",
+  required: false,
+  rows: null,
+};
+
 export const TitledTextField = ({
   closeAction,
   debug,
@@ -196,6 +214,16 @@ TitledTextField.propTypes = {
   required: PropTypes.bool,
   rows: PropTypes.number,
   title: PropTypes.node,
+};
+
+TitledTextField.defaultProps = {
+  debug: false,
+  iconName: null,
+  label: null,
+  placeholder: "",
+  required: false,
+  rows: null,
+  title: null,
 };
 
 const InnerDropdownField = ({
@@ -260,6 +288,12 @@ InnerDropdownField.propTypes = {
   vocabularyName: PropTypes.string.isRequired,
 };
 
+InnerDropdownField.defaultProps = {
+  className: null,
+  clearable: false,
+  placeholder: "",
+};
+
 export const DropdownField = ({
   clearable,
   closeAction,
@@ -305,6 +339,16 @@ DropdownField.propTypes = {
   vocabularyName: PropTypes.string.isRequired,
 };
 
+DropdownField.defaultProps = {
+  clearable: false,
+  closeAction: null,
+  debug: false,
+  iconName: null,
+  placeholder: "",
+  required: false,
+  title: null,
+};
+
 export const ContributorField = ({ closeAction, debug, fieldPath, vocabularyName }) => {
   return (
     <Form.Field>
@@ -334,4 +378,8 @@ ContributorField.propTypes = {
   debug: PropTypes.bool,
   fieldPath: PropTypes.string.isRequired,
   vocabularyName: PropTypes.string.isRequired,
+};
+
+ContributorField.defaultProps = {
+  debug: false,
 };
