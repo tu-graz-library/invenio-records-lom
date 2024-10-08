@@ -140,7 +140,7 @@ export const LOMRecordResultsListItem = ({ result, index }) => {
         </Item.Header>
         <Item.Meta>
           {persons.map((person, index) => (
-            <span key={index}>
+            <span key={`${person.role}:${person.fullname}`}>
               {person.fullname}
               {index < persons.length - 1 && ","}
             </span>
