@@ -352,21 +352,21 @@ export class LOMDepositRecordSerializer extends DepositRecordSerializer {
     }
 
     // utility to set errors matching a regexp to `metadata.form`
-    const set_errors = (regexp, target_key) => {
+    const setErrors = (regexp, targetKey) => {
       const errorMessage = errors
         .filter(({ field }) => regexp.test(field))
         .flatMap(({ messages }) => messages || [])
         .join(" ");
       if (errorMessage) {
-        _set(deserializedErrors, `metadata.form.${target_key}`, errorMessage);
+        _set(deserializedErrors, `metadata.form.${targetKey}`, errorMessage);
       }
     };
 
     // set single-field errors
-    set_errors(/^metadata\.general\.title$/, "title");
-    set_errors(/^metadata\.rights\.url/, "license.value");
-    set_errors(/^metadata\.technical\.format/, "format.value");
-    set_errors(
+    setErrors(/^metadata\.general\.title$/, "title");
+    setErrors(/^metadata\.rights\.url/, "license.value");
+    setErrors(/^metadata\.technical\.format/, "format.value");
+    setErrors(
       /^metadata\.educational\.learningresourcetype\.id$/,
       "resourcetype.value"
     );
@@ -375,15 +375,15 @@ export class LOMDepositRecordSerializer extends DepositRecordSerializer {
     // TODO: contributor-errors
     //       finding the correct index for `contributor`-errors is non-trivial as the data gets flattened
     //       i.e. an error at "contribute.1.entity.0"'s index depends on how many `entity`s there are in "contribute.0.entity"...
-    set_errors(/^metadata\.lifecycle\.contribute$/, "contributor"); // assign all sub-errors to `ArrayField` for now...
+    setErrors(/^metadata\.lifecycle\.contribute$/, "contributor"); // assign all sub-errors to `ArrayField` for now...
 
     // serialization of OEFOS removes empty and incorrect fields
     // only possible error left is when no OEFOS where provided, set that to `ArrayField`-path
-    set_errors(/^metadata\.classification/, "oefos");
+    setErrors(/^metadata\.classification/, "oefos");
 
     // empty tags are removed by serialization, providing no tags is allowed
     // hence no errors wrt tags should ever occur
-    set_errors(/^metadata\.general\.keyword/, "tag");
+    setErrors(/^metadata\.general\.keyword/, "tag");
 
     // add error for debug-purposes
     /*deserializedErrors["metadata"]["form"] = {

@@ -90,9 +90,9 @@ export const LOMRecordResultsListItem = ({ result, index }) => {
 
   const publicationDate = get(ui, "created_date_l10n_long", "No update date found.");
 
-  const access_id = get(access, "id", "Public");
-  const access_status = get(access, "title", "Public");
-  const access_icon = get(access, "icon", "unlock");
+  const accessId = get(access, "id", "Public");
+  const accessStatus = get(access, "title", "Public");
+  const accessIcon = get(access, "icon", "unlock");
 
   const description = get(ui, "generalDescriptions", "No description");
 
@@ -121,9 +121,9 @@ export const LOMRecordResultsListItem = ({ result, index }) => {
             <Label size="tiny" color="blue">
               {publicationDate} {version ? `(${version})` : null}
             </Label>
-            <Label size="tiny" className={`access-status ${access_id}`}>
-              {access_icon && <i className={`icon ${access_icon}`} />}
-              {access_status}
+            <Label size="tiny" className={`access-status ${accessId}`}>
+              {accessIcon && <i className={`icon ${accessIcon}`} />}
+              {accessStatus}
             </Label>
             <EditButton recid={result.id} onError={handleError} />
           </div>
