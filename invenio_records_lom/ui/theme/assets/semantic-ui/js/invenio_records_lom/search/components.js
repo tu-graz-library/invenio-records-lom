@@ -101,8 +101,6 @@ export const LOMRecordResultsListItem = ({ result, index }) => {
   const title = get(ui, "title", "No title");
   const version = get(result, "metadata.lifecycle.version.langstring.#text", null);
 
-  const subjects = [];
-
   const uniqueViews = get(result, "stats.all_versions.unique_views", 0);
   const uniqueDownloads = get(result, "stats.all_versions.unique_downloads", 0);
 
@@ -148,11 +146,6 @@ export const LOMRecordResultsListItem = ({ result, index }) => {
         </Item.Meta>
         <Item.Description>{truncate(description, { length: 350 })}</Item.Description>
         <Item.Extra>
-          {subjects.map((subject, index) => (
-            <Label key={index} size="tiny">
-              {subject.miscellaneous_information}
-            </Label>
-          ))}
           {createdDate && (
             <div className="flex justify-space-between align-items-end">
               <small>
