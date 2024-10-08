@@ -10,9 +10,6 @@ import _pick from "lodash/pick";
 import _set from "lodash/set";
 import _sortBy from "lodash/sortBy";
 
-// TODO: move `debug` to debug.js
-const debug = (obj) => alert(JSON.stringify(obj, null, 2));
-
 export class LOMDepositRecordSerializer extends DepositRecordSerializer {
   constructor(locale, vocabularies) {
     super();

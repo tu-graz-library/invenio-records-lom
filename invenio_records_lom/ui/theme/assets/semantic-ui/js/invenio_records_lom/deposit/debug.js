@@ -5,6 +5,8 @@
 
 import axios from "axios";
 
+export const debug = (obj) => alert(JSON.stringify(obj, null, 2));
+
 const DEBUG_BASE_HEADERS = {
   "json": { "Content-Type": "application/json" },
   "vnd+json": {

@@ -35,14 +35,15 @@ export const EditButton = ({ recid, onError, className, size, fluid }) => {
 
   return (
     <Button
-      compact
-      fluid={fluid}
       className={className}
-      size={size}
-      floated="right"
-      onClick={() => editThenRedirect()}
-      icon="edit"
+      compact
       content={i18next.t("Edit")}
+      floated="right"
+      fluid={fluid}
+      icon="edit"
+      loading={loading}
+      onClick={() => editThenRedirect()}
+      size={size}
     />
   );
 };

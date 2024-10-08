@@ -125,7 +125,14 @@ export const LOMRecordResultsListItem = ({ result, index }) => {
               {accessIcon && <i className={`icon ${accessIcon}`} />}
               {accessStatus}
             </Label>
-            <EditButton recid={result.id} onError={handleError} />
+            <div className="ui right floated">
+              <EditButton recid={result.id} onError={handleError} />
+              {error && (
+                <Label basic color="red" pointing="right">
+                  {error}
+                </Label>
+              )}
+            </div>
           </div>
         </Item.Extra>
         <Item.Header as="h2">
