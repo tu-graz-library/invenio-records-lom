@@ -54,8 +54,8 @@ export default class LOMDepositForm extends React.Component {
     // check if files are present
     this.noFiles = false;
     if (
-      !Array.isArray(this.props.files?.entries) ||
-      (!this.props.files.entries.length && this.props.record.is_published)
+      !Array.isArray(props.files?.entries) ||
+      (!props.files.entries.length && props.record.is_published)
     ) {
       this.noFiles = true;
     }
@@ -64,6 +64,7 @@ export default class LOMDepositForm extends React.Component {
   sidebarRef = createRef();
 
   render() {
+    const { files, permissions, record } = this.props;
     const recordSerializer = new LOMDepositRecordSerializer(
       this.config.current_locale || this.config.default_locale,
       this.config.vocabularies
@@ -71,10 +72,10 @@ export default class LOMDepositForm extends React.Component {
     return (
       <DepositFormApp
         config={this.config}
-        files={this.props.files}
-        permissions={this.props.permissions}
+        files={files}
+        permissions={permissions}
         preselectedCommunity={undefined}
-        record={this.props.record}
+        record={record}
         // below arguments overwrite default-behavior
         recordSerializer={recordSerializer}
         // apiClient={new LOMDepositApiClient()}  // defaults to RDM
@@ -115,13 +116,13 @@ export default class LOMDepositForm extends React.Component {
                   </>
                 }
               >
-                {this.noFiles && this.props.record.is_published && (
+                {this.noFiles && record.is_published && (
                   <div className="text-align-center pb-10">
                     <em>{i18next.t("The record has no files.")}</em>
                   </div>
                 )}
                 <FileUploader
-                  isDraftRecord={!this.props.record.is_published}
+                  isDraftRecord={!record.is_published}
                   quota={this.config.quota}
                   decimalSizeDisplay={this.config.decimal_size_display}
                 />
@@ -194,10 +195,7 @@ export default class LOMDepositForm extends React.Component {
                   </Card>
                   <Card>
                     <Card.Content>
-                      <DeleteButton
-                        fluid
-                        isPublished={this.props.record.is_published}
-                      />
+                      <DeleteButton fluid isPublished={record.is_published} />
                     </Card.Content>
                   </Card>
                 </Sticky>
