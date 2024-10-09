@@ -263,7 +263,6 @@ const InnerDropdownField = ({
     <Form.Dropdown
       className={className || "sixteen wide"}
       clearable={clearable}
-      defaultValue={fieldMeta.value || null}
       disabled={isSubmitting}
       error={error}
       fluid
