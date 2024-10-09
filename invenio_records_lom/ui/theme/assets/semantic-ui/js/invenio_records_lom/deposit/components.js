@@ -19,9 +19,7 @@ import {
 } from "./fields";
 
 export function RequiredAccordion(props) {
-  // record.is_published should be one of `true`, `false`, `null` (counts as false)
-  const recordIsPublished =
-    useSelector((state) => state?.deposit?.record?.is_published) === true;
+  const record = useSelector((state) => state?.deposit?.record);
 
   return (
     <AccordionField
@@ -55,7 +53,8 @@ export function RequiredAccordion(props) {
             {i18next.t("Digital Object Identifier")}
           </>
         }
-        isEditingPublishedRecord={recordIsPublished}
+        // record.is_published should be one of `true`, `false`, `null` (counts as false)
+        isEditingPublishedRecord={record?.is_published === true}
         managedHelpText={i18next.t(
           "Reserved DOIs are registered when publishing your upload."
         )}
@@ -63,6 +62,7 @@ export function RequiredAccordion(props) {
         pidLabel={i18next.t("DOI")}
         pidPlaceholder={i18next.t("Enter your existing DOI here.")}
         pidType="doi"
+        record={record}
         required={false} // this field is required, but the red asterisk is added via the fieldLabel prop...
         unmanagedHelpText={i18next.t(
           "A DOI allows your upload to be unambiguously cited. It is of form `10.1234/foo.bar`."
