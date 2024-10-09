@@ -146,16 +146,16 @@ export const LOMRecordResultsListItem = ({ result, index }) => {
         </Item.Meta>
         <Item.Description>{truncate(description, { length: 350 })}</Item.Description>
         <Item.Extra>
-          {createdDate && (
-            <div className="flex justify-space-between align-items-end">
+          <div className="flex justify-space-between align-items-end">
+            {createdDate && (
               <small>
                 Uploaded on <span>{createdDate}</span>
               </small>
-              <small>
-                <LomStats uniqueViews={uniqueViews} uniqueDownloads={uniqueDownloads} />
-              </small>
-            </div>
-          )}
+            )}
+            <small>
+              <LomStats uniqueViews={uniqueViews} uniqueDownloads={uniqueDownloads} />
+            </small>
+          </div>
         </Item.Extra>
       </Item.Content>
     </Item>

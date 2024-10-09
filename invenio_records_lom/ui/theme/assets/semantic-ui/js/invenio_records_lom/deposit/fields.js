@@ -205,7 +205,7 @@ export const TitledTextField = ({
 };
 
 TitledTextField.propTypes = {
-  closeAction: PropTypes.func.isRequired,
+  closeAction: PropTypes.func,
   debug: PropTypes.bool,
   fieldPath: PropTypes.string.isRequired,
   iconName: PropTypes.string,
@@ -217,6 +217,7 @@ TitledTextField.propTypes = {
 };
 
 TitledTextField.defaultProps = {
+  closeAction: null,
   debug: false,
   iconName: null,
   label: null,
@@ -262,7 +263,6 @@ const InnerDropdownField = ({
     <Form.Dropdown
       className={className || "sixteen wide"}
       clearable={clearable}
-      defaultValue={fieldMeta.value || null}
       disabled={isSubmitting}
       error={error}
       fluid
@@ -374,12 +374,13 @@ export const ContributorField = ({ closeAction, debug, fieldPath, vocabularyName
 };
 
 ContributorField.propTypes = {
-  closeAction: PropTypes.func.isRequired,
+  closeAction: PropTypes.func,
   debug: PropTypes.bool,
   fieldPath: PropTypes.string.isRequired,
   vocabularyName: PropTypes.string.isRequired,
 };
 
 ContributorField.defaultProps = {
+  closeAction: null,
   debug: false,
 };
