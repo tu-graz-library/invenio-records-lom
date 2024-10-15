@@ -19,18 +19,20 @@ from .util import (
     update_record,
 )
 from .vcard import make_lom_vcard
+from .vocabularies import expand_vocabulary
 
 __all__ = (
-    "DotAccessWrapper",
-    "get_learningresourcetypedict",
-    "get_oefosdict",
-    "LOMMetadata",
-    "LOMCourseMetadata",
-    "LOMRecordData",
-    "make_lom_vcard",
     "build_record_unique_id",
     "check_about_duplicate",
     "create_record",
-    "update_record",
+    "expand_vocabulary",
+    "DotAccessWrapper",
+    "get_learningresourcetypedict",
+    "get_oefosdict",
+    "LOMCourseMetadata",
     "LOMDuplicateRecordError",
+    "LOMMetadata",
+    "LOMRecordData",
+    "make_lom_vcard",
+    "update_record",
 )
