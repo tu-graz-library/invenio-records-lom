@@ -29,6 +29,17 @@ from sqlalchemy.orm.exc import NoResultFound
 from ...proxies import current_records_lom
 
 
+def pass_include_deleted[T](func: Callable[..., T]) -> Callable:
+    """Retrive `include_deleted` from request-args and pass into decorated function."""
+
+    @wraps(func)
+    def decoed(**kwargs: dict) -> T:
+        include_deleted = request.args.get("include_deleted") == "1"
+        return func(**kwargs, include_deleted=include_deleted)
+
+    return decoed
+
+
 def pass_is_oer_certified[T](func: Callable[..., T]) -> Callable:
     """Check if the logged in user has the permission to create oer's."""
 
