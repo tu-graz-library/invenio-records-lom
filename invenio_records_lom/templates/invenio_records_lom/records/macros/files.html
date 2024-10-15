@@ -34,19 +34,15 @@
 
 
 {% macro lom_preview_file_box(file, pid, is_preview, record) %}
-<div class="">
-  <div class="ui accordion panel mb-10 {{record.ui.access_status.id}}" id="preview" href="#collapsablePreview">
-    <div class="active title trigger panel-heading {{record.ui.access_status.id}} truncated" tabindex="0" aria-label="{{ _('File preview') }}">
+  <div id="lom-filepreview-accordion" class="ui accordion panel mb-10 {{record.ui.access_status.id}}" href="#files-preview-accordion-panel">
+    <h3 class="active title trigger panel-heading truncated m-0 {{record.ui.access_status.id}}" aria-label="{{ _('File preview') }}">
       <span id="preview-file-title">{{file.key}}</span>
       <i class="ui angle right icon"></i>
-    </div>
-    <div id="collapsablePreview" class="active content pt-0">
-      <div>
-        {{ preview_file('invenio_records_lom.record_file_preview', pid_value=pid, filename=file.key, is_preview=is_preview) }}
-      </div>
+    </h3>
+    <div id="collapsablePreview" class="active conten pt-0">
+      {{ preview_file('invenio_records_lom.record_file_preview', pid_value=pid, filename=file.key, is_preview=is_preview) }}
     </div>
   </div>
-</div>
 {%- endmacro %}
 
 
@@ -112,31 +108,29 @@
 
 
 {% macro lom_file_list_box(files, pid, is_preview, record) %}
-  <div class="">
-    <div class="ui accordion panel mb-10 {{record.ui.access_status.id}}" id="preview" href="#collapsablePreview">
-      <div class="active title trigger panel-heading {{record.ui.access_status.id}}" tabindex="0">
-        {{ _("Files") }}
-        <small class="text-muted">
-          {% if files %}
-            ({{files|sum(attribute='size')|filesizeformat}})
-          {% endif %}
-        </small>
-        <i class="angle right icon"></i>
-      </div>
-      <div class="active content pt-0">
-        {% if record.access.files == 'restricted' %}
-          <div class="ui {{ record.ui.access_status.message_class }} message file-box-message">
-            <i class="ui {{ record.ui.access_status.icon }} icon"></i>
-            <b>{{ record.ui.access_status.title_l10n }}</b>
-            <p>{{ record.ui.access_status.description_l10n }}</p>
-            {% if record.access.embargo.reason %}
-              <p>{{_("Reason")}}: {{record.access.embargo.reason}}</p>
-            {% endif%}
-          </div>
+  <div id="lom-filelist-accordion" class="ui accordion panel mb-10 {{record.ui.access_status.id}}" href="#files-list-accordion-panel">
+    <h3 class="active title trigger panel-heading m-0 {{record.ui.access_status.id}}" aria-label="{{ _('Files') }}">
+      {{ _("Files") }}
+      <small class="text-muted">
+        {% if files %}
+          ({{files|sum(attribute='size')|filesizeformat}})
         {% endif %}
-        <div id="collapsableFiles">
-          {{ file_list(files, pid, is_preview) }}
+      </small>
+      <i class="angle right icon"></i>
+    </h3>
+    <div class="active content pt-0">
+      {% if record.access.files == 'restricted' %}
+        <div class="ui {{ record.ui.access_status.message_class }} message file-box-message">
+          <i class="ui {{ record.ui.access_status.icon }} icon"></i>
+          <b>{{ record.ui.access_status.title_l10n }}</b>
+          <p>{{ record.ui.access_status.description_l10n }}</p>
+          {% if record.access.embargo.reason %}
+            <p>{{_("Reason")}}: {{record.access.embargo.reason}}</p>
+          {% endif%}
         </div>
+      {% endif %}
+      <div id="collapsableFiles">
+        {{ file_list(files, pid, is_preview) }}
       </div>
     </div>
   </div>
