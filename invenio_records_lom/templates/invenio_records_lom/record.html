@@ -52,10 +52,10 @@
         </div>
         <div class="right floated right aligned column">
           {% if record.ui.resource_type %}
-            <span class="ui label small neutral mb-5"
+            <span class="ui label horizontal small neutral mb-5"
                   title="{{ _('Resource type') }}">{{ record.ui.resource_type | capitalize }}</span>
           {% endif %}
-          <span class="ui label small access-status {{ record.ui.access_status.id }} mb-5"
+          <span class="ui label horizontal small access-status {{ record.ui.access_status.id }} mb-5"
                 title="{{ _('Access status') }}"
                 data-tooltip="{{ record.ui.access_status.description_l10n }}"
                 data-inverted=""
