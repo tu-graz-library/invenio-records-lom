@@ -33,6 +33,7 @@ from ...resources.serializers import LOMToUIJSONSerializer
 from .decorators import (
     pass_file_item,
     pass_file_metadata,
+    pass_include_deleted,
     pass_is_preview,
     pass_record_files,
     pass_record_from_pid,
@@ -87,6 +88,7 @@ class PreviewFile:
 # Views
 #
 @pass_is_preview
+@pass_include_deleted
 @pass_record_or_draft
 @pass_record_files
 def record_detail(
@@ -94,6 +96,8 @@ def record_detail(
     is_preview: bool | None = None,
     record: RecordItem = None,
     files: FileList | None = None,
+    *,
+    include_deleted: bool = False,
 ) -> str:
     """Record detail page (aka landing page)."""
     files_dict = {} if files is None else files.to_dict()
@@ -113,14 +117,15 @@ def record_detail(
 
     return render_template(
         "invenio_records_lom/record.html",
-        record=record_ui,
-        pid=pid_value,
         files=files_dict,
+        include_deleted=include_deleted,
+        is_draft=is_draft,
+        is_preview=is_preview,
         permissions=record.has_permissions_to(
             ["edit", "new_version", "manage", "update_draft", "read_files", "review"],
         ),
-        is_preview=is_preview,
-        is_draft=is_draft,
+        pid=pid_value,
+        record=record_ui,
     )
 
 

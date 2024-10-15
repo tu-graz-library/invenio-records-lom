@@ -232,7 +232,7 @@ class LOMUIBaseSchema(BaseObjectSchema):
         """Get DOI."""
         prefix = current_app.config["DATACITE_PREFIX"]
         pid = obj["id"]
-        return f"https://dx.doi.org/{prefix}/{pid}"
+        return f"https://doi.org/{prefix}/{pid}"
 
 
 class LOMUILinkSchema(LOMUIBaseSchema):

@@ -9,7 +9,16 @@ import React, { useState } from "react";
 import { http } from "react-invenio-forms";
 import { Button } from "semantic-ui-react";
 
-export const EditButton = ({ recid, onError, className, size, fluid }) => {
+export const EditButton = ({
+  recid,
+  onError,
+  // the following arguments are for UI:
+  className,
+  compact,
+  floated,
+  fluid,
+  size,
+}) => {
   const [loading, setLoading] = useState(false);
 
   const editThenRedirect = async () => {
@@ -36,11 +45,12 @@ export const EditButton = ({ recid, onError, className, size, fluid }) => {
   return (
     <Button
       className={className}
-      compact
+      compact={compact}
       content={i18next.t("Edit")}
-      floated="right"
+      floated={floated}
       fluid={fluid}
       icon="edit"
+      labelPosition="left"
       loading={loading}
       onClick={() => editThenRedirect()}
       size={size}
@@ -50,6 +60,8 @@ export const EditButton = ({ recid, onError, className, size, fluid }) => {
 
 EditButton.propTypes = {
   className: PropTypes.string,
+  compact: PropTypes.bool,
+  floated: PropTypes.string,
   fluid: PropTypes.bool,
   onError: PropTypes.func.isRequired,
   recid: PropTypes.string.isRequired,
@@ -58,6 +70,8 @@ EditButton.propTypes = {
 
 EditButton.defaultProps = {
   className: null,
+  compact: false,
+  floated: null,
   fluid: false,
-  size: "small",
+  size: null,
 };
