@@ -18,6 +18,7 @@ from invenio_drafts_resources.services.records.config import (
 )
 from invenio_indexer.api import RecordIndexer
 from invenio_rdm_records.services.config import (
+    archive_download_enabled,
     has_doi,
     is_iiif_compatible,
     is_record_and_has_doi,
@@ -161,6 +162,17 @@ class LOMRecordServiceConfig(RecordServiceConfig, ConfiguratorMixin):
     # links
     links_item = MappingProxyType(
         {
+            "archive": ConditionalLink(
+                cond=is_record,
+                if_=RecordLink(
+                    "{+api}/oer/{id}/files-archive",
+                    when=archive_download_enabled,
+                ),
+                else_=RecordLink(
+                    "{+api}/oer/{id}/draft/files-archive",
+                    when=archive_download_enabled,
+                ),
+            ),
             "doi": Link(
                 "https://doi.org/{+pid_doi}",
                 when=has_doi,
@@ -231,6 +243,10 @@ class LOMDraftFilesServiceConfig(FileServiceConfig, ConfiguratorMixin):
     file_links_list = MappingProxyType(
         {
             "self": RecordLink("{+api}/oer/{id}/draft/files"),
+            "archive": RecordLink(
+                "{+api}/oer/{id}/draft/files-archive",
+                when=archive_download_enabled,
+            ),
         },
     )
 
@@ -260,7 +276,14 @@ class LOMRecordFilesServiceConfig(FileServiceConfig, ConfiguratorMixin):
         import_string=True,
     )
 
-    file_links_list = MappingProxyType({})
+    file_links_list = MappingProxyType(
+        {
+            "archive": RecordLink(
+                "{+api}/oer/{id}/files-archive",
+                when=archive_download_enabled,
+            ),
+        },
+    )
     file_links_item = MappingProxyType(
         {
             "iiif_base": FileLink(

@@ -50,6 +50,7 @@
   files,
   pid,
   is_preview,
+  record=None,
   with_preview=true,
   download_endpoint='invenio_records_lom.record_file_download',
   preview_endpoint='invenio_records_lom.record_file_preview'
@@ -60,7 +61,14 @@
         <th>{{_('Name')}}</th>
         <th>{{_('Size')}}</th>
         {# TODO: invenio does archive-download here; if that were implemented for lom-records, we can use invenio's macro and remove this macro... #}
-        <th></th>
+        <th>
+          {% if config.RDM_ARCHIVE_DOWNLOAD_ENABLED %}
+            <a role:="button" class="ui compact mini button right floated archive-link" href="{{ record.links.archive }}">
+              <i class="file archive icon button" aria-hidden="true"></i>
+              {{ _("Download all") }}
+            </a>
+          {% endif %}
+        </th>
       </tr>
     </thead>
     <tbody>
@@ -130,7 +138,7 @@
         </div>
       {% endif %}
       <div id="collapsableFiles">
-        {{ file_list(files, pid, is_preview) }}
+        {{ file_list(files, pid, is_preview, record=record) }}
       </div>
     </div>
   </div>
