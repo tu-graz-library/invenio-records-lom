@@ -3,6 +3,7 @@
 // invenio-records-lom is free software; you can redistribute it and/or modify it
 // under the terms of the MIT License; see LICENSE file for more details.
 
+import $ from "jquery";
 import React from "react"; // needs be in scope to use .jsx
 import { createRoot } from "react-dom/client";
 import { LOMRecordManagement } from "./LOMRecordManagement";
@@ -20,3 +21,7 @@ if (recordManagementElement) {
     />
   );
 }
+
+// enable semantic-ui's accordion-behavior for file-preview and files-list
+$("#lom-filelist-accordion").accordion();
+$("#lom-filepreview-accordion").accordion();

@@ -22,13 +22,15 @@
   <section id="record-files" class="rel-mt-2" aria-label="{{ _('Files') }}">
     {% if permissions.can_read_files %}
       {# record has files AND user can see files #}
-      <h2 id="files-heading">{{ _("Files") }}</h2>
       {% set files = files|order_entries %}
-      {% if files|has_previewable_files %}
-        {% set preview_file = files|select_preview_file(default_preview=record.files.default_preview) %}
-        {{ lom_preview_file_box(preview_file, pid, is_preview, record) }}
+      {% if files %}
+        <h2 id="files-heading">{{ _("Files") }}</h2>
+        {% if files|has_previewable_files %}
+          {% set preview_file = files|select_preview_file(default_preview=record.files.default_preview) %}
+          {{ lom_preview_file_box(preview_file, pid, is_preview, record) }}
+        {% endif %}
+        {{ lom_file_list_box(files, pid, is_preview, record) }}
       {% endif %}
-      {{ lom_file_list_box(files, pid, is_preview, record) }}
     {% else %}
       {# record has files BUT user cannot see files #}
       <div class="pt-0 pb-20">
