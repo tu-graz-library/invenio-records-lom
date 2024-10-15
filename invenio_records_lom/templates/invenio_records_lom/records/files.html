@@ -29,7 +29,7 @@
           {% set preview_file = files|select_preview_file(default_preview=record.files.default_preview) %}
           {{ lom_preview_file_box(preview_file, pid, is_preview, record) }}
         {% endif %}
-        {{ lom_file_list_box(files, pid, is_preview, record) }}
+        {{ lom_file_list_box(files, pid, is_preview, include_deleted, record, permissions) }}
       {% endif %}
     {% else %}
       {# record has files BUT user cannot see files #}
