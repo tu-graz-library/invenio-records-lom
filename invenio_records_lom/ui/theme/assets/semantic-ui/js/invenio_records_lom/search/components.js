@@ -124,7 +124,13 @@ export const LOMRecordResultsListItem = ({ result, index }) => {
               {accessStatus}
             </Label>
             <div className="ui right floated">
-              <EditButton recid={result.id} onError={handleError} />
+              <EditButton
+                recid={result.id}
+                onError={handleError}
+                compact
+                floated="right"
+                size="small"
+              />
               {error && (
                 <Label basic color="red" pointing="right">
                   {error}
