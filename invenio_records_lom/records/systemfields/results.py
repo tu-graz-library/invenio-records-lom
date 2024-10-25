@@ -15,7 +15,7 @@ from ...utils import DotAccessWrapper
 class RelationLOMResult(RelationResult):
     """Relation access result."""
 
-    def __call__(self, *, force: bool = True) -> None:  # noqa: ARG002
+    def __call__(self, *, force: bool = True) -> None:
         """Resolve the relation."""
         msg = f"{self.__class__.__qualname__}.__call__ is not implemented yet"
         raise NotImplementedError(msg)
@@ -83,13 +83,13 @@ class RelationLOMResult(RelationResult):
         # gets called pre_commit, clears any dereferenced values before committing
         self._apply_items(self._clean_one, keys, attrs)
 
-    def append(self, value) -> None:  # noqa: ANN001, ARG002
+    def append(self, value) -> None:  # noqa: ANN001
         """Append a relation to the list."""
         # (2021-10-18): invenio raises here too
         msg = f"{self.__class__.__qualname__}.append is not implemented yet"
         raise NotImplementedError(msg)
 
-    def insert(self, index, value) -> None:  # noqa: ANN001, ARG002
+    def insert(self, index, value) -> None:  # noqa: ANN001
         """Insert a relation to the list."""
         # (2021-10-18): invenio raises here too
         msg = f"{self.__class__.__qualname__}.insert is not implemented yet"
