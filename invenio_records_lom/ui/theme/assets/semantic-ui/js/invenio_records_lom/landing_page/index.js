@@ -5,20 +5,20 @@
 
 import $ from "jquery";
 import React from "react"; // needs be in scope to use .jsx
-import { createRoot } from "react-dom/client";
+import ReactDOM from "react-dom";
 import { LOMRecordManagement } from "./LOMRecordManagement";
 
 const recordManagementElement = document.getElementById("lomRecordManagement");
 
 // TODO: use invenio's management React-component instead once they implement configurable API-urls
 if (recordManagementElement) {
-  const root = createRoot(recordManagementElement);
-  root.render(
+  ReactDOM.render(
     <LOMRecordManagement
       record={JSON.parse(recordManagementElement.dataset.record)}
       permissions={JSON.parse(recordManagementElement.dataset.permissions)}
       isDraft={JSON.parse(recordManagementElement.dataset.isDraft)}
-    />
+    />,
+    recordManagementElement
   );
 }
 
