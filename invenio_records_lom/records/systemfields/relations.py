@@ -37,22 +37,22 @@ class PIDLOMRelation(PIDRelation):
         self._catalog = _catalog
         super().__init__(key=key, _value_key_suffix=_value_key_suffix, **kwargs)
 
-    def parse_value(self, value) -> None:  # noqa: ANN001, ARG002
+    def parse_value(self, value) -> None:  # noqa: ANN001
         """Parse a record (or ID) to the ID to be stored."""
         msg = f"{self.__class__.__qualname__}.parse_value is not implemented yet"
         raise NotImplementedError(msg)
 
-    def set_value(self, record, value) -> None:  # noqa: ANN001, ARG002
+    def set_value(self, record, value) -> None:  # noqa: ANN001
         """Set the relation value."""
         msg = f"{self.__class__.__qualname__}.set_value is not implemented yet"
         raise NotImplementedError(msg)
 
-    def clear_value(self, record) -> bool:  # noqa: ANN001, ARG002
+    def clear_value(self, record) -> bool:  # noqa: ANN001
         """Clear the relation value."""
         msg = f"{self.__class__.__qualname__}.clear_value is not implemented yet"
         raise NotImplementedError(msg)
 
-    def exists_many(self, ids: list) -> bool:  # noqa: ARG002
+    def exists_many(self, ids: list) -> bool:
         """Check multiple existence by a list of IDs."""
         msg = f"{self.__class__.__qualname__}.exists_many is not implemented yet"
         raise NotImplementedError(msg)
