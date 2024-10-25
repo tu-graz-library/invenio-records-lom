@@ -5,16 +5,15 @@
 
 import { getInputFromDOM } from "@js/invenio_rdm_records";
 import React from "react"; // needs be in scope to use .jsx
-import { createRoot } from "react-dom/client";
+import ReactDOM from "react-dom";
 import LOMDepositForm from "./LOMDepositForm";
 
-const root = createRoot(document.getElementById("lom-deposit-form"));
-
-root.render(
+ReactDOM.render(
   <LOMDepositForm
     config={getInputFromDOM("lom-deposit-config")}
     files={getInputFromDOM("lom-deposit-files")}
     record={getInputFromDOM("lom-deposit-record")}
     permissions={getInputFromDOM("lom-deposit-record-permissions")}
-  />
+  />,
+  document.getElementById("lom-deposit-form")
 );
