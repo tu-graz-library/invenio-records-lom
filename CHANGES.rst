@@ -7,6 +7,43 @@
 Changes
 =======
 
+Version v0.17.0 (release 2024-10-26)
+
+- jinja: use invenio's file_list macro over our copy
+- ui: add button for downloading all files
+- ui: implement collapsing for file-preview/file-list
+- ui: add `technical_metadata` side-card
+- ui: align `<EditButton />`'s style with invenio's
+- ui: add info-link to stats sidecard
+- ui: align side-cards' style with invenio's
+- ui: align record-labels' style with invenio's
+- ui: remove `dx.` from DOI-url when serializing
+- fix: show `<LomStats />` also when no `createdDate`
+- fix: remove `defaultValue` when `value` exists
+- fix: pass props that prop-types marks as required
+- fix: mark `closeAction` as optional
+- fix: create full record rather than just metadata
+- `LOMRecordData`: add fields from `self` to `.json`
+- CI: lint javascript with `eslint`
+- search-ui: remove field that LOM doesn't have
+- react: don't use array-index as key
+- react: destructure props
+- js: use erroneously unused variables
+- js: use camelCase
+- react: add defaultProps
+- react: add propTypes
+- fix: request our custom mime-type in `EditButton`
+- fix: realign signature of file-preview view-function
+- fix: use `dict` for `RequestParser` args
+- fix: re-align function signature with marshmallow
+- fix: typo in entrypoints
+- update: negotiate custom mimetype
+- fix: finalize api-app too
+- fix: remove `()` from `@pytest.fixture()`
+- permission: change inheritance
+
+
+
 Version v0.16.0 (release 2024-07-05)
 
 - upgrade: add script to upgrade parent
