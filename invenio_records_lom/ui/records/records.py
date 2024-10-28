@@ -53,11 +53,13 @@ class PreviewFile:
         self,
         file_item: FileItem,
         record_pid_value: str,
+        record: RecordItem = None,
         url: str | None = None,
     ) -> None:
         """Create a new PreviewFile."""
         self.file = file_item
         self.data = file_item.data
+        self.record = record
         self.size = self.data["size"]
         self.filename = self.data["key"]
         self.bucket = self.data["bucket_id"]
@@ -164,7 +166,7 @@ def record_export(
 @pass_file_metadata
 def record_file_preview(  # noqa: ANN201
     pid_value: str | None = None,
-    record: RecordItem | None = None,  # noqa: ARG001
+    record: RecordItem | None = None,
     pid_type: str = "recid",  # noqa: ARG001
     file_metadata: FileItem | None = None,
     *,
@@ -182,7 +184,7 @@ def record_file_preview(  # noqa: ANN201
     )
 
     # find a suitable previewer
-    file_obj = PreviewFile(file_metadata, pid_value, url)
+    file_obj = PreviewFile(file_metadata, pid_value, record, url)
     previewers = [file_previewer] if file_previewer else None
     for plugin in current_previewer.iter_previewers(previewers=previewers):
         if plugin.can_preview(file_obj):
