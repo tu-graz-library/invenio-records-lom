@@ -84,28 +84,28 @@ class InvenioRecordsLOM:
             config=None,
         )
 
-    def init_resources(self, app: Flask) -> None:  # noqa: ARG002
+    def init_resources(self, app: Flask) -> None:
         """Initialize resouces."""
         self.draft_files_resource = FileResource(
-            config=LOMDraftFilesResourceConfig,
+            config=LOMDraftFilesResourceConfig.build(app),
             service=self.records_service.draft_files,
         )
 
         # pylint: disable-next=attribute-defined-outside-init
         self.iiif_resource = IIIFResource(
-            config=LOMIIIFResourceConfig,
+            config=LOMIIIFResourceConfig.build(app),
             service=self.iiif_service,
         )
 
         # pylint: disable-next=attribute-defined-outside-init
         self.record_files_resource = FileResource(
-            config=LOMRecordFilesResourceConfig,
+            config=LOMRecordFilesResourceConfig.build(app),
             service=self.records_service.files,
         )
 
         # pylint: disable-next=attribute-defined-outside-init
         self.records_resource = LOMRecordResource(
-            config=LOMRecordResourceConfig,
+            config=LOMRecordResourceConfig.build(app),
             service=self.records_service,
         )
 
