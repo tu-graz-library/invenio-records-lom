@@ -13,6 +13,7 @@ from flask_resources import JSONSerializer, ResponseHandler
 from invenio_rdm_records.resources import IIIFResourceConfig
 from invenio_records_resources.resources import RecordResourceConfig
 from invenio_records_resources.resources.files import FileResourceConfig
+from invenio_records_resources.services.base.config import ConfiguratorMixin
 from marshmallow import fields
 
 from .serializers import LOMToUIJSONSerializer
@@ -25,7 +26,7 @@ record_serializers = {
 url_prefix = "/oer"
 
 
-class LOMDraftFilesResourceConfig(FileResourceConfig):
+class LOMDraftFilesResourceConfig(FileResourceConfig, ConfiguratorMixin):
     """LOM Draft Files Resource configuration."""
 
     blueprint_name = "lom_draft_files"
@@ -39,7 +40,7 @@ class LOMDraftFilesResourceConfig(FileResourceConfig):
     }
 
 
-class LOMRecordFilesResourceConfig(FileResourceConfig):
+class LOMRecordFilesResourceConfig(FileResourceConfig, ConfiguratorMixin):
     """LOM Record Files Resource configuration."""
 
     allow_upload = False
@@ -47,7 +48,7 @@ class LOMRecordFilesResourceConfig(FileResourceConfig):
     url_prefix = f"{url_prefix}/<pid_value>"
 
 
-class LOMRecordResourceConfig(RecordResourceConfig):
+class LOMRecordResourceConfig(RecordResourceConfig, ConfiguratorMixin):
     """LOM Record Resource configuration."""
 
     blueprint_name = "lom_records"
