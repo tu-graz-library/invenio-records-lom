@@ -11,7 +11,7 @@ from flask import current_app, g
 from invenio_pidstore.errors import PIDDoesNotExistError
 from invenio_pidstore.models import PersistentIdentifier
 from invenio_records_resources.services.errors import PermissionDeniedError
-from invenio_records_resources.services.result import RecordItem
+from invenio_records_resources.services.records.results import RecordItem
 
 from .proxies import current_records_lom
 from .resources.serializers import LOMToOAIXMLSerializer
