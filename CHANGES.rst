@@ -7,6 +7,14 @@
 Changes
 =======
 
+Version v0.17.1 (release 2024-10-28)
+
+- fix: accept `filename`-kwarg on file-download
+- fix: import from correct path
+- fix: build resource-configs
+- fix: re-align `PreviewFile` with `invenio-app-rdm`
+
+
 Version v0.17.0 (release 2024-10-26)
 
 - jinja: use invenio's file_list macro over our copy
