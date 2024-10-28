@@ -198,6 +198,7 @@ def record_file_preview(  # noqa: ANN201
 def record_file_download(  # noqa: ANN201
     file_item: FileItem = None,
     pid_value: str | None = None,  # noqa: ARG001
+    filename: str | None = None,  # noqa: ARG001
     *,
     is_preview: bool = False,  # noqa: ARG001
 ):
