@@ -230,9 +230,8 @@ class LOMUIBaseSchema(BaseObjectSchema):
 
     def get_doi(self, obj: dict) -> str:
         """Get DOI."""
-        prefix = current_app.config["DATACITE_PREFIX"]
-        pid = obj["id"]
-        return f"https://doi.org/{prefix}/{pid}"
+        doi = obj.get("pids", {}).get("doi", {}).get("identifier", "")
+        return f"https://doi.org/{doi}"
 
 
 class LOMUILinkSchema(LOMUIBaseSchema):
