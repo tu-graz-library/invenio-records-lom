@@ -38,9 +38,9 @@ def lom_reindex_stats(stats_indices: list) -> str:
     if not last_run:
         # If this is the first time that we run, let's do it for the documents
         # of the last week
-        last_run = (datetime.now(timezone.UTC) - timedelta(days=7)).isoformat()
+        last_run = (datetime.now(timezone.utc) - timedelta(days=7)).isoformat()
 
-    reindex_start_time = datetime.now(timezone.UTC).isoformat()
+    reindex_start_time = datetime.now(timezone.utc).isoformat()
     indices = ",".join(f"{prefix_index(x)}*" for x in stats_indices)
 
     all_parents = set()
