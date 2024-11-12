@@ -221,6 +221,7 @@ class ContributeSchema(ExcludeUnknownOrderedSchema):
 class LifecycleSchema(ExcludeUnknownOrderedSchema):
     """Schema for LOM-UIBK's `lifecycle` category."""
 
+    datetime = fields.String()
     version = fields.Field()
     status = fields.Field()
     contribute = fields.List(fields.Nested(ContributeSchema()))
