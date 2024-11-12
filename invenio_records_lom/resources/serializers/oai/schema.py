@@ -9,7 +9,7 @@
 
 from copy import copy
 
-from marshmallow import EXCLUDE, Schema, fields, pre_load, validate, validates_schema
+from marshmallow import EXCLUDE, Schema, fields, pre_dump, validate, validates_schema
 
 from ....services.schemas.metadata import validate_cc_license_lang
 from ....utils import make_lom_vcard
@@ -225,7 +225,7 @@ class LifecycleSchema(ExcludeUnknownOrderedSchema):
     status = fields.Field()
     contribute = fields.List(fields.Nested(ContributeSchema()))
 
-    @pre_load
+    @pre_dump
     def group_contributes_by_role(self, data: dict, **__: dict) -> dict:
         """Group contributes by role."""
         contributions_by_role = {}
