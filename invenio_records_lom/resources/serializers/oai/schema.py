@@ -309,12 +309,12 @@ class LearningResourceTypeSchema(ExcludeUnknownOrderedSchema):
         validate=validate.Equal(LANGSTRING_KIM_HCRT_SCHEME),
         dump_default=LANGSTRING_KIM_HCRT_SCHEME,
     )
-    id = fields.Str(required=True, dump_default="N/A")
+    id = fields.Str(required=True, dump_default="https://w3id.org/kim/hcrt/other")
 
     @classmethod
     def dump_default(cls) -> dict:
         """Dump default."""
-        obj = {"id": "N/A"}
+        obj = {"id": "https://w3id.org/kim/hcrt/other"}
         obj |= {"source": LANGSTRING_KIM_HCRT_SCHEME}
         return obj
 
