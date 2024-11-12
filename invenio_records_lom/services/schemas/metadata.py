@@ -9,6 +9,7 @@
 
 from collections.abc import Callable
 from copy import copy
+from datetime import datetime, timezone
 from types import MappingProxyType
 
 from invenio_i18n import lazy_gettext as _
@@ -23,6 +24,15 @@ from marshmallow import (
 )
 from marshmallow_utils.fields import SanitizedUnicode
 from marshmallow_utils.html import sanitize_unicode
+
+
+def now_isoformat() -> str:
+    """Return current date and time in ISO-8601 format.
+
+    example-return: '2020-06-24T05:34:56.789123'
+    """
+    now_unaware = datetime.now(timezone.utc).replace(tzinfo=None)
+    return now_unaware.isoformat()
 
 
 class NoValidationSchema(Schema):
@@ -250,6 +260,7 @@ class ContributeSchema(Schema):
 class LifecycleSchema(Schema):
     """Schema for LOM's `lifecycle` category."""
 
+    datetime = fields.String(load_default=now_isoformat)
     contribute = fields.List(
         fields.Nested(ContributeSchema()),
         required=True,
