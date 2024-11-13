@@ -225,7 +225,7 @@ def record_latest(  # noqa: ANN201
     record: RecordItem = None,
 ):
     """Redirect to record's landing page."""
-    return redirect(record["links"]["self_html"], code=301)
+    return redirect(record["links"]["self_html"], code=302)
 
 
 @pass_record_from_pid
@@ -234,4 +234,4 @@ def record_from_pid(  # noqa: ANN201
     **__,  # noqa: ANN003
 ):
     """Redirect to record's landing page."""
-    return redirect(record["links"]["self_html"], code=301)
+    return redirect(record["links"]["self_html"], code=302)
