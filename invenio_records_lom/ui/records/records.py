@@ -100,6 +100,7 @@ def record_detail(
     files: FileList | None = None,
     *,
     include_deleted: bool = False,
+    **__,  # noqa: ANN003
 ) -> str:
     """Record detail page (aka landing page)."""
     files_dict = {} if files is None else files.to_dict()
@@ -139,6 +140,7 @@ def record_export(
     pid_value: str | None = None,
     *,
     is_preview: bool | None = False,  # noqa: ARG001
+    **__,  # noqa: ANN003
 ) -> tuple[dict, int, dict]:
     """Export view for LOM records."""
     exporter = current_app.config.get("LOM_RECORD_EXPORTERS", {}).get(export_format)
@@ -201,6 +203,7 @@ def record_file_download(  # noqa: ANN201
     filename: str | None = None,  # noqa: ARG001
     *,
     is_preview: bool = False,  # noqa: ARG001
+    **__,  # noqa: ANN003
 ):
     """Download a file from a record."""
     # emit a file download stats event
@@ -223,6 +226,7 @@ def record_file_download(  # noqa: ANN201
 @pass_record_latest
 def record_latest(  # noqa: ANN201
     record: RecordItem = None,
+    **__,  # noqa: ANN003
 ):
     """Redirect to record's landing page."""
     return redirect(record["links"]["self_html"], code=302)
