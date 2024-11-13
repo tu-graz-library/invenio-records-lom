@@ -231,6 +231,7 @@ def record_latest(  # noqa: ANN201
 @pass_record_from_pid
 def record_from_pid(  # noqa: ANN201
     record: RecordItem = None,
+    **__,  # noqa: ANN003
 ):
     """Redirect to record's landing page."""
     return redirect(record["links"]["self_html"], code=301)
