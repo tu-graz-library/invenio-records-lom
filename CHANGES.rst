@@ -7,6 +7,19 @@
 Changes
 =======
 
+Version v0.17.2 (release 2024-11-14)
+
+- views: ignore extraneous kwargs
+- fix: change redirect codes to 302
+- fix: fix redirecting of DOI-url
+- oai: change default for learningresourcetype
+- uploads: add load-default for `lifecycle.datetime`
+- oai: add `lifecycle.datetime` to generated output
+- fix: use `pre_dump` for dump-only OAI-schema
+- fix: DOI resolution
+- fix: get `UTC` timezone via correct attribute-name
+
+
 Version v0.17.1 (release 2024-10-28)
 
 - fix: accept `filename`-kwarg on file-download
