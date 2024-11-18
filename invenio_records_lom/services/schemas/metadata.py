@@ -352,7 +352,11 @@ class LearningResourceTypeSchema(Schema):
 class EducationalSchema(Schema):
     """Schema for LOM's `educational` category."""
 
-    learningresourcetype = fields.Nested(LearningResourceTypeSchema, required=True)
+    learningresourcetype = fields.List(
+        fields.Nested(LearningResourceTypeSchema, required=True),
+        required=True,
+        validate=validate.Length(min=1),
+    )
 
 
 class CopyrightAndOtherSchema(Schema):

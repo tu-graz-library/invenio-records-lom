@@ -197,7 +197,7 @@ export class LOMDepositRecordSerializer extends DepositRecordSerializer {
 
     // deserialize resource-type
     form.resourcetype = {
-      value: _get(metadata, "educational.learningresourcetype.id", ""),
+      value: _get(metadata, "educational.learningresourcetype.0.id", ""),
     };
 
     // deserialize contributors
@@ -289,7 +289,7 @@ export class LOMDepositRecordSerializer extends DepositRecordSerializer {
 
     // serialize resource-type
     const resourcetypeUrl = _get(metadata, "form.resourcetype.value", "");
-    _set(metadata, "educational.learningresourcetype", {
+    _set(metadata, "educational.learningresourcetype.0", {
       source: {
         langstring: {
           "#text": "https://w3id.org/kim/hcrt/scheme",
@@ -364,7 +364,7 @@ export class LOMDepositRecordSerializer extends DepositRecordSerializer {
     setErrors(/^metadata\.rights\.url/, "license.value");
     setErrors(/^metadata\.technical\.format/, "format.value");
     setErrors(
-      /^metadata\.educational\.learningresourcetype\.id$/,
+      /^metadata\.educational\.learningresourcetype\.\d+\.id$/,
       "resourcetype.value"
     );
 
