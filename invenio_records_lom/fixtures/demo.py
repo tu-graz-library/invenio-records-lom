@@ -241,7 +241,7 @@ def create_fake_educational(fake: Faker) -> dict:
 
     return {
         "interactivitytype": vocabularify(fake, interactivity_types),
-        "learningresourcetype": create_fake_learningresourcetype(fake),
+        "learningresourcetype": [create_fake_learningresourcetype(fake)],
         "interactivitylevel": vocabularify(fake, levels),
         "semanticdensity": vocabularify(fake, levels),
         "intendedenduserrole": vocabularify(fake, end_user_roles),

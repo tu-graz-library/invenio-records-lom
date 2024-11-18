@@ -322,10 +322,12 @@ class LearningResourceTypeSchema(ExcludeUnknownOrderedSchema):
 class EducationalSchema(ExcludeUnknownOrderedSchema):
     """Schema for LOM-UIBK's `educational` category."""
 
-    learningresourcetype = fields.Nested(
-        LearningResourceTypeSchema(),
-        required=True,
-        dump_default=LearningResourceTypeSchema.dump_default,
+    learningresourcetype = fields.List(
+        fields.Nested(
+            LearningResourceTypeSchema(),
+            required=True,
+            dump_default=LearningResourceTypeSchema.dump_default,
+        ),
     )
 
 
