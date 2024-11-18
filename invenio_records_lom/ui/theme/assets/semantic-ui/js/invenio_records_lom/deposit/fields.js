@@ -132,7 +132,7 @@ export const LeftLabeledTextField = ({
           placeholder={placeholder}
           rows={rows}
           type="text"
-          value={fieldMeta.value}
+          value={fieldMeta.value || null}
         />
         {required && (
           <div className="ui corner label">
