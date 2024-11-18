@@ -431,8 +431,15 @@ class LOMMetadata(BaseLOMMetadata):  # pylint: disable=too-many-public-methods
     def append_learningresourcetype(self, learningresourcetype: str) -> None:
         """Append learning resource type.
 
-        :param str learningresourcetype: A valid sub-url for `https://w3id.org/kim/hcrt/scheme`
+        :param str learningresourcetype: Either
+            - a URL within the vocabulary `https://w3id.org/kim/hcrt/scheme`
+            - a suffix such that `https://w3id.org/kim/hcrt/{suffix}` is such a URL
         """
+        # if the full url was passed, remove base_url from it
+        base_url = "https://w3id.org/kim/hcrt/"
+        if learningresourcetype.startswith(base_url):
+            learningresourcetype = learningresourcetype[len(base_url) :]
+
         labels = self.learningresourcetype_labels[learningresourcetype]
         entry = [langstringify(label, lang=lang) for lang, label in labels.items()]
         learningresourcetype_dict = {
