@@ -17,6 +17,6 @@ from .demo import (
 __all__ = (
     "create_fake_data",
     "publish_fake_record",
-    "publish_fake_records",
     "publish_fake_record_over_celery",
+    "publish_fake_records",
 )

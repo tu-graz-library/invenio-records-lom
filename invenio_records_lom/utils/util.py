@@ -7,7 +7,7 @@
 
 """Utilities for creation of LOM-compliant metadata."""
 
-from collections.abc import MutableMapping
+from collections.abc import Iterator, MutableMapping
 from csv import reader
 from importlib import resources
 from json import load
@@ -15,7 +15,6 @@ from pathlib import Path
 from re import compile as re_compile
 from re import sub
 from time import sleep
-from typing import Iterator
 
 from flask_principal import Identity
 from invenio_records_resources.services.base import Service

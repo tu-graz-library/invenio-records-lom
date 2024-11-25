@@ -22,15 +22,15 @@ from .vcard import make_lom_vcard
 
 __all__ = (
     "DotAccessWrapper",
-    "get_learningresourcetypedict",
-    "get_oefosdict",
-    "LOMMetadata",
     "LOMCourseMetadata",
+    "LOMDuplicateRecordError",
+    "LOMMetadata",
     "LOMRecordData",
-    "make_lom_vcard",
     "build_record_unique_id",
     "check_about_duplicate",
     "create_record",
+    "get_learningresourcetypedict",
+    "get_oefosdict",
+    "make_lom_vcard",
     "update_record",
-    "LOMDuplicateRecordError",
 )

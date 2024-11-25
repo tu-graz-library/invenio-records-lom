@@ -17,8 +17,8 @@ from .services import LOMRecordService
 
 __all__ = (
     "LOMDraftFilesServiceConfig",
-    "LOMRecordPermissionPolicy",
     "LOMRecordFilesServiceConfig",
+    "LOMRecordPermissionPolicy",
     "LOMRecordService",
     "LOMRecordServiceConfig",
 )
