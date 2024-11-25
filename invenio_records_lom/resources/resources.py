@@ -39,3 +39,6 @@ class LOMRecordResource(RDMRecordResource):
             # User Dashboard routes
             route("GET", s(routes["user-prefix"]), self.search_user_records),
         ]
+
+    # TODO: some parent-methods have @response_header_signposting,
+    #   which adds an 'Link'-HTTP-header that is incorrect for LOM...

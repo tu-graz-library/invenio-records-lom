@@ -190,6 +190,19 @@
       </div>
     </div>
   {% endif %}
+  <div class="sidebar-container">
+    <h2 class="ui medium top attached header mt-0">{{ _('Citation') }}</h2>
+    <div id="citation" class="ui segment bottom attached rdm-sidebar">
+      <div
+        id="lomRecordCitation"
+        data-record='{{ record | tojson }}'
+        data-styles='{{ config.get("LOM_CITATION_STYLES") | tojson }}'
+        data-defaultstyle='{{ config.get("LOM_CITATION_STYLES_DEFAULT") | tojson }}'
+        data-include-deleted='{{ include_deleted | tojson }}'>
+        <!-- React-controlled -->
+      </div>
+    </div>
+  </div>
   {% if config.get("LOM_RECORD_EXPORTERS") %}
     {# if no export formats are specified, don't bother showing the box #}
     <div class="sidebar-container" aria-label="{{ _('Export') }}">
