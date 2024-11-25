@@ -7,6 +7,13 @@
 Changes
 =======
 
+Version v0.18.0 (release 2024-11-25)
+
+- fix: don't pass undefined to controlled component
+- fix: make learningresourcetype consistently a list
+- metadata: allow url in append_learningresourcetype
+
+
 Version v0.17.2 (release 2024-11-14)
 
 - views: ignore extraneous kwargs
