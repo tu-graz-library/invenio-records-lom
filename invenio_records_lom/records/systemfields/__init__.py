@@ -27,8 +27,8 @@ __all__ = (
     "LOMPIDFieldContext",
     "LOMRecordIdProvider",
     "LOMResolver",
-    "ParentRecordAccessField",
-    "PIDLOMRelation",
-    "RecordAccessField",
     "LomRecordStatisticsField",
+    "PIDLOMRelation",
+    "ParentRecordAccessField",
+    "RecordAccessField",
 )

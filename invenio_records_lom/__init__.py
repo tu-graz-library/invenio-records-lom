@@ -14,7 +14,7 @@ from .proxies import current_records_lom
 __version__ = "0.18.0"
 
 __all__ = (
+    "InvenioRecordsLOM",
     "__version__",
     "current_records_lom",
-    "InvenioRecordsLOM",
 )
