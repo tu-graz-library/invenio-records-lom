@@ -387,3 +387,19 @@ LOM_ALLOW_METADATA_ONLY_RECORDS = True
 
 LOM_ALLOW_RESTRICTED_RECORDS = True
 """Allow users to set restricted/private records."""
+
+#
+# Citation Configuration
+#
+LOM_CITATION_STYLES = [
+    ("apa", _("APA")),
+    ("chicago-fullnote-bibliography", _("Chicago")),
+    ("ieee", _("IEEE")),
+    ("harvard-cite-them-right", _("Harvard")),
+    ("modern-language-association", _("MLA")),
+    ("vancouver", _("Vancouver")),
+]
+"""Citation-styles chosable on landing-page."""
+
+LOM_CITATION_STYLES_DEFAULT = "apa"
+"""Default citation style."""
