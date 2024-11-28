@@ -12,6 +12,7 @@ from copy import copy
 from operator import attrgetter
 from typing import NamedTuple
 
+import jinja2
 from invenio_access.permissions import system_identity
 from invenio_pidstore.models import PersistentIdentifier, PIDStatus
 from invenio_records_resources.services.uow import UnitOfWork, unit_of_work
@@ -325,5 +326,42 @@ def read_vocabulary(vocabulary_id: str) -> list[VocabularyEntry]:
         for hit in entries_item._results  # noqa: SLF001
     ]
     result.sort(key=attrgetter("id"))
+
+    return result
+
+
+def expand_vocabulary(vocabulary_id: str, /, **template_strings: str) -> dict[str, str]:
+    """Fill a dict with info from database according to jinja template-strings.
+
+    Example:
+        >>> expand_vocabulary("oefos", name="{{title.en}}", value="{{id}}")
+        {
+            101001: {"name": "Algebra", "value": 101001},
+            101002: {"name": "Analysis", "value": 101002},
+            101003: {"name": "Applied geometry", "value": 101003},
+            ...
+        }
+        # kwarg-names become keys to returned dict
+        # kwarg-values are jinja-templates for values to returned dict
+
+    The following names may be used in passed-in templates:
+    - id: str  # entry-id of vocabulary-entry
+    - props: dict[str, str]  # contents and existence of this depend on specific vocabulary
+    - title: dict[str, str]  # keys are language-codes, values are title in that language
+
+    """
+    # we got templating needs beyond what str.format can provide, so use jinja:
+    jinja_env = jinja2.Environment(autoescape=True)
+    templates_by_name = {
+        name: jinja_env.from_string(template_string)
+        for name, template_string in template_strings.items()
+    }
+
+    result = {}
+    for entry in read_vocabulary(vocabulary_id):
+        result[entry.id] = {
+            name: template.render(id=entry.id, props=entry.props, title=entry.title)
+            for name, template in templates_by_name.items()
+        }
 
     return result
