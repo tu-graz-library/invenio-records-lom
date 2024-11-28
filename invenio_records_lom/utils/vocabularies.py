@@ -9,6 +9,7 @@
 
 import dataclasses
 from copy import copy
+from operator import attrgetter
 from typing import NamedTuple
 
 from invenio_access.permissions import system_identity
@@ -57,6 +58,15 @@ class VocabularyDeleteItem:
     pid_type: str
     vocabulary_type_deleted: bool = False
     deleted_entries_ids: list[str] = dataclasses.field(default_factory=list)
+
+
+@dataclasses.dataclass
+class VocabularyEntry:
+    """Holds vocabulary-information read from database."""
+
+    id: str = ""
+    props: dict[str, str] = dataclasses.field(default_factory=dict)
+    title: dict[str, str] = dataclasses.field(default_factory=dict)
 
 
 @unit_of_work()
@@ -291,3 +301,29 @@ def delete_vocabulary(
         result_item.vocabulary_type_deleted = True
 
     return result_item
+
+
+def read_vocabulary(vocabulary_id: str) -> list[VocabularyEntry]:
+    """Read list of vocabulary-entries from opensearch."""
+    # vocabulary_service caches calls to .read_all, making this fast enough
+    entries_item = vocabulary_service.read_all(
+        system_identity,
+        ["id", "props", "title"],
+        vocabulary_id,
+        # maximum result window for opensearch is 10_000
+        # bigger number of results would have to use opensearch's scroll-API instead
+        # our currently biggest vocab is 'oefos' (with ~1500 entries)
+        # so no scroll-API necessary for now...
+        max_records=10_000,
+    )
+
+    # usual way to parse `entries_item` is `entries_item.to_dict()['hits']['hits']`
+    # but that takes >1second to parse 'oefos'-vocabulary alone...
+    # since we don't need the advanced parsing of `.to_dict()`, reach into `._results`
+    result = [
+        VocabularyEntry(id=hit.id, props=getattr(hit, "props", {}), title=hit.title)
+        for hit in entries_item._results  # noqa: SLF001
+    ]
+    result.sort(key=attrgetter("id"))
+
+    return result
