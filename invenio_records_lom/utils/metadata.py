@@ -454,7 +454,7 @@ class LOMMetadata(BaseLOMMetadata):  # pylint: disable=too-many-public-methods
     def get_learning_resource_type(self, *, text_only: bool = False) -> str:
         """Get learning resource type."""
         try:
-            entry = self.record["educational.learningresourcetype.entry"]
+            entry = self.record["educational.learningresourcetype.0.entry"]
         except KeyError:
             return ""
 
