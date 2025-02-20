@@ -43,7 +43,6 @@ class ExcludeUnknownOrderedSchema(Schema):
     class Meta:
         """Configuration."""
 
-        ordered = True
         unknown = EXCLUDE
 
 
