@@ -1,4 +1,4 @@
-// Copyright (C) 2022-2023 Graz University of Technology.
+// Copyright (C) 2022-2025 Graz University of Technology.
 //
 // invenio-records-lom is free software; you can redistribute it and/or modify it
 // under the terms of the MIT License; see LICENSE file for more details.
@@ -63,7 +63,7 @@ export function RequiredAccordion(props) {
         pidPlaceholder={i18next.t("Enter your existing DOI here.")}
         pidType="doi"
         record={record}
-        required={false} // this field is required, but the red asterisk is added via the fieldLabel prop...
+        required // this field is required, but the red asterisk is added via the fieldLabel prop...
         unmanagedHelpText={i18next.t(
           "A DOI allows your upload to be unambiguously cited. It is of form `10.1234/foo.bar`."
         )}
