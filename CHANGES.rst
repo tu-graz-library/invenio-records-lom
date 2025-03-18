@@ -7,6 +7,22 @@
 Changes
 =======
 
+Version v0.18.1 (release 2025-03-18)
+
+- setup: increase minimal dependencies
+- fix: the api of the PIDField has changed
+- fix: RemovedInMarshmallow4Warning
+- test: add fake datacite client
+- fix: ChangedInMarshmallow4Warning
+- tests: fix deprecation warnings
+- ruff: move noqa of tests to pyproject.toml
+- fix: learningresourcetype list change
+- ruff: apply A005 Module
+- ruff: apply FURB188
+- landing-page: add citation sidecard
+- fix: quibbles from ruff 0.8.0
+
+
 Version v0.18.0 (release 2024-11-25)
 
 - fix: don't pass undefined to controlled component
