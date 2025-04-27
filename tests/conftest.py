@@ -85,7 +85,7 @@ def app_config(app_config: dict, mock_datacite_client) -> dict:
         ),
     ]
     # ...but fake it
-
+    app_config["THEME_FRONTPAGE"] = False
     return app_config
 
 
