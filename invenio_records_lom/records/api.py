@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2021-2024 Graz University of Technology.
+# Copyright (C) 2021-2025 Graz University of Technology.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -23,6 +23,8 @@ Use flask.current_app['invenio-records-lom'].records_service to interact with.
 # parent =  # change create, soft_delete, hard_delete
 # relations =  # validate then clean assigned relations
 # schema =  # add second validation via jsonschema
+
+import enum
 
 from invenio_communities.records.records.systemfields import CommunitiesField
 from invenio_drafts_resources.records import Draft, Record
@@ -62,6 +64,14 @@ from .systemfields import (
     PIDLOMRelation,
     RecordAccessField,
 )
+
+
+class RecordDeletionStatusEnum(enum.Enum):
+    """Enumeration of a record's possible deletion states."""
+
+    PUBLISHED = "P"
+    DELETED = "D"
+    MARKED = "X"
 
 
 class LOMParent(ParentRecord):
@@ -210,6 +220,22 @@ class LOMRecord(Record, metaclass=LOMRecordMeta):
     status = DraftStatus()
     stats = LomRecordStatisticsField()
     deletion_status = RecordDeletionStatusField()
+
+    @classmethod
+    def get_latest_published_by_parent(cls, parent: LOMParent) -> "LOMRecord":
+        """Get the latest published record for the specified parent record.
+
+        It might return None if there is no latest published version i.e not
+        published yet or all versions are deleted.
+        """
+        latest_record = cls.get_latest_by_parent(parent)
+        if (
+            latest_record
+            and latest_record.deletion_status
+            != RecordDeletionStatusEnum.PUBLISHED.value
+        ):
+            return None
+        return latest_record
 
 
 LOMFileRecord.record_cls = LOMRecord
