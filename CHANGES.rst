@@ -1,11 +1,19 @@
 ..
-    Copyright (C) 2020 Graz University of Technology.
+    Copyright (C) 2020-2025 Graz University of Technology.
 
     invenio-records-lom is free software; you can redistribute it and/or modify it
     under the terms of the MIT License; see LICENSE file for more details.
 
 Changes
 =======
+
+Version v0.18.2 (release 2025-05-23)
+
+- fix: setuptools require underscores instead of dashes
+- fix: api change click >= 8.2
+- rdm: compatibility
+- fix(tests): add configuration
+
 
 Version v0.18.1 (release 2025-03-18)
 
