@@ -7,6 +7,13 @@
 Changes
 =======
 
+Version v0.18.2 (release 2025-05-22)
+
+- fix: api change click >= 8.2
+- rdm: compatibility
+- fix(tests): add configuration
+
+
 Version v0.18.1 (release 2025-03-18)
 
 - setup: increase minimal dependencies
