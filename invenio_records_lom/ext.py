@@ -8,8 +8,6 @@
 
 """Flask extension for invenio-records-lom."""
 
-import re
-
 from flask import Flask
 from flask_menu import current_menu
 from invenio_i18n import lazy_gettext as _
@@ -55,30 +53,9 @@ class InvenioRecordsLOM:
 
         Override configuration variables with the values in this package.
         """
-        pattern = re.compile(r"^[A-Z0-9]+(?:_[A-Z0-9]+)+$")
-
-        for configuration_variable in dir(config):
-            attr = getattr(config, configuration_variable)
-
-            if configuration_variable in app.config:
-                match app.config[configuration_variable]:
-                    case list() as container:
-                        container.extend(attr)
-                    case dict() as container:
-                        container.update(attr)
-                    case _:
-                        app.config[configuration_variable] = attr
-
-            elif bool(pattern.match(configuration_variable)):
-                match attr:
-                    case list():
-                        app.config.setdefault(configuration_variable, [])
-                        app.config[configuration_variable].extend(attr)
-                    case dict():
-                        app.config.setdefault(configuration_variable, {})
-                        app.config[configuration_variable].update(attr)
-                    case _:
-                        app.config[configuration_variable] = attr
+        for k in dir(config):
+            if k.startswith("LOM_"):
+                app.config.setdefault(k, getattr(config, k))
 
     def init_services(self, app: Flask) -> None:
         """Initialize services."""
