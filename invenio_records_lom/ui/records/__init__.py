@@ -3,7 +3,7 @@
 # Copyright (C) 2019-2021 CERN.
 # Copyright (C) 2019-2021 Northwestern University.
 # Copyright (C)      2021 TU Wien.
-# Copyright (C) 2021-2024 Graz University of Technology.
+# Copyright (C) 2021-2025 Graz University of Technology.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -38,8 +38,8 @@ def init_records_views(blueprint: Blueprint, app: Flask) -> None:
     """Register blueprints for records on passed in `blueprint`."""
     routes = app.config["LOM_ROUTES"]
     app_ext = app.extensions["invenio-records-lom"]
-    with app.app_context():
-        schemes = app_ext.records_service.config.pids_providers
+
+    schemes = app_ext.records_service.config.pids_providers.keys()
 
     blueprint.add_url_rule(
         routes["uploads"],
