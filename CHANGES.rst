@@ -7,6 +7,11 @@
 Changes
 =======
 
+Version v0.18.4 (release 2025-06-06)
+
+- setup: upper pin was to strict
+
+
 Version v0.18.3 (release 2025-06-06)
 
 - fix: tests caused by new config loading
