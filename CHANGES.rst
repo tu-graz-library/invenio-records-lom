@@ -7,6 +7,14 @@
 Changes
 =======
 
+Version v0.18.3 (release 2025-06-06)
+
+- fix: tests caused by new config loading
+- setup: tmp pin
+- fix: configuration load
+- fix: function already in app_context
+
+
 Version v0.18.2 (release 2025-05-23)
 
 - fix: setuptools require underscores instead of dashes
