@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2021-2024 Graz University of Technology.
+# Copyright (C) 2021-2025 Graz University of Technology.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -8,7 +8,6 @@
 """Permission-policy class for LOMRecordService-objects."""
 
 from invenio_rdm_records.services.generators import (
-    IfFileIsLocal,
     IfNewRecord,
     IfRecordDeleted,
     IfRestricted,
@@ -21,6 +20,10 @@ from invenio_records_permissions.generators import (
     SystemProcess,
 )
 from invenio_records_permissions.policies.records import RecordPermissionPolicy
+from invenio_records_resources.services.files.generators import IfTransferType
+from invenio_records_resources.services.files.transfer import (
+    LOCAL_TRANSFER_TYPE,
+)
 
 from .generators import OERCertifiedUsers, OERCurators
 
@@ -70,7 +73,8 @@ class LOMRecordPermissionPolicy(RecordPermissionPolicy):
     can_get_content_files = (
         # note: even though this is closer to business logic than permissions,
         # it was simpler and less coupling to implement this as permission check
-        IfFileIsLocal(then_=can_read_files, else_=[SystemProcess()]),
+        IfTransferType(LOCAL_TRANSFER_TYPE, can_read_files),
+        SystemProcess(),
     )
     # Allow submitting new record
     can_create = can_handle_oer
@@ -90,15 +94,18 @@ class LOMRecordPermissionPolicy(RecordPermissionPolicy):
     can_draft_create_files = can_review
     can_draft_set_content_files = (
         # if local then same permission as can_draft_create_files
-        IfFileIsLocal(then_=can_review, else_=[SystemProcess()]),
+        IfTransferType(LOCAL_TRANSFER_TYPE, can_review),
+        SystemProcess(),
     )
     can_draft_get_content_files = (
         # if local then same permission as can_draft_read_files
-        IfFileIsLocal(then_=can_preview, else_=[SystemProcess()]),
+        IfTransferType(LOCAL_TRANSFER_TYPE, can_review),
+        SystemProcess(),
     )
     can_draft_commit_files = (
         # if local then same permission as can_draft_create_files
-        IfFileIsLocal(then_=can_review, else_=[SystemProcess()]),
+        IfTransferType(LOCAL_TRANSFER_TYPE, can_review),
+        SystemProcess(),
     )
     can_draft_update_files = can_review
     can_draft_delete_files = can_review
