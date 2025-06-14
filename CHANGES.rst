@@ -7,6 +7,12 @@
 Changes
 =======
 
+Version v0.19.0 (release 2025-06-14)
+
+- setup: upgrade invenio-rdm-records
+- setup: add python3.13 support
+
+
 Version v0.18.4 (release 2025-06-06)
 
 - setup: upper pin was to strict
