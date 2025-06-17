@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2022-2024 Graz University of Technology.
+# Copyright (C) 2022-2025 Graz University of Technology.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -346,7 +346,9 @@ def update_record(
     do_publish: bool = True,
 ) -> None:
     """Update record."""
-    service.update_draft(id_=pid, data=data, identity=identity)
+    draft = service.update_draft(id_=pid, data=data, identity=identity)
 
     if do_publish:
-        service.publish(id_=pid, identity=identity)
+        return service.publish(id_=pid, identity=identity)
+
+    return draft
