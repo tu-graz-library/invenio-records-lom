@@ -95,7 +95,7 @@ class PreviewFile:
 @pass_record_files
 def record_detail(
     pid_value: str | None = None,
-    is_preview: bool | None = None,
+    is_preview: bool | None = None,  # noqa: FBT001
     record: RecordItem = None,
     files: FileList | None = None,
     *,
