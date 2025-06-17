@@ -451,7 +451,11 @@ class LOMMetadata(BaseLOMMetadata):  # pylint: disable=too-many-public-methods
             learningresourcetype_dict,
         )
 
-    def get_learning_resource_type(self, *, text_only: bool = False) -> str:
+    def get_learning_resource_types(
+        self,
+        *,
+        text_only: bool = False,
+    ) -> list[str] | list[dict]:
         """Get learning resource type."""
         try:
             entry = self.record["educational.learningresourcetype.0.entry"]
@@ -459,7 +463,7 @@ class LOMMetadata(BaseLOMMetadata):  # pylint: disable=too-many-public-methods
             return ""
 
         if text_only:
-            return get_text(entry)
+            return [get_text(item) for item in entry]
 
         return entry
 
