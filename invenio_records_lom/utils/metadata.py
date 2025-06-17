@@ -47,7 +47,11 @@ class BaseLOMMetadata:
                 return identifier["entry"]["langstring"]["#text"]
         return ""
 
-    def deduped_append(self, parent_key: str, value: str | bool | list | dict) -> None:
+    def deduped_append(
+        self,
+        parent_key: str,
+        value: str | bool | list | dict,  # noqa: FBT001
+    ) -> None:
         """Append `value` to `self.record[key]` if not already appended."""
         self.record.setdefault(parent_key, [])
         parent = self.record[parent_key]

@@ -84,7 +84,7 @@ class DotAccessWrapper(MutableMapping):
 
         cursor = self.data
         subkeys = self.split(dotted_key)
-        for subkey, next_subkey in zip(subkeys, subkeys[1:] + [None]):
+        for subkey, next_subkey in zip(subkeys, subkeys[1:] + [None]):  # noqa: RUF005
             # the next key allows to judge what the next value should be
             next_value = (
                 [] if next_subkey == "[]" else value if next_subkey is None else {}
