@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2023 Graz University of Technology.
+# Copyright (C) 2023-2025 Graz University of Technology.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -74,7 +74,7 @@ class LOMToDublinCoreRecordSchema(BaseSerializerSchema):
 
     def get_types(self, lom: LOMMetadata) -> list:
         """Get types."""
-        return [lom.get_learning_resource_type(text_only=True)]
+        return lom.get_learning_resource_types(text_only=True)
 
     def get_sources(self, _: LOMMetadata) -> list:
         """Get soruces."""
