@@ -7,6 +7,13 @@
 Changes
 =======
 
+Version v0.19.2 (release 2025-06-18)
+
+- fix(ruff): add noqas
+- fix: correct learningresource type
+- utils: add return value
+
+
 Version v0.19.1 (release 2025-06-17)
 
 - fix: record vs record_ui
