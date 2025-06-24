@@ -240,7 +240,7 @@ const InnerDropdownField = ({
   const [fieldProps, fieldMeta, fieldHelpers] = useField(`${fieldPath}.value`);
 
   // get general formik-context shared by all fields
-  const { isSubmitting } = useFormikContext();
+  const { isSubmitting, setFieldValue } = useFormikContext();
 
   // get associated vocabulary from redux
   const vocabulary = useSelector((state) =>
@@ -269,7 +269,15 @@ const InnerDropdownField = ({
       name={fieldPath}
       noResultsMessage={i18next.t("No results found.")}
       onBlur={fieldProps.onBlur}
-      onChange={(e, { value }) => fieldHelpers.setValue(value)}
+      onChange={(e, { value }) => {
+        // Set the value and the name for the vocabulary
+        fieldHelpers.setValue(value);
+
+        const selectedVocabulary = vocabulary[value];
+        if (selectedVocabulary) {
+          setFieldValue(`${fieldPath}.name`, selectedVocabulary.name);
+        }
+      }}
       options={options}
       placeholder={placeholder}
       search

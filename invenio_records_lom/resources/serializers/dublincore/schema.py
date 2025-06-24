@@ -54,7 +54,8 @@ class LOMToDublinCoreRecordSchema(BaseSerializerSchema):
 
     def get_rights(self, lom: LOMMetadata) -> list:
         """Get rights."""
-        return [lom.get_rights(url_only=True)]
+        params = ["url", "name"]
+        return lom.get_rights(params=params)
 
     def get_dates(self, lom: LOMMetadata) -> list:
         """Get dates."""

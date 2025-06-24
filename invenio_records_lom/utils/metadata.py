@@ -522,16 +522,16 @@ class LOMMetadata(BaseLOMMetadata):  # pylint: disable=too-many-public-methods
             "description": langstringify(url, lang=lang),
         }
 
-    def get_rights(self, *, url_only: bool = False) -> dict | str:
+    def get_rights(self, *, params: list[str] | None = None) -> dict | list:
         """Get rights."""
         if "rights" not in self.record:
-            return "" if url_only else {}
+            return [""] if params else {}
 
-        if url_only:
+        if params:
             try:
-                return self.record["rights.url"]
+                return [self.record[f"rights.{param}"] for param in params]
             except KeyError:
-                return ""
+                return [""]
 
         return self.record["rights"]
 
