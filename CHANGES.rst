@@ -7,6 +7,11 @@
 Changes
 =======
 
+Version v0.19.3 (release 2025-07-21)
+
+- fix: multipart compatibility
+
+
 Version v0.19.2 (release 2025-06-18)
 
 - fix(ruff): add noqas
