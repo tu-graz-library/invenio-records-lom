@@ -464,7 +464,7 @@ class LOMMetadata(BaseLOMMetadata):  # pylint: disable=too-many-public-methods
         try:
             entry = self.record["educational.learningresourcetype.0.entry"]
         except KeyError:
-            return ""
+            return [""]
 
         if text_only:
             return [get_text(item) for item in entry]
