@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: invenio_records_lom 0.1.0\n"
 "Report-Msgid-Bugs-To: info@tugraz.at\n"
-"POT-Creation-Date: 2025-09-08 13:06+0200\n"
+"POT-Creation-Date: 2025-09-08 13:08+0200\n"
 "PO-Revision-Date: 2023-12-06 11:25+0100\n"
 "Last-Translator: christoph.ladurner@tugraz.at\n"
 "Language: de_AT\n"
@@ -371,7 +371,7 @@ msgstr "Download"
 
 #: invenio_records_lom/templates/invenio_records_lom/records/helpers/statistics.html:37
 msgid "More info on how stats are collected..."
-msgstr "Mehr Informatinen über die Sammlung der Statistiken..."
+msgstr "Mehr Informatinen über die Erstellung von Statistiken..."
 
 #: invenio_records_lom/templates/invenio_records_lom/records/macros/files.html:39
 msgid "File preview"
