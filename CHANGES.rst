@@ -7,6 +7,11 @@
 Changes
 =======
 
+Version v0.19.4 (released 2025-09-08)
+
+- fix: not caught exception
+- fix(metadata): wrong return type
+
 Version v0.19.3 (release 2025-07-21)
 
 - fix: multipart compatibility
