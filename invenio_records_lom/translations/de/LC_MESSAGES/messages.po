@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: invenio_records_lom 0.1.0\n"
 "Report-Msgid-Bugs-To: info@tugraz.at\n"
-"POT-Creation-Date: 2025-09-08 11:13+0200\n"
+"POT-Creation-Date: 2025-09-08 12:48+0200\n"
 "PO-Revision-Date: 2023-12-06 11:25+0100\n"
 "Last-Translator: christoph.ladurner@tugraz.at\n"
 "Language: de_AT\n"
@@ -21,20 +21,19 @@ msgstr ""
 
 #: invenio_records_lom/config.py:48
 msgid "Best match"
-msgstr ""
+msgstr "Beste Übereinstimmung"
 
 #: invenio_records_lom/config.py:52
 msgid "Newest"
-msgstr ""
+msgstr "Neueste"
 
 #: invenio_records_lom/config.py:56
 msgid "Most viewed"
-msgstr ""
+msgstr "Meist gesehene"
 
 #: invenio_records_lom/config.py:60
-#, fuzzy
 msgid "Most downloaded"
-msgstr "Download"
+msgstr "Meisten Downloads"
 
 #: invenio_records_lom/config.py:104
 msgid "JSON"
@@ -116,26 +115,26 @@ msgstr ""
 
 #: invenio_records_lom/services/pids.py:64
 msgid "Missing publisher."
-msgstr ""
+msgstr "Fehlender Herausgeber."
 
 #: invenio_records_lom/services/schemas/metadata.py:64
 #: invenio_records_lom/services/schemas/metadata.py:319
 #: invenio_records_lom/services/schemas/metadata.py:348
 #: invenio_records_lom/services/schemas/metadata.py:392
 msgid "Missing data for required field."
-msgstr ""
+msgstr "Fehlende Daten für erforderliches Feld."
 
 #: invenio_records_lom/services/schemas/metadata.py:250
 msgid "Name cannot be empty."
-msgstr ""
+msgstr "Name muss ausgefüllt werden."
 
 #: invenio_records_lom/services/schemas/metadata.py:293
 msgid "Must provide at least one author and one publisher."
-msgstr ""
+msgstr "Bitte geben sie mindestens einen Author und einen Herausgeber ab."
 
 #: invenio_records_lom/services/schemas/metadata.py:296
 msgid "Must provide at least one author."
-msgstr ""
+msgstr "Bitte geben Sie einen Author an."
 
 #: invenio_records_lom/services/schemas/metadata.py:299
 msgid "Must provide at least one publisher."
@@ -143,7 +142,7 @@ msgstr ""
 
 #: invenio_records_lom/services/schemas/metadata.py:403
 msgid "Not a valid OEFOS-url."
-msgstr ""
+msgstr "Keine valide OEFOS-url."
 
 #: invenio_records_lom/services/schemas/metadata.py:447
 msgid "Must add at least one OEFOS."
@@ -263,7 +262,7 @@ msgstr ""
 
 #: invenio_records_lom/templates/invenio_records_lom/record.html:26
 msgid "Back-navigation"
-msgstr ""
+msgstr "Zurück-Navigation"
 
 #: invenio_records_lom/templates/invenio_records_lom/record.html:28
 msgid "Back to edit"
@@ -329,19 +328,19 @@ msgstr "OER Suchergebnisse"
 
 #: invenio_records_lom/templates/invenio_records_lom/uploads.html:29
 msgid "New upload"
-msgstr ""
+msgstr "Neuer Upload"
 
 #: invenio_records_lom/templates/invenio_records_lom/records/deposit.html:12
 msgid "New Version of OER Upload"
-msgstr ""
+msgstr "Neue Version des OER Uploads."
 
 #: invenio_records_lom/templates/invenio_records_lom/records/deposit.html:14
 msgid "New OER Upload"
-msgstr ""
+msgstr "Neuer OER Upload."
 
 #: invenio_records_lom/templates/invenio_records_lom/records/deposit.html:16
 msgid "Edit OER Upload"
-msgstr ""
+msgstr "OER Upload bearbeiten."
 
 #: invenio_records_lom/templates/invenio_records_lom/records/export.html:26
 msgid "Back to details"
@@ -372,7 +371,7 @@ msgstr "Download"
 
 #: invenio_records_lom/templates/invenio_records_lom/records/helpers/statistics.html:37
 msgid "More info on how stats are collected..."
-msgstr ""
+msgstr "Mehr Informatinen darüber wie stats gesammelt werden..."
 
 #: invenio_records_lom/templates/invenio_records_lom/records/macros/files.html:39
 msgid "File preview"
@@ -389,7 +388,7 @@ msgstr "Größe"
 #: invenio_records_lom/templates/invenio_records_lom/records/macros/files.html:67
 #, fuzzy
 msgid "Download all"
-msgstr "Download"
+msgstr "Alle downloaden"
 
 #: invenio_records_lom/templates/invenio_records_lom/records/macros/files.html:96
 msgid ""
@@ -406,5 +405,4 @@ msgstr "Vorschau"
 #: invenio_records_lom/templates/invenio_records_lom/records/macros/files.html:110
 msgid "Download"
 msgstr "Download"
-
 

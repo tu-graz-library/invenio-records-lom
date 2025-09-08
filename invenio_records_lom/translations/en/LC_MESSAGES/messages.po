@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: invenio_records_lom 0.1.0\n"
 "Report-Msgid-Bugs-To: info@tugraz.at\n"
-"POT-Creation-Date: 2025-09-08 11:13+0200\n"
+"POT-Creation-Date: 2025-09-08 12:48+0200\n"
 "PO-Revision-Date: 2022-03-25 13:31+0100\n"
 "Last-Translator: <christoph.ladurner@tugraz.at>\n"
 "Language: en_US\n"
@@ -32,9 +32,8 @@ msgid "Most viewed"
 msgstr ""
 
 #: invenio_records_lom/config.py:60
-#, fuzzy
 msgid "Most downloaded"
-msgstr "Download"
+msgstr ""
 
 #: invenio_records_lom/config.py:104
 msgid "JSON"
