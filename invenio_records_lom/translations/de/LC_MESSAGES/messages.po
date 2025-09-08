@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: invenio_records_lom 0.1.0\n"
 "Report-Msgid-Bugs-To: info@tugraz.at\n"
-"POT-Creation-Date: 2025-09-08 12:48+0200\n"
+"POT-Creation-Date: 2025-09-08 13:06+0200\n"
 "PO-Revision-Date: 2023-12-06 11:25+0100\n"
 "Last-Translator: christoph.ladurner@tugraz.at\n"
 "Language: de_AT\n"
@@ -33,7 +33,7 @@ msgstr "Meist gesehene"
 
 #: invenio_records_lom/config.py:60
 msgid "Most downloaded"
-msgstr "Meisten Downloads"
+msgstr "Meist heruntergeladen"
 
 #: invenio_records_lom/config.py:104
 msgid "JSON"
@@ -138,7 +138,7 @@ msgstr "Bitte geben Sie einen Author an."
 
 #: invenio_records_lom/services/schemas/metadata.py:299
 msgid "Must provide at least one publisher."
-msgstr ""
+msgstr "Bitte mindestens einen Herausgeber angeben."
 
 #: invenio_records_lom/services/schemas/metadata.py:403
 msgid "Not a valid OEFOS-url."
@@ -146,7 +146,7 @@ msgstr "Keine valide OEFOS-url."
 
 #: invenio_records_lom/services/schemas/metadata.py:447
 msgid "Must add at least one OEFOS."
-msgstr ""
+msgstr "Bitte mindestens einen OEFOS angeben."
 
 #: invenio_records_lom/services/schemas/records.py:34
 msgid "Persistent identifier scheme unknown to LOM."
@@ -298,7 +298,7 @@ msgstr "Beschreibung"
 
 #: invenio_records_lom/templates/invenio_records_lom/record.html:131
 msgid "Record Management"
-msgstr ""
+msgstr "Record Verwaltung"
 
 #: invenio_records_lom/templates/invenio_records_lom/record.html:159
 msgid "Original Content"
@@ -371,7 +371,7 @@ msgstr "Download"
 
 #: invenio_records_lom/templates/invenio_records_lom/records/helpers/statistics.html:37
 msgid "More info on how stats are collected..."
-msgstr "Mehr Informatinen darüber wie stats gesammelt werden..."
+msgstr "Mehr Informatinen über die Sammlung der Statistiken..."
 
 #: invenio_records_lom/templates/invenio_records_lom/records/macros/files.html:39
 msgid "File preview"
