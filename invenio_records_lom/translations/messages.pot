@@ -1,82 +1,153 @@
 # Translations template for invenio-records-lom.
-# Copyright (C) 2023 Graz University of Technology
+# Copyright (C) 2025 Graz University of Technology
 # This file is distributed under the same license as the invenio-records-lom
 # project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2023.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: invenio-records-lom 0.12.1\n"
+"Project-Id-Version: invenio-records-lom 0.19.3\n"
 "Report-Msgid-Bugs-To: info@tugraz.at\n"
-"POT-Creation-Date: 2023-12-06 11:08+0100\n"
+"POT-Creation-Date: 2025-09-08 13:08+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.13.1\n"
+"Generated-By: Babel 2.17.0\n"
 
-#: invenio_records_lom/config.py:42
+#: invenio_records_lom/config.py:48
 msgid "Best match"
 msgstr ""
 
-#: invenio_records_lom/config.py:46
+#: invenio_records_lom/config.py:52
 msgid "Newest"
 msgstr ""
 
-#: invenio_records_lom/config.py:85
+#: invenio_records_lom/config.py:56
+msgid "Most viewed"
+msgstr ""
+
+#: invenio_records_lom/config.py:60
+msgid "Most downloaded"
+msgstr ""
+
+#: invenio_records_lom/config.py:104
 msgid "JSON"
 msgstr ""
 
-#: invenio_records_lom/config.py:117 invenio_records_lom/config.py:124
-#: invenio_records_lom/config.py:148
-#: invenio_records_lom/templates/invenio_records_lom/record.html:184
+#: invenio_records_lom/config.py:136 invenio_records_lom/config.py:143
+#: invenio_records_lom/config.py:167
+#: invenio_records_lom/templates/invenio_records_lom/record.html:187
 msgid "DOI"
 msgstr ""
 
-#: invenio_records_lom/config.py:129
+#: invenio_records_lom/config.py:148
 msgid "OAI ID"
 msgstr ""
 
-#: invenio_records_lom/config.py:155
+#: invenio_records_lom/config.py:174
 msgid "OAI"
 msgstr ""
 
-#: invenio_records_lom/services/facets.py:22
-msgid "CC BY 4.0"
+#: invenio_records_lom/config.py:395
+msgid "APA"
+msgstr ""
+
+#: invenio_records_lom/config.py:396
+msgid "Chicago"
+msgstr ""
+
+#: invenio_records_lom/config.py:397
+msgid "IEEE"
+msgstr ""
+
+#: invenio_records_lom/config.py:398
+msgid "Harvard"
+msgstr ""
+
+#: invenio_records_lom/config.py:399
+msgid "MLA"
+msgstr ""
+
+#: invenio_records_lom/config.py:400
+msgid "Vancouver"
+msgstr ""
+
+#: invenio_records_lom/ext.py:163
+msgid "Educational Resources"
 msgstr ""
 
 #: invenio_records_lom/services/facets.py:23
-msgid "CC BY-SA 4.0"
+msgid "CC0 1.0"
 msgstr ""
 
 #: invenio_records_lom/services/facets.py:24
-msgid "CC BY-ND 4.0"
+msgid "CC BY 4.0"
 msgstr ""
 
 #: invenio_records_lom/services/facets.py:25
-msgid "CC BY-NC 4.0"
+msgid "CC BY-SA 4.0"
 msgstr ""
 
 #: invenio_records_lom/services/facets.py:26
-msgid "CC BY-NC-SA 4.0"
+msgid "CC BY-ND 4.0"
 msgstr ""
 
 #: invenio_records_lom/services/facets.py:27
+msgid "CC BY-NC 4.0"
+msgstr ""
+
+#: invenio_records_lom/services/facets.py:28
+msgid "CC BY-NC-SA 4.0"
+msgstr ""
+
+#: invenio_records_lom/services/facets.py:29
 msgid "CC BY-NC-ND 4.0"
 msgstr ""
 
-#: invenio_records_lom/services/facets.py:44
+#: invenio_records_lom/services/facets.py:46
 msgid "License"
 msgstr ""
 
-#: invenio_records_lom/services/pids.py:52
+#: invenio_records_lom/services/pids.py:64
 msgid "Missing publisher."
 msgstr ""
 
-#: invenio_records_lom/services/schemas/records.py:33
+#: invenio_records_lom/services/schemas/metadata.py:64
+#: invenio_records_lom/services/schemas/metadata.py:319
+#: invenio_records_lom/services/schemas/metadata.py:348
+#: invenio_records_lom/services/schemas/metadata.py:392
+msgid "Missing data for required field."
+msgstr ""
+
+#: invenio_records_lom/services/schemas/metadata.py:250
+msgid "Name cannot be empty."
+msgstr ""
+
+#: invenio_records_lom/services/schemas/metadata.py:293
+msgid "Must provide at least one author and one publisher."
+msgstr ""
+
+#: invenio_records_lom/services/schemas/metadata.py:296
+msgid "Must provide at least one author."
+msgstr ""
+
+#: invenio_records_lom/services/schemas/metadata.py:299
+msgid "Must provide at least one publisher."
+msgstr ""
+
+#: invenio_records_lom/services/schemas/metadata.py:403
+msgid "Not a valid OEFOS-url."
+msgstr ""
+
+#: invenio_records_lom/services/schemas/metadata.py:447
+msgid "Must add at least one OEFOS."
+msgstr ""
+
+#: invenio_records_lom/services/schemas/records.py:34
 msgid "Persistent identifier scheme unknown to LOM."
 msgstr ""
 
@@ -193,20 +264,24 @@ msgstr ""
 msgid "Record Management"
 msgstr ""
 
-#: invenio_records_lom/templates/invenio_records_lom/record.html:156
+#: invenio_records_lom/templates/invenio_records_lom/record.html:159
 msgid "Original Content"
 msgstr ""
 
-#: invenio_records_lom/templates/invenio_records_lom/record.html:164
+#: invenio_records_lom/templates/invenio_records_lom/record.html:167
 msgid "Is Part of Courses"
 msgstr ""
 
-#: invenio_records_lom/templates/invenio_records_lom/record.html:174
+#: invenio_records_lom/templates/invenio_records_lom/record.html:177
 msgid "Classifications"
 msgstr ""
 
-#: invenio_records_lom/templates/invenio_records_lom/record.html:190
-#: invenio_records_lom/templates/invenio_records_lom/record.html:191
+#: invenio_records_lom/templates/invenio_records_lom/record.html:194
+msgid "Citation"
+msgstr ""
+
+#: invenio_records_lom/templates/invenio_records_lom/record.html:208
+#: invenio_records_lom/templates/invenio_records_lom/record.html:209
 msgid "Export"
 msgstr ""
 
@@ -235,44 +310,57 @@ msgid "Back to details"
 msgstr ""
 
 #: invenio_records_lom/templates/invenio_records_lom/records/files.html:22
-#: invenio_records_lom/templates/invenio_records_lom/records/files.html:25
-#: invenio_records_lom/templates/invenio_records_lom/records/files.html:37
-#: invenio_records_lom/templates/invenio_records_lom/records/macros/files.html:118
+#: invenio_records_lom/templates/invenio_records_lom/records/files.html:27
+#: invenio_records_lom/templates/invenio_records_lom/records/files.html:39
+#: invenio_records_lom/templates/invenio_records_lom/records/macros/files.html:124
+#: invenio_records_lom/templates/invenio_records_lom/records/macros/files.html:125
 msgid "Files"
 msgstr ""
 
-#: invenio_records_lom/templates/invenio_records_lom/records/files.html:45
-#: invenio_records_lom/templates/invenio_records_lom/records/macros/files.html:133
+#: invenio_records_lom/templates/invenio_records_lom/records/files.html:47
+#: invenio_records_lom/templates/invenio_records_lom/records/macros/files.html:140
 msgid "Reason"
+msgstr ""
+
+#: invenio_records_lom/templates/invenio_records_lom/records/helpers/statistics.html:18
+msgid "Views"
+msgstr ""
+
+#: invenio_records_lom/templates/invenio_records_lom/records/helpers/statistics.html:28
+msgid "Downloads"
+msgstr ""
+
+#: invenio_records_lom/templates/invenio_records_lom/records/helpers/statistics.html:37
+msgid "More info on how stats are collected..."
 msgstr ""
 
 #: invenio_records_lom/templates/invenio_records_lom/records/macros/files.html:39
 msgid "File preview"
 msgstr ""
 
-#: invenio_records_lom/templates/invenio_records_lom/records/macros/files.html:64
+#: invenio_records_lom/templates/invenio_records_lom/records/macros/files.html:61
 msgid "Name"
 msgstr ""
 
-#: invenio_records_lom/templates/invenio_records_lom/records/macros/files.html:65
+#: invenio_records_lom/templates/invenio_records_lom/records/macros/files.html:62
 msgid "Size"
 msgstr ""
 
-#: invenio_records_lom/templates/invenio_records_lom/records/macros/files.html:87
+#: invenio_records_lom/templates/invenio_records_lom/records/macros/files.html:67
+msgid "Download all"
+msgstr ""
+
+#: invenio_records_lom/templates/invenio_records_lom/records/macros/files.html:96
 msgid ""
 "This is the file fingerprint (checksum), which can be used to verify the "
 "file integrity."
 msgstr ""
 
-#: invenio_records_lom/templates/invenio_records_lom/records/macros/files.html:98
+#: invenio_records_lom/templates/invenio_records_lom/records/macros/files.html:106
 msgid "Preview"
 msgstr ""
 
-#: invenio_records_lom/templates/invenio_records_lom/records/macros/files.html:103
+#: invenio_records_lom/templates/invenio_records_lom/records/macros/files.html:110
 msgid "Download"
-msgstr ""
-
-#: invenio_records_lom/ui/records/__init__.py:100
-msgid "Educational Resources"
 msgstr ""
 
