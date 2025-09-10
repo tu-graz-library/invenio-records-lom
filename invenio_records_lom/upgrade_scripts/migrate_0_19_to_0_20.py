@@ -19,7 +19,6 @@ from copy import deepcopy
 
 from click import secho
 from invenio_db import db
-from invenio_i18n import gettext as _
 
 from invenio_records_lom.records.api import LOMDraft, LOMRecord
 
@@ -39,66 +38,38 @@ def execute_upgrade() -> None:  # noqa: C901
         """
         license_vocabulary = {
             "https://creativecommons.org/publicdomain/zero/1.0/": {
-                "name": "CC0 1.0 - Creative Commons CC0 1.0 Universal",
+                "name": "CC0 1.0",
             },
             "https://creativecommons.org/licenses/by/4.0/": {
-                "name": _("CC BY 4.0 - Creative Commons Attribution 4.0 International"),
+                "name": "CC BY 4.0",
             },
             "https://creativecommons.org/licenses/by-nc/4.0/": {
-                "name": _(
-                    "CC BY-NC 4.0 - Creative Commons Attribution Non-Commercial 4.0 International",
-                ),
+                "name": "CC BY-NC 4.0",
             },
             "https://creativecommons.org/licenses/by-nc-nd/4.0/": {
-                "name": _(
-                    "CC BY-NC-ND 4.0 - Creative Commons Attribution Non-Commercial No-Derivatives 4.0 International",
-                ),
+                "name": "CC BY-NC-ND 4.0",
             },
             "https://creativecommons.org/licenses/by-nc-sa/4.0/": {
-                "name": _(
-                    "CC BY-NC-SA 4.0 - Creative Commons Attribution Non-Commercial Share-Alike 4.0 International",
-                ),
+                "name": "CC BY-NC-SA 4.0",
             },
-            "https://creativecommons.org/licenses/by-nd/4.0/": {
-                "name": _(
-                    "CC BY-ND 4.0 - Creative Commons Attribution No-Derivatives 4.0 International",
-                ),
-            },
-            "https://creativecommons.org/licenses/by-sa/4.0/": {
-                "name": _(
-                    "CC BY-SA 4.0 - Creative Commons Attribution Share-Alike 4.0 International",
-                ),
-            },
+            "https://creativecommons.org/licenses/by-nd/4.0/": {"name": "CC BY-ND 4.0"},
+            "https://creativecommons.org/licenses/by-sa/4.0/": {"name": "CC BY-SA 4.0"},
             # some seem 2 times, but this is because the lack of final slash character ("/") - demo data from v0.19
             "https://creativecommons.org/licenses/by/4.0": {
-                "name": _("CC BY 4.0 - Creative Commons Attribution 4.0 International"),
+                "name": "CC BY 4.0",
             },
-            "https://creativecommons.org/licenses/by-nc/4.0": {
-                "name": _(
-                    "CC BY-NC 4.0 - Creative Commons Attribution Non-Commercial 4.0 International",
-                ),
-            },
+            "https://creativecommons.org/licenses/by-nc/4.0": {"name": "CC BY-NC 4.0"},
             "https://creativecommons.org/licenses/by-nc-nd/4.0": {
-                "name": _(
-                    "CC BY-NC-ND 4.0 - Creative Commons Attribution Non-Commercial No-Derivatives 4.0 International",
-                ),
+                "name": "CC BY-NC-ND 4.0",
             },
             "https://creativecommons.org/licenses/by-nc-sa/4.0": {
-                "name": _(
-                    "CC BY-NC-SA 4.0 - Creative Commons Attribution Non-Commercial Share-Alike 4.0 International",
-                ),
+                "name": "CC BY-NC-SA 4.0",
             },
             "https://creativecommons.org/licenses/by-nd/4.0": {
-                "name": _(
-                    "CC BY-ND 4.0 - Creative Commons Attribution No-Derivatives 4.0 International",
-                ),
+                "name": "CC BY-ND 4.0",
             },
-            "https://creativecommons.org/licenses/by-sa/4.0": {
-                "name": _(
-                    "CC BY-SA 4.0 - Creative Commons Attribution Share-Alike 4.0 International",
-                ),
-            },
-            "https://mit-license.org/": {"name": _("MIT License")},
+            "https://creativecommons.org/licenses/by-sa/4.0": {"name": "CC BY-SA 4.0"},
+            "https://mit-license.org/": {"name": "MIT"},
         }
 
         property_to_add = "name"

@@ -14,7 +14,6 @@ from io import BytesIO
 from faker import Faker
 from flask import current_app
 from invenio_access.permissions import system_identity
-from invenio_i18n import gettext as _
 from invenio_records_resources.services.records.results import RecordItem
 
 from ..proxies import current_records_lom
@@ -297,27 +296,13 @@ def create_fake_learningresourcetype(fake: Faker) -> dict:
 def create_fake_rights(fake: Faker) -> dict:
     """Create a fake "rights"-element, compatible with LOMv1.0."""
     urls = {
-        "https://creativecommons.org/publicdomain/zero/1.0/": _(
-            "CC0 1.0 - Creative Commons CC0 1.0 Universal",
-        ),
-        "https://creativecommons.org/licenses/by/4.0/": _(
-            "CC BY 4.0 - Creative Commons Attribution 4.0 International",
-        ),
-        "https://creativecommons.org/licenses/by-sa/4.0/": _(
-            "CC BY-SA 4.0 - Creative Commons Attribution Share-Alike 4.0 International",
-        ),
-        "https://creativecommons.org/licenses/by-nd/4.0/": _(
-            "CC BY-ND 4.0 - Creative Commons Attribution No-Derivatives 4.0 International",
-        ),
-        "https://creativecommons.org/licenses/by-nc/4.0/": _(
-            "CC BY-NC 4.0 - Creative Commons Attribution Non-Commercial 4.0 International",
-        ),
-        "https://creativecommons.org/licenses/by-nc-sa/4.0/": _(
-            "CC BY-NC-SA 4.0 - Creative Commons Attribution Non-Commercial Share-Alike 4.0 International",
-        ),
-        "https://creativecommons.org/licenses/by-nc-nd/4.0/": _(
-            "CC BY-NC-ND 4.0 - Creative Commons Attribution Non-Commercial No-Derivatives 4.0 International",
-        ),
+        "https://creativecommons.org/publicdomain/zero/1.0/": "CC0 1.0",
+        "https://creativecommons.org/licenses/by/4.0/": "CC BY 4.0",
+        "https://creativecommons.org/licenses/by-sa/4.0/": "CC BY-SA 4.0",
+        "https://creativecommons.org/licenses/by-nd/4.0/": "CC BY-ND 4.0",
+        "https://creativecommons.org/licenses/by-nc/4.0/": "CC BY-NC 4.0",
+        "https://creativecommons.org/licenses/by-nc-sa/4.0/": "CC BY-NC-SA 4.0",
+        "https://creativecommons.org/licenses/by-nc-nd/4.0/": "CC BY-NC-ND 4.0",
     }
     url, name = fake.random.choice(list(urls.items()))
     lang = "x-t-cc-url" if url.startswith("https://creativecommons.org/") else None

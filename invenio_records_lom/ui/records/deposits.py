@@ -39,24 +39,31 @@ def get_deposit_template_context(**extra_form_config_kwargs: dict) -> dict:
     license_vocabulary = {
         "https://creativecommons.org/publicdomain/zero/1.0/": {
             "name": "CC0 1.0 - Creative Commons CC0 1.0 Universal",
+            "short_name": "CC0 1.0",
         },
         "https://creativecommons.org/licenses/by/4.0/": {
             "name": "CC BY 4.0 - Creative Commons Attribution 4.0 International",
+            "short_name": "CC BY 4.0",
         },
         "https://creativecommons.org/licenses/by-nc/4.0/": {
             "name": "CC BY-NC 4.0 - Creative Commons Attribution Non-Commercial 4.0 International",
+            "short_name": "CC BY-NC 4.0",
         },
         "https://creativecommons.org/licenses/by-nc-nd/4.0/": {
             "name": "CC BY-NC-ND 4.0 - Creative Commons Attribution Non-Commercial No-Derivatives 4.0 International",
+            "short_name": "CC BY-NC-ND 4.0",
         },
         "https://creativecommons.org/licenses/by-nc-sa/4.0/": {
             "name": "CC BY-NC-SA 4.0 - Creative Commons Attribution Non-Commercial Share-Alike 4.0 International",
+            "short_name": "CC BY-NC-SA 4.0",
         },
         "https://creativecommons.org/licenses/by-nd/4.0/": {
             "name": "CC BY-ND 4.0 - Creative Commons Attribution No-Derivatives 4.0 International",
+            "short_name": "CC BY-ND 4.0",
         },
         "https://creativecommons.org/licenses/by-sa/4.0/": {
             "name": "CC BY-SA 4.0 - Creative Commons Attribution Share-Alike 4.0 International",
+            "short_name": "CC BY-SA 4.0",
         },
     }
     contributor_vocabulary = {

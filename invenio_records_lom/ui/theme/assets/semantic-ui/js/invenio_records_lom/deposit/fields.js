@@ -274,7 +274,9 @@ const InnerDropdownField = ({
         fieldHelpers.setValue(value);
 
         const selectedVocabulary = vocabulary[value];
-        if (selectedVocabulary) {
+        if (selectedVocabulary && selectedVocabulary.short_name != null) {
+          setFieldValue(`${fieldPath}.name`, selectedVocabulary.short_name);
+        } else {
           setFieldValue(`${fieldPath}.name`, selectedVocabulary.name);
         }
       }}
