@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2021-2024 Graz University of Technology.
+# Copyright (C) 2021-2025 Graz University of Technology.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -139,6 +139,8 @@ class Rights(fields.Field):
 
 class LOMUIBaseSchema(BaseObjectSchema):
     """Base schema for LOMUI-classes, containing all common fields."""
+
+    object_key = "ui"
 
     created_date_l10n_long = FormatDate(attribute="created", format="long")
 
@@ -301,6 +303,8 @@ class LOMUIRecordSchema(OneOfSchema):
 
     Depending on data_to_serialize["resource_type"]
     """
+
+    object_key = "ui"
 
     type_field = "resource_type"
     type_schemas = MappingProxyType(

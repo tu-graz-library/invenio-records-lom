@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2024 Graz University of Technology.
+# Copyright (C) 2024-2025 Graz University of Technology.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -22,5 +22,4 @@ class LOMToUIJSONSerializer(MarshmallowSerializer):
             format_serializer_cls=JSONSerializer,
             object_schema_cls=LOMUIRecordSchema,
             list_schema_cls=BaseListSchema,
-            schema_context={"object_key": "ui"},
         )
