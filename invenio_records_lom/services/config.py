@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2021-2024 Graz University of Technology.
+# Copyright (C) 2021-2026 Graz University of Technology.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -18,18 +18,15 @@ from invenio_drafts_resources.services.records.config import (
 )
 from invenio_indexer.api import RecordIndexer
 from invenio_rdm_records.services.config import (
-    archive_download_enabled,
+    get_iiif_uuid_of_file_drafcord,
     has_doi,
+    is_datacite_test,
     is_iiif_compatible,
-    is_record_and_has_doi,
 )
 from invenio_records_resources.services import (
     ConditionalLink,
-    FileLink,
+    ExternalLink,
     FileServiceConfig,
-    Link,
-    RecordLink,
-    pagination_links,
 )
 from invenio_records_resources.services.base.config import (
     ConfiguratorMixin,
@@ -37,12 +34,38 @@ from invenio_records_resources.services.base.config import (
     FromConfigSearchOptions,
     SearchOptionsMixin,
 )
+from invenio_records_resources.services.base.links import EndpointLink
+from invenio_records_resources.services.files.links import FileEndpointLink
+from invenio_records_resources.services.records.links import (
+    RecordEndpointLink,
+    pagination_endpoint_links,
+)
 
 from ..records import LOMDraft, LOMRecord
 from . import facets
 from .components import DefaultRecordsComponents
 from .permissions import LOMRecordPermissionPolicy
 from .schemas import LOMRecordSchema
+
+
+class RecordPIDLink(ExternalLink):
+    """Record external PID link."""
+
+    def vars(self, record: LOMRecord, var_s: dict) -> None:
+        """Add record PID to vars."""
+        var_s.update(
+            {
+                f"pid_{scheme}": pid["identifier"]
+                for (scheme, pid) in record.pids.items()
+            },
+        )
+
+
+record_doi_link = ConditionalLink(
+    cond=is_datacite_test,
+    if_=RecordPIDLink("https://handle.test.datacite.org/{+pid_doi}", when=has_doi),
+    else_=RecordPIDLink("https://doi.org/{+pid_doi}", when=has_doi),
+)
 
 
 class FromConfigLOMPIDsProviders:
@@ -162,58 +185,26 @@ class LOMRecordServiceConfig(RecordServiceConfig, ConfiguratorMixin):
     # links
     links_item = MappingProxyType(
         {
-            "archive": ConditionalLink(
-                cond=is_record,
-                if_=RecordLink(
-                    "{+api}/oer/{id}/files-archive",
-                    when=archive_download_enabled,
-                ),
-                else_=RecordLink(
-                    "{+api}/oer/{id}/draft/files-archive",
-                    when=archive_download_enabled,
-                ),
-            ),
-            "doi": Link(
-                "https://doi.org/{+pid_doi}",
-                when=has_doi,
-                vars=lambda record, var_s: var_s.update(
-                    {
-                        f"pid_{scheme}": pid["identifier"]
-                        for (scheme, pid) in record.pids.items()
-                    },
-                ),
-            ),
             "files": ConditionalLink(
                 cond=is_record,
-                if_=RecordLink("{+api}/oer/{id}/files"),
-                else_=RecordLink("{+api}/oer/{id}/draft/files"),
+                if_=RecordEndpointLink("lom_draft_files.search"),
+                else_=RecordEndpointLink("lom_draft_files.search"),
             ),
-            "latest_html": RecordLink("{+ui}/oer/id/latest", when=is_record),
-            "publish": RecordLink(
-                "{+api}/oer/{id}/draft/actions/publish",
+            "publish": RecordEndpointLink(
+                "lom_records.publish",
                 when=is_draft,
             ),
-            "record_html": RecordLink("{+ui}/oer/{id}", when=is_draft),
-            "reserve_doi": RecordLink("{+api}/oer/{id}/draft/pids/doi"),
+            "doi": record_doi_link,
+            "self_doi": record_doi_link,
             "self": ConditionalLink(
                 cond=is_record,
-                if_=RecordLink("{+api}/oer/{id}"),
-                else_=RecordLink("{+api}/oer/{id}/draft"),
-            ),
-            "self_doi": Link(
-                "{+ui}/oer/doi/{+pid_doi}",
-                when=is_record_and_has_doi,
-                vars=lambda record, var_s: var_s.update(
-                    {
-                        f"pid_{scheme}": pid["identifier"]
-                        for (scheme, pid) in record.pids.items()
-                    },
-                ),
+                if_=RecordEndpointLink("lom_records.read"),
+                else_=RecordEndpointLink("lom_records.read_draft"),
             ),
             "self_html": ConditionalLink(
                 cond=is_record,
-                if_=RecordLink("{+ui}/oer/{id}"),
-                else_=RecordLink("{+ui}/oer/uploads/{id}"),
+                if_=RecordEndpointLink("invenio_records_lom.record_detail"),
+                else_=RecordEndpointLink("invenio_records_lom.deposit_edit"),
             ),
         },
     )
@@ -223,9 +214,9 @@ class LOMRecordServiceConfig(RecordServiceConfig, ConfiguratorMixin):
         default=DefaultRecordsComponents,
     )
 
-    links_search = pagination_links("{+api}/lom{?args*}")
+    links_search = pagination_endpoint_links("lom_records.search")
 
-    links_search_drafts = pagination_links("{+api}/lom/draft{?args*}")
+    links_search_drafts = pagination_endpoint_links("lom_records.search_user_records")
 
 
 class LOMDraftFilesServiceConfig(FileServiceConfig, ConfiguratorMixin):
@@ -242,11 +233,7 @@ class LOMDraftFilesServiceConfig(FileServiceConfig, ConfiguratorMixin):
     # links to appear within FileList-result:
     file_links_list = MappingProxyType(
         {
-            "self": RecordLink("{+api}/oer/{id}/draft/files"),
-            "archive": RecordLink(
-                "{+api}/oer/{id}/draft/files-archive",
-                when=archive_download_enabled,
-            ),
+            "self": EndpointLink("lom_draft_files.search", params=["pid_value"]),
         },
     )
 
@@ -255,13 +242,19 @@ class LOMDraftFilesServiceConfig(FileServiceConfig, ConfiguratorMixin):
     # on items)
     file_links_item = MappingProxyType(
         {
-            "commit": FileLink("{+api}/oer/{id}/draft/files/{key}/commit"),
-            "content": FileLink("{+api}/oer/{id}/draft/files/{key}/content"),
-            "iiif_base": FileLink(
-                "{+api}/oer/iiif/draft:{id}:{key}",
-                when=is_iiif_compatible,
+            "self": FileEndpointLink(
+                "lom_draft_files.read",
+                params=["pid_value", "key"],
             ),
-            "self": FileLink("{+api}/oer/{id}/draft/files/{key}"),
+            "content": FileEndpointLink(
+                "lom_draft_files.read_content",
+                params=["pid_value", "key"],
+            ),
+            "commit": FileEndpointLink(
+                "lom_draft_files.create_commit",
+                params=["pid_value", "key"],
+                when=lambda file_draft, ctx: (is_draft(file_draft.record, ctx)),
+            ),
         },
     )
 
@@ -278,17 +271,26 @@ class LOMRecordFilesServiceConfig(FileServiceConfig, ConfiguratorMixin):
 
     file_links_list = MappingProxyType(
         {
-            "archive": RecordLink(
-                "{+api}/oer/{id}/files-archive",
-                when=archive_download_enabled,
-            ),
+            "self": EndpointLink("lom_record_files.search", params=["pid_value"]),
         },
     )
     file_links_item = MappingProxyType(
         {
-            "iiif_base": FileLink(
-                "{+api}/oer/iiif/record:{id}:{key}",
+            "self": FileEndpointLink(
+                "lom_record_files.read",
+                params=["pid_value", "key"],
+            ),
+            "content": FileEndpointLink(
+                "lom_record_files.read_content",
+                params=["pid_value", "key"],
+            ),
+            "iiif_base": EndpointLink(
+                "lomiiif.base",
+                params=["uuid"],
                 when=is_iiif_compatible,
+                vars=lambda file_drafcord, var_s: var_s.update(
+                    {"uuid": get_iiif_uuid_of_file_drafcord(file_drafcord, var_s)},
+                ),
             ),
         },
     )
