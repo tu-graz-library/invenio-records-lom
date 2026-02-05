@@ -1,15 +1,19 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2023-2024 Graz University of Technology.
+# Copyright (C) 2023-2026 Graz University of Technology.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
 """Customized classes used by pids-service."""
 
+from flask_principal import Identity
+from invenio_drafts_resources.services.records.components import ServiceComponent
 from invenio_i18n import lazy_gettext as _
 from invenio_rdm_records.services.pids.providers import DataCitePIDProvider
 from marshmallow import ValidationError
+
+from ..records.api import LOMRecord
 
 
 class LOMDataCitePIDProvider(DataCitePIDProvider):
@@ -66,3 +70,17 @@ class LOMDataCitePIDProvider(DataCitePIDProvider):
             )
 
         return success and not errors, errors
+
+
+class ParentPIDSComponent(ServiceComponent):
+    """Service component for record parent PIDs."""
+
+    def create(
+        self,
+        identity: Identity,  # noqa: ARG002
+        data: dict,  # noqa: ARG002
+        record: LOMRecord,
+        errors: dict | None = None,  # noqa: ARG002
+    ) -> None:
+        """Call on draft creation."""
+        record.parent.pids = {}

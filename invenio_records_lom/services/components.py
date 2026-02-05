@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2021-2024 Graz University of Technology.
+# Copyright (C) 2021-2026 Graz University of Technology.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -26,6 +26,7 @@ from invenio_records_resources.services.uow import TaskOp
 
 from ..records import LOMDraft, LOMRecord
 from ..utils import LOMMetadata
+from .pids import ParentPIDSComponent
 from .tasks import register_or_update_pid
 
 
@@ -171,6 +172,7 @@ DefaultRecordsComponents = [
     DraftFilesComponent,
     PIDComponent,
     LOMPIDsComponent,
+    ParentPIDSComponent,
     RelationsComponent,
     ResourceTypeComponent,
 ]
