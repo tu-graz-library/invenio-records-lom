@@ -7,7 +7,6 @@
 
 """SQL-table definitions for LOM module."""
 
-
 from invenio_communities.records.records.models import CommunityRelationMixin
 from invenio_db import db
 from invenio_drafts_resources.records import (

@@ -8,7 +8,6 @@
 
 """Utils tests."""
 
-
 from invenio_records_lom.utils import DotAccessWrapper, LOMMetadata
 
 

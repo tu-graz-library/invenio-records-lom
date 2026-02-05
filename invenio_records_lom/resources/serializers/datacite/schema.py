@@ -7,7 +7,6 @@
 
 """Schemas for datacite."""
 
-
 import arrow
 from flask import current_app
 from invenio_rdm_records.resources.serializers.datacite.schema import (

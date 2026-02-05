@@ -7,7 +7,6 @@
 
 """Celery tasks for LOM module."""
 
-
 from datetime import datetime, timedelta, timezone
 
 from celery import shared_task

@@ -7,7 +7,6 @@
 
 """Marshmallow schema for validating and serializing LOM JSONs."""
 
-
 from flask import current_app
 from invenio_i18n import lazy_gettext as _
 from invenio_rdm_records.services.schemas import RDMRecordSchema

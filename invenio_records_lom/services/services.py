@@ -7,7 +7,6 @@
 
 """Record services configured for LOM-use."""
 
-
 from invenio_rdm_records.services import RDMRecordService
 
 

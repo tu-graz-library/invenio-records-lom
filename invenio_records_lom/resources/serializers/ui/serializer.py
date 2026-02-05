@@ -7,7 +7,6 @@
 
 """UI serializer."""
 
-
 from flask_resources import BaseListSchema, JSONSerializer, MarshmallowSerializer
 
 from .schema import LOMUIRecordSchema

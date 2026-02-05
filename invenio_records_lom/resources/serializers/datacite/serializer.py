@@ -7,7 +7,6 @@
 
 """Datacite serializer."""
 
-
 from flask_resources import JSONSerializer, MarshmallowSerializer
 
 from .schema import LOMToDataCite44Schema
