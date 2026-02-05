@@ -7,7 +7,6 @@
 
 """DublinCore serializer."""
 
-
 from dcxml import simpledc
 from flask_resources import BaseListSchema, MarshmallowSerializer
 from flask_resources.serializers import JSONSerializer, SimpleSerializer
