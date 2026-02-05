@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2022-2025 Graz University of Technology.
+# Copyright (C) 2022-2026 Graz University of Technology.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -84,7 +84,7 @@ class DotAccessWrapper(MutableMapping):
 
         cursor = self.data
         subkeys = self.split(dotted_key)
-        for subkey, next_subkey in zip(subkeys, subkeys[1:] + [None]):  # noqa: RUF005
+        for subkey, next_subkey in zip(subkeys, [*subkeys[1:], None], strict=True):
             # the next key allows to judge what the next value should be
             next_value = (
                 [] if next_subkey == "[]" else value if next_subkey is None else {}
@@ -109,7 +109,7 @@ class DotAccessWrapper(MutableMapping):
         """Iterate."""
         return iter(self.data)
 
-    def __len__(self) -> None:
+    def __len__(self) -> int:
         """Len."""
         return len(self.data)
 
