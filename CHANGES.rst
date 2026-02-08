@@ -1,11 +1,21 @@
 ..
-    Copyright (C) 2020-2025 Graz University of Technology.
+    Copyright (C) 2020-2026 Graz University of Technology.
 
     invenio-records-lom is free software; you can redistribute it and/or modify it
     under the terms of the MIT License; see LICENSE file for more details.
 
 Changes
 =======
+
+Version v0.20.0 (released 2026-02-08)
+
+- chore(mypy): resolve error/warning
+- chore(setup): bump dependencies
+- fix(tests): add parent.pids
+- chore(black): update formatting to >= 26.0
+- fix: links deprecation warning
+- fix(chore): DeprecationWarning stdlib
+- refactor(schema): remove usage of object_key
 
 Version v0.19.4 (released 2025-09-08)
 
