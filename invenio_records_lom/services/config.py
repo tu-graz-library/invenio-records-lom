@@ -290,7 +290,7 @@ class LOMRecordFilesServiceConfig(FileServiceConfig, ConfiguratorMixin):
                 params=["pid_value", "key"],
             ),
             "iiif_base": EndpointLink(
-                "lomiiif.base",
+                "lom_iiif.base",
                 params=["uuid"],
                 when=is_iiif_compatible,
                 vars=lambda file_drafcord, var_s: var_s.update(
