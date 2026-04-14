@@ -73,6 +73,8 @@ class LOMRecordResourceConfig(RecordResourceConfig, ConfiguratorMixin):
             "item-draft": "/<pid_value>/draft",
             "item-publish": "/<pid_value>/draft/actions/publish",
             "user-prefix": "/user",
+            # PIDs
+            "item-pids-reserve": "/<pid_value>/draft/pids/<scheme>",
         },
     )
 

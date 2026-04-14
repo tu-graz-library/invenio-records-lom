@@ -206,6 +206,11 @@ class LOMRecordServiceConfig(RecordServiceConfig, ConfiguratorMixin):
                 if_=RecordEndpointLink("invenio_records_lom.record_detail"),
                 else_=RecordEndpointLink("invenio_records_lom.deposit_edit"),
             ),
+            "reserve_doi": RecordEndpointLink(
+                "lom_records.pids_reserve",
+                params=["pid_value", "scheme"],
+                vars=lambda _, vars_: vars_.update({"scheme": "doi"}),
+            ),
         },
     )
 
