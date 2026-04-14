@@ -37,6 +37,7 @@ class LOMRecordResource(RDMRecordResource):
             route("PUT", prefix(routes["item-draft"]), self.update_draft),
             # User Dashboard routes
             route("GET", s(routes["user-prefix"]), self.search_user_records),
+            route("POST", prefix(routes["item-pids-reserve"]), self.pids_reserve),
         ]
 
     # TODO: some parent-methods have @response_header_signposting,
