@@ -7,6 +7,11 @@
 Changes
 =======
 
+Version v0.20.1 (released 2026-04-14)
+
+- fix(landingpage): correct link typo
+- fix(doi): add missing endpoint link
+
 Version v0.20.0 (released 2026-02-08)
 
 - chore(mypy): resolve error/warning
