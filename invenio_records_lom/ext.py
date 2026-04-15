@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright (C) 2020-2025 Graz University of Technology.
+# Copyright (C) 2026 BOKU University.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -67,7 +68,7 @@ class InvenioRecordsLOM:
                     case dict() as container:
                         container.update(attr)
                     case _:
-                        app.config[configuration_variable] = attr
+                        app.config.setdefault(configuration_variable, attr)
 
             elif bool(pattern.match(configuration_variable)):
                 match attr:
