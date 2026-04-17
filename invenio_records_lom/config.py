@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright (C) 2020-2024 Graz University of Technology.
+# Copyright (C) 2026 BOKU University.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -403,3 +404,22 @@ LOM_CITATION_STYLES = [
 
 LOM_CITATION_STYLES_DEFAULT = "apa"
 """Default citation style."""
+
+
+# Contact references on not-licensed webformular
+# ==============================================
+
+LOM_SUPPORT_EMAIL = "telucation@tugraz.at"
+"""Shown as contact-email on not-licensed-text template."""
+
+LOM_SUPPORT_NUMBER = "+43(316)873-8577"
+"""Shown as contact-number on not-licensed-text template."""
+
+LOM_HOST_INSTITUTE = "Graz University of Technology"
+"""Host institution of educational resources."""
+
+LOM_HOST_CAMPUS = "TUGRAZonline"
+"""Shown as host'S campus management system on not-licensed-text template."""
+
+LOM_HOST_CAMPUS_URL = "https://online.tugraz.at"
+"""URL of host's campus management system."""
