@@ -410,16 +410,16 @@ LOM_CITATION_STYLES_DEFAULT = "apa"
 # ==============================================
 
 LOM_SUPPORT_EMAIL = "telucation@tugraz.at"
-"""Shown as contact-email on not-licensed page."""
+"""Shown as contact-email on not-licensed-text template."""
 
 LOM_SUPPORT_NUMBER = "+43(316)873-8577"
-"""Shown as contact-number on not-licensed page."""
+"""Shown as contact-number on not-licensed-text template."""
 
 LOM_HOST_INSTITUTE = "Graz University of Technology"
-"""Host institution of educational resources"""
+"""Host institution of educational resources."""
 
 LOM_HOST_CAMPUS = "TUGRAZonline"
-"""shown as host'S campus management system on not-licensed-page"""
+"""Shown as host'S campus management system on not-licensed-text template."""
 
-LOM_HOME_CAMPUS_URL = "online.tugraz.at"
-"""URL of host's campus management system""" 
+LOM_HOST_CAMPUS_URL = "https://online.tugraz.at"
+"""URL of host's campus management system."""
