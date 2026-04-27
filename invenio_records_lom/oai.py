@@ -7,6 +7,7 @@
 
 """OAI-PMH serializers for LOM-records."""
 
+from dcxml import simpledc
 from flask import current_app, g
 from invenio_pidstore.errors import PIDDoesNotExistError
 from invenio_pidstore.models import PersistentIdentifier
@@ -14,7 +15,9 @@ from invenio_records_resources.services.errors import PermissionDeniedError
 from invenio_records_resources.services.records.results import RecordItem
 
 from .proxies import current_records_lom
-from .resources.serializers import LOMToOAIXMLSerializer
+from .records.api import LOMRecord
+from .resources.serializers import LOMToDublinCoreXMLSerializer, LOMToOAIXMLSerializer
+from .utils import LOMMetadata
 
 
 def lom_etree(
@@ -35,6 +38,17 @@ def lom_etree(
         oaiserver_id_prefix=current_app.config.get("OAISERVER_ID_PREFIX"),
         doi=doi,
     ).dump_obj()
+
+
+def lom_dc_etree(
+    pid: str,  # noqa: ARG001
+    record: dict,
+) -> dict:
+    """Get DublinCore XML etree for OAI-PMH."""
+    lom_rec = LOMRecord(record["_source"])
+    lom_meta = LOMMetadata(json=lom_rec["metadata"])
+    dc_meta = LOMToDublinCoreXMLSerializer().dump_obj(lom_meta)
+    return simpledc.dump_etree(dc_meta)
 
 
 def getrecord_fetcher(record_id: str) -> dict:
