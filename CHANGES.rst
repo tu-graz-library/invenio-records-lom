@@ -7,6 +7,10 @@
 Changes
 =======
 
+Version v0.20.3 (released 2026-04-28)
+
+- fix(compat): citation generation needs links
+
 Version v0.20.2 (released 2026-04-28)
 
 - fix(compat): role needs configuration
