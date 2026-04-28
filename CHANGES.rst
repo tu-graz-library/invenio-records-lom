@@ -7,6 +7,12 @@
 Changes
 =======
 
+Version v0.20.2 (released 2026-04-28)
+
+- fix(compat): role needs configuration
+- chore(linter): add ignore rules for ruff
+- fix(compat): add quota feature
+
 Version v0.20.1 (released 2026-04-14)
 
 - fix(landingpage): correct link typo
