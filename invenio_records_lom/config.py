@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2020-2024 Graz University of Technology.
+# Copyright (C) 2020-2026 Graz University of Technology.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -19,6 +19,7 @@ from invenio_stats.queries import TermsQuery
 from .resources.serializers import LOMToDataCite44Serializer
 from .services import facets
 from .services.permissions import LOMRecordPermissionPolicy
+from .services.permissions.roles import oer_certified_user, oer_curator
 from .services.pids import LOMDataCitePIDProvider
 from .utils import build_record_unique_id
 
@@ -403,3 +404,9 @@ LOM_CITATION_STYLES = [
 
 LOM_CITATION_STYLES_DEFAULT = "apa"
 """Default citation style."""
+
+LOM_RECORD_CERTIFIED_USER_NEEDS = [oer_certified_user]
+"""Enable the user to create/modify records."""
+
+LOM_RECORD_CURATOR_USER_NEEDS = [oer_curator]
+"""Enable the user to curate records."""
