@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2022-2024 Graz University of Technology.
+# Copyright (C) 2022-2026 Graz University of Technology.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
 """View-functions for deposit-related pages."""
+
+from copy import deepcopy
 
 from flask import current_app, g, render_template
 from flask_login import current_user, login_required
@@ -141,6 +143,10 @@ def get_deposit_template_context(**extra_form_config_kwargs: dict) -> dict:
         sorted(resourcetype_vocabulary.items(), key=lambda item: item[1]["name"]),
     )
 
+    quota = deepcopy(app_config.get("APP_RDM_DEPOSIT_FORM_QUOTA", {}))
+    quota["maxStorage"] = 0
+    quota["quotaIncrease"] = 0
+
     return {
         "files": {"default_preview": None, "entries": [], "links": {}},
         "forms_config": {
@@ -153,7 +159,7 @@ def get_deposit_template_context(**extra_form_config_kwargs: dict) -> dict:
             "default_locale": app_config.get("BABEL_DEFAULT_LOCALE", "en"),
             "links": {},
             "pids": [],
-            "quota": app_config.get("APP_RDM_DEPOSIT_FORM_QUOTA"),
+            "quota": quota,
             "vocabularies": {
                 "contributor": contributor_vocabulary,
                 "format": format_vocabulary,
