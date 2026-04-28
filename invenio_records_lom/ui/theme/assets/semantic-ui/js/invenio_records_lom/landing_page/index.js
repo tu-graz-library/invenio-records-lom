@@ -1,4 +1,4 @@
-// Copyright (C) 2023 Graz University of Technology.
+// Copyright (C) 2023-2026 Graz University of Technology.
 //
 // invenio-records-lom is free software; you can redistribute it and/or modify it
 // under the terms of the MIT License; see LICENSE file for more details.
@@ -28,6 +28,7 @@ const citationElement = document.getElementById("lomRecordCitation");
 if (citationElement) {
   ReactDOM.render(
     <RecordCitationField
+      recordLinks={JSON.parse(citationElement.dataset.record).links}
       record={JSON.parse(citationElement.dataset.record)}
       styles={JSON.parse(citationElement.dataset.styles)}
       defaultStyle={JSON.parse(citationElement.dataset.defaultstyle)}
