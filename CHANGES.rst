@@ -7,6 +7,16 @@
 Changes
 =======
 
+Version v0.21.0 (released 2026-05-11)
+
+- feat(i8n): update German translations
+- feat(template): use configuration variables
+- fix(not_licensed_text): unify usage of single and doubled quotation marks
+- fix(not_licensed_text): reference to OERhub
+- docs(metadata): adding boku to copyright in context of commit f0663c61465b11f0c755b7f24a4361759d6effd2
+- feat(oai): DublinCore XML serializer for OAI
+- fix(ext): invenio.cfg takes precedence
+
 Version v0.20.3 (released 2026-04-28)
 
 - fix(compat): citation generation needs links
