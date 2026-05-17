@@ -144,8 +144,8 @@ def get_deposit_template_context(**extra_form_config_kwargs: dict) -> dict:
     )
 
     quota = deepcopy(app_config.get("APP_RDM_DEPOSIT_FORM_QUOTA", {}))
-    quota["maxStorage"] = 0
-    quota["quotaIncrease"] = 0
+    quota["maxStorage"] = app_config.get("RDM_FILES_DEFAULT_MAX_FILE_SIZE", 10**10)
+    quota["quotaIncrease"] = {}
 
     return {
         "files": {"default_preview": None, "entries": [], "links": {}},
