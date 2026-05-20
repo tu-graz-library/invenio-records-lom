@@ -7,6 +7,10 @@
 Changes
 =======
 
+Version v0.21.1 (released 2026-05-20)
+
+- fix(ui): max storage size wrong
+
 Version v0.21.0 (released 2026-05-11)
 
 - feat(i8n): update German translations
