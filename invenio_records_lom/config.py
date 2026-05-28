@@ -26,6 +26,13 @@ from .utils import build_record_unique_id
 
 LOM_BASE_TEMPLATE = "invenio_records_lom/base.html"
 
+LOM_SEARCH_NAV_TEMPLATE = None
+"""Template injected above the lom search app.
+
+Set to a template path to render a custom nav above the search results
+e.g. a resource type switcher. ``None`` disables the injection.
+"""
+
 #
 # Permission Configuration
 #
