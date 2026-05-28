@@ -1,6 +1,6 @@
 {# -*- coding: utf-8 -*-
 
-  Copyright (C) 2022-2023 Graz University of Technology.
+  Copyright (C) 2022-2026 Graz University of Technology.
 
   invenio-records-lom is free software; you can redistribute it and/or modify it
   under the terms of the MIT License; see LICENSE file for more details.
@@ -18,6 +18,9 @@
 
 {%- block page_body %}
   <div class="ui container">
+    {%- if config.get('LOM_SEARCH_NAV_TEMPLATE') %}
+      {%- include config.LOM_SEARCH_NAV_TEMPLATE %}
+    {%- endif %}
     <div id="invenio-search-lom-config" data-invenio-search-config='{{ search_app_lom_config() | tojson }}'></div>
   </div>
 {%- endblock page_body %}
