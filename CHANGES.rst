@@ -7,6 +7,10 @@
 Changes
 =======
 
+Version v0.22.0 (released 2026-06-01)
+
+- feat(search): add LOM_SEARCH_NAV_TEMPLATE config
+
 Version v0.21.1 (released 2026-05-20)
 
 - fix(ui): max storage size wrong
