@@ -26,6 +26,9 @@ from .utils import build_record_unique_id
 
 LOM_BASE_TEMPLATE = "invenio_records_lom/base.html"
 
+LOM_UPLOADS_TEMPLATE = "invenio_records_lom/uploads.html"
+"""Template for the user's OER uploads dashboard."""
+
 LOM_SEARCH_NAV_TEMPLATE = None
 """Template injected above the lom search app.
 
