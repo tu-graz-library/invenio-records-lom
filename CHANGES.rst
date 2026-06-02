@@ -7,6 +7,10 @@
 Changes
 =======
 
+Version v0.23.0 (released 2026-06-02)
+
+- feat(uploads): add LOM_UPLOADS_TEMPLATE hook
+
 Version v0.22.0 (released 2026-06-01)
 
 - feat(search): add LOM_SEARCH_NAV_TEMPLATE config
