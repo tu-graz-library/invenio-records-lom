@@ -249,7 +249,7 @@ def uploads(*, is_oer_certified: bool = False) -> str:
     )["avatar"]
 
     if is_oer_certified:
-        template = "invenio_records_lom/uploads.html"
+        template = current_app.config["LOM_UPLOADS_TEMPLATE"]
     else:
         template = "invenio_records_lom/not_licensed_text.html"
 
