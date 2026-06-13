@@ -261,6 +261,8 @@ export class LOMDepositRecordSerializer extends DepositRecordSerializer {
 
     // serialize license
     const licenseUrl = _get(metadata, "form.license.value", "");
+    const licenseName = _get(metadata, "form.license.name", "");
+
     const licenseInnerLangstring = { "#text": licenseUrl };
     if (licenseUrl.startsWith("https://creativecommons.org/")) {
       licenseInnerLangstring["lang"] = "x-t-cc-url";
@@ -274,6 +276,7 @@ export class LOMDepositRecordSerializer extends DepositRecordSerializer {
       description: {
         langstring: licenseInnerLangstring,
       },
+      name: licenseName,
     });
 
     // serialize format

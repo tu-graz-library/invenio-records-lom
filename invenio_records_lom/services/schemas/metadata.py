@@ -391,6 +391,10 @@ class RightsSchema(Schema):
         required=True,
         validate=validate.Length(min=1, error=_("Missing data for required field.")),
     )
+    name = SanitizedUnicode(
+        required=True,
+        validate=validate.Length(min=1, error=_("Missing data for required field.")),
+    )
 
 
 class TaxonSchema(Schema):
