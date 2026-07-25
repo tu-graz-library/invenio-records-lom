@@ -2,7 +2,7 @@
 #
 # This file is part of Invenio.
 #
-# Copyright (C) 2024 Graz University of Technology.
+# Copyright (C) 2024-2026 Graz University of Technology.
 #
 # invenio-records-lom is free software; you can redistribute it and/or
 # modify it under the terms of the MIT License; see LICENSE file for
@@ -83,8 +83,7 @@ def execute_upgrade() -> None:
             secho(error, fg="red", err=True)
 
         msg = (
-            "The changes have been rolled back. "
-            "Please fix the above listed errors and try the upgrade again",
+            "The changes have been rolled back. Please fix the above listed errors and try the upgrade again",
         )
         secho(msg, fg="yellow", err=True)
 

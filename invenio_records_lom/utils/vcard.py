@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2023-2024 Graz University of Technology.
+# Copyright (C) 2023-2026 Graz University of Technology.
 #
 # invenio-records-lom is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -79,8 +79,8 @@ class VCardMaker:
         *,
         final_line_break: bool = True,
         line_break_str: str = "\r\n",
-        output_encoding: None | str = "utf-8",
-        properties_config: None | dict[str, VCardProperty] = None,
+        output_encoding: str | None = "utf-8",
+        properties_config: dict[str, VCardProperty] | None = None,
     ) -> None:
         """Init."""
         self.final_line_break = final_line_break
