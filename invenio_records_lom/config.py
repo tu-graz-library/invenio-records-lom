@@ -405,11 +405,11 @@ LOM_ALLOW_RESTRICTED_RECORDS = True
 #
 LOM_CITATION_STYLES = [
     ("apa", _("APA")),
-    ("chicago-fullnote-bibliography", _("Chicago")),
+    ("chicago-notes-bibliography", _("Chicago")),
     ("ieee", _("IEEE")),
     ("harvard-cite-them-right", _("Harvard")),
     ("modern-language-association", _("MLA")),
-    ("vancouver", _("Vancouver")),
+    ("nlm-citation-sequence", _("Vancouver")),
 ]
 """Citation-styles chosable on landing-page."""
 
