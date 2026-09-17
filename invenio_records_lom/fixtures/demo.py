@@ -295,23 +295,23 @@ def create_fake_learningresourcetype(fake: Faker) -> dict:
 
 def create_fake_rights(fake: Faker) -> dict:
     """Create a fake "rights"-element, compatible with LOMv1.0."""
-    urls = [
-        "https://creativecommons.org/publicdomain/zero/1.0/",
-        "https://creativecommons.org/licenses/by/4.0",
-        "https://creativecommons.org/licenses/by-sa/4.0",
-        "https://creativecommons.org/licenses/by-nd/4.0",
-        "https://creativecommons.org/licenses/by-nc/4.0",
-        "https://creativecommons.org/licenses/by-nc-sa/4.0",
-        "https://creativecommons.org/licenses/by-nc-nd/4.0",
-        "https://mit-license.org/",
-    ]
-    url = fake.random.choice(urls)
+    urls = {
+        "https://creativecommons.org/publicdomain/zero/1.0/": "CC0 1.0",
+        "https://creativecommons.org/licenses/by/4.0/": "CC BY 4.0",
+        "https://creativecommons.org/licenses/by-sa/4.0/": "CC BY-SA 4.0",
+        "https://creativecommons.org/licenses/by-nd/4.0/": "CC BY-ND 4.0",
+        "https://creativecommons.org/licenses/by-nc/4.0/": "CC BY-NC 4.0",
+        "https://creativecommons.org/licenses/by-nc-sa/4.0/": "CC BY-NC-SA 4.0",
+        "https://creativecommons.org/licenses/by-nc-nd/4.0/": "CC BY-NC-ND 4.0",
+    }
+    url, name = fake.random.choice(list(urls.items()))
     lang = "x-t-cc-url" if url.startswith("https://creativecommons.org/") else None
     return {
         "cost": vocabularify(fake, ["yes", "no"]),
         "copyrightandotherrestrictions": vocabularify(fake, ["yes", "no"]),
         "description": langstringify(fake, fake.paragraph(), lang=lang),
-        "url": fake.random.choice(urls),
+        "url": url,
+        "name": name,
     }
 
 
