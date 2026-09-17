@@ -7,6 +7,11 @@
 Changes
 =======
 
+Version v0.23.1 (released 2026-09-17)
+
+- fix: update citation styles
+- chore(linter): apply new ruff
+
 Version v0.23.0 (released 2026-06-02)
 
 - feat(uploads): add LOM_UPLOADS_TEMPLATE hook
