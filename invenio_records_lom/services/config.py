@@ -23,6 +23,8 @@ from invenio_rdm_records.services.config import (
     is_datacite_test,
     is_iiif_compatible,
 )
+from invenio_rdm_records.services.schemas.quota import QuotaSchema
+from invenio_rdm_records.services.schemas.tombstone import TombstoneSchema
 from invenio_records_resources.services import (
     ConditionalLink,
     ExternalLink,
@@ -156,6 +158,8 @@ class LOMRecordServiceConfig(RecordServiceConfig, ConfiguratorMixin):
 
     # Schemas
     schema = LOMRecordSchema
+    schema_tombstone = TombstoneSchema
+    schema_quota = QuotaSchema
 
     # Permission Policy
     permission_policy_cls = FromConfig(
