@@ -20,7 +20,7 @@ ignore = [
   "TC",
   "TD",
   "TID",
-  "UP009",
+  "UP009", "UP017",
 ]
 
 [tool.ruff.lint.per-file-ignores]
