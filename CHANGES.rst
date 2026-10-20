@@ -7,6 +7,12 @@
 Changes
 =======
 
+Version v0.23.2 (released 2026-10-20)
+
+- fix(ruff): ignore rule
+- chore(types): improve types
+- fix(comp): add attributes
+
 Version v0.23.1 (released 2026-09-17)
 
 - fix: update citation styles
