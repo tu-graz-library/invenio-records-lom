@@ -1,4 +1,4 @@
-// Copyright (C) 2022-2023 Graz University of Technology.
+// Copyright (C) 2022-2026 Graz University of Technology.
 //
 // invenio-records-lom is free software; you can redistribute it and/or modify it
 // under the terms of the MIT License; see LICENSE file for more details.
@@ -17,16 +17,7 @@ import { i18next } from "@translations/invenio_records_lom/i18next";
 import PropTypes from "prop-types";
 import React, { createRef } from "react";
 import { AccordionField } from "react-invenio-forms";
-import {
-  Card,
-  Container,
-  Grid,
-  Icon,
-  Message,
-  Popup,
-  Ref,
-  Sticky,
-} from "semantic-ui-react";
+import { Card, Container, Grid, Icon, Message, Popup, Sticky } from "semantic-ui-react";
 
 import { OptionalAccordion, RequiredAccordion } from "./components";
 import { LOMDepositRecordSerializer } from "./serializers";
@@ -131,76 +122,75 @@ export default class LOMDepositForm extends React.Component {
               <OptionalAccordion />
               {/*<TestAccordion />*/}
             </Grid.Column>
-            <Ref innerRef={this.sidebarRef}>
-              <Grid.Column
-                mobile={16}
-                tablet={16}
-                computer={5}
-                className="deposit-sidebar"
-              >
-                <Sticky context={this.sidebarRef} offset={20}>
-                  <Card>
-                    <Card.Content>
-                      <DepositStatusBox />
-                    </Card.Content>
-                    <Card.Content>
-                      <Grid relaxed>
-                        <Grid.Column
-                          computer={8}
-                          mobile={16}
-                          className="pb-0 left-btn-col"
-                        >
-                          <SaveButton fluid />
-                        </Grid.Column>
+            <Grid.Column
+              ref={this.sidebarRef}
+              mobile={16}
+              tablet={16}
+              computer={5}
+              className="deposit-sidebar"
+            >
+              <Sticky context={this.sidebarRef} offset={20}>
+                <Card>
+                  <Card.Content>
+                    <DepositStatusBox />
+                  </Card.Content>
+                  <Card.Content>
+                    <Grid relaxed>
+                      <Grid.Column
+                        computer={8}
+                        mobile={16}
+                        className="pb-0 left-btn-col"
+                      >
+                        <SaveButton fluid />
+                      </Grid.Column>
 
-                        <Grid.Column
-                          computer={8}
-                          mobile={16}
-                          className="pb-0 right-btn-col"
-                        >
-                          <PreviewButton fluid />
-                        </Grid.Column>
+                      <Grid.Column
+                        computer={8}
+                        mobile={16}
+                        className="pb-0 right-btn-col"
+                      >
+                        <PreviewButton fluid />
+                      </Grid.Column>
 
-                        <Grid.Column width={16} className="pt-10">
-                          <PublishButton fluid record={record} />
-                        </Grid.Column>
-                      </Grid>
-                    </Card.Content>
-                  </Card>
-                  <Card className="access-right">
-                    <Card.Content>
-                      <Card.Header>
-                        <label
-                          className="field-label-class invenio-field-label"
-                          htmlFor="access"
-                        >
-                          <Icon name="shield" />
-                          {i18next.t("Visibility")}
-                          <Popup
-                            trigger={<Icon className="ml-10" name="info circle" />}
-                            content={i18next.t("OER-uploads are always public.")}
-                          />
-                        </label>
-                      </Card.Header>
-                    </Card.Content>
-                    <Card.Content>
-                      <Message icon positive visible data-test-id="access-message">
-                        <Icon name="lock open" />
-                        <Message.Content>
-                          <Message.Header>{i18next.t("Public")}</Message.Header>
-                          {i18next.t("The record and files are publicly accessible.")}
-                        </Message.Content>
-                      </Message>
-                    </Card.Content>
-                  </Card>
-                  <Card>
-                    <Card.Content>
-                      <DeleteButton fluid isPublished={record.is_published} />
-                    </Card.Content>
-                  </Card>
-                </Sticky>
-              </Grid.Column>
-            </Ref>
+                      <Grid.Column width={16} className="pt-10">
+                        <PublishButton fluid record={record} />
+                      </Grid.Column>
+                    </Grid>
+                  </Card.Content>
+                </Card>
+                <Card className="access-right">
+                  <Card.Content>
+                    <Card.Header>
+                      <label
+                        className="field-label-class invenio-field-label"
+                        htmlFor="access"
+                      >
+                        <Icon name="shield" />
+                        {i18next.t("Visibility")}
+                        <Popup
+                          trigger={<Icon className="ml-10" name="info circle" />}
+                          content={i18next.t("OER-uploads are always public.")}
+                        />
+                      </label>
+                    </Card.Header>
+                  </Card.Content>
+                  <Card.Content>
+                    <Message icon positive visible data-test-id="access-message">
+                      <Icon name="lock open" />
+                      <Message.Content>
+                        <Message.Header>{i18next.t("Public")}</Message.Header>
+                        {i18next.t("The record and files are publicly accessible.")}
+                      </Message.Content>
+                    </Message>
+                  </Card.Content>
+                </Card>
+                <Card>
+                  <Card.Content>
+                    <DeleteButton fluid isPublished={record.is_published} />
+                  </Card.Content>
+                </Card>
+              </Sticky>
+            </Grid.Column>
           </Grid>
         </Container>
       </DepositFormApp>
