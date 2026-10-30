@@ -1,36 +1,34 @@
-..
-    Copyright (C) 2020-2026 Graz University of Technology.
+<!--
+SPDX-FileCopyrightText: 2020-2026 Graz University of Technology.
+SPDX-License-Identifier: MIT
+-->
 
-    invenio-records-lom is free software; you can redistribute it and/or modify it
-    under the terms of the MIT License; see LICENSE file for more details.
+# Changes
 
-Changes
-=======
-
-Version v0.23.2 (released 2026-10-20)
+## Version v0.23.2 (released 2026-10-20)
 
 - fix(ruff): ignore rule
 - chore(types): improve types
 - fix(comp): add attributes
 
-Version v0.23.1 (released 2026-09-17)
+## Version v0.23.1 (released 2026-09-17)
 
 - fix: update citation styles
 - chore(linter): apply new ruff
 
-Version v0.23.0 (released 2026-06-02)
+## Version v0.23.0 (released 2026-06-02)
 
 - feat(uploads): add LOM_UPLOADS_TEMPLATE hook
 
-Version v0.22.0 (released 2026-06-01)
+## Version v0.22.0 (released 2026-06-01)
 
 - feat(search): add LOM_SEARCH_NAV_TEMPLATE config
 
-Version v0.21.1 (released 2026-05-20)
+## Version v0.21.1 (released 2026-05-20)
 
 - fix(ui): max storage size wrong
 
-Version v0.21.0 (released 2026-05-11)
+## Version v0.21.0 (released 2026-05-11)
 
 - feat(i8n): update German translations
 - feat(template): use configuration variables
@@ -40,22 +38,22 @@ Version v0.21.0 (released 2026-05-11)
 - feat(oai): DublinCore XML serializer for OAI
 - fix(ext): invenio.cfg takes precedence
 
-Version v0.20.3 (released 2026-04-28)
+## Version v0.20.3 (released 2026-04-28)
 
 - fix(compat): citation generation needs links
 
-Version v0.20.2 (released 2026-04-28)
+## Version v0.20.2 (released 2026-04-28)
 
 - fix(compat): role needs configuration
 - chore(linter): add ignore rules for ruff
 - fix(compat): add quota feature
 
-Version v0.20.1 (released 2026-04-14)
+## Version v0.20.1 (released 2026-04-14)
 
 - fix(landingpage): correct link typo
 - fix(doi): add missing endpoint link
 
-Version v0.20.0 (released 2026-02-08)
+## Version v0.20.0 (released 2026-02-08)
 
 - chore(mypy): resolve error/warning
 - chore(setup): bump dependencies
@@ -65,56 +63,49 @@ Version v0.20.0 (released 2026-02-08)
 - fix(chore): DeprecationWarning stdlib
 - refactor(schema): remove usage of object_key
 
-Version v0.19.4 (released 2025-09-08)
+## Version v0.19.4 (released 2025-09-08)
 
 - fix: not caught exception
 - fix(metadata): wrong return type
 
-Version v0.19.3 (release 2025-07-21)
+## Version v0.19.3 (release 2025-07-21)
 
 - fix: multipart compatibility
 
-
-Version v0.19.2 (release 2025-06-18)
+## Version v0.19.2 (release 2025-06-18)
 
 - fix(ruff): add noqas
 - fix: correct learningresource type
 - utils: add return value
 
-
-Version v0.19.1 (release 2025-06-17)
+## Version v0.19.1 (release 2025-06-17)
 
 - fix: record vs record_ui
 
-
-Version v0.19.0 (release 2025-06-14)
+## Version v0.19.0 (release 2025-06-14)
 
 - setup: upgrade invenio-rdm-records
 - setup: add python3.13 support
 
-
-Version v0.18.4 (release 2025-06-06)
+## Version v0.18.4 (release 2025-06-06)
 
 - setup: upper pin was to strict
 
-
-Version v0.18.3 (release 2025-06-06)
+## Version v0.18.3 (release 2025-06-06)
 
 - fix: tests caused by new config loading
 - setup: tmp pin
 - fix: configuration load
 - fix: function already in app_context
 
-
-Version v0.18.2 (release 2025-05-23)
+## Version v0.18.2 (release 2025-05-23)
 
 - fix: setuptools require underscores instead of dashes
 - fix: api change click >= 8.2
 - rdm: compatibility
 - fix(tests): add configuration
 
-
-Version v0.18.1 (release 2025-03-18)
+## Version v0.18.1 (release 2025-03-18)
 
 - setup: increase minimal dependencies
 - fix: the api of the PIDField has changed
@@ -129,15 +120,13 @@ Version v0.18.1 (release 2025-03-18)
 - landing-page: add citation sidecard
 - fix: quibbles from ruff 0.8.0
 
-
-Version v0.18.0 (release 2024-11-25)
+## Version v0.18.0 (release 2024-11-25)
 
 - fix: don't pass undefined to controlled component
 - fix: make learningresourcetype consistently a list
 - metadata: allow url in append_learningresourcetype
 
-
-Version v0.17.2 (release 2024-11-14)
+## Version v0.17.2 (release 2024-11-14)
 
 - views: ignore extraneous kwargs
 - fix: change redirect codes to 302
@@ -149,16 +138,14 @@ Version v0.17.2 (release 2024-11-14)
 - fix: DOI resolution
 - fix: get `UTC` timezone via correct attribute-name
 
-
-Version v0.17.1 (release 2024-10-28)
+## Version v0.17.1 (release 2024-10-28)
 
 - fix: accept `filename`-kwarg on file-download
 - fix: import from correct path
 - fix: build resource-configs
 - fix: re-align `PreviewFile` with `invenio-app-rdm`
 
-
-Version v0.17.0 (release 2024-10-26)
+## Version v0.17.0 (release 2024-10-26)
 
 - jinja: use invenio's file_list macro over our copy
 - ui: add button for downloading all files
@@ -193,9 +180,7 @@ Version v0.17.0 (release 2024-10-26)
 - fix: remove `()` from `@pytest.fixture()`
 - permission: change inheritance
 
-
-
-Version v0.16.0 (release 2024-07-05)
+## Version v0.16.0 (release 2024-07-05)
 
 - upgrade: add script to upgrade parent
 - metadata: add method get_courses
@@ -207,21 +192,18 @@ Version v0.16.0 (release 2024-07-05)
 - services: move add identifier to components
 - setup: move to python3.12 only
 
-
-Version v0.15.2 (release 2024-06-18)
+## Version v0.15.2 (release 2024-06-18)
 
 - oai: add missing function for getrecords
 - oai: fix doi not exists
 - fix: import deposit components from rdm
 
-
-Version v0.15.1 (release 2024-06-13)
+## Version v0.15.1 (release 2024-06-13)
 
 - fix: typo on attribute name
 - add CC0 to license selection
 
-
-Version v0.15.0 (release 2024-05-29)
+## Version v0.15.0 (release 2024-05-29)
 
 - fix: update permission for manage
 - if the entity is not a list what it should be it will be handled
@@ -229,68 +211,58 @@ Version v0.15.0 (release 2024-05-29)
 - the LOMMetadata handles now only the metadata
 - add a function to check about duplicate entries
 
-Version v0.14.0 (release 2024-05-06)
+## Version v0.14.0 (release 2024-05-06)
 
 - modification: add statistic for a record
 
-
-Version v0.13.5 (release 2024-04-23)
+## Version v0.13.5 (release 2024-04-23)
 
 - oai: add date to contribute
 - fix: vcard-serialization
 
-
-Version v0.13.4 (release 2024-03-08)
+## Version v0.13.4 (release 2024-03-08)
 
 - deps: add missing dependency
 
-
-Version v0.13.3 (release 2024-03-08)
+## Version v0.13.3 (release 2024-03-08)
 
 - fix: oai-pmh no centity
 - configure permissions newly added to invenio
 
-
-Version v0.13.2 (release 2024-02-27)
+## Version v0.13.2 (release 2024-02-27)
 
 - mark user-visible errors for translation
 - replace deprecated importlib.resources.open_text
 - sanitize data coming from upload-page
 
-
-Version v0.13.1 (release 2024-02-13)
+## Version v0.13.1 (release 2024-02-13)
 
 - fix: method returns valid value
 
-
-Version v0.13.0 (release 2024-02-12)
+## Version v0.13.0 (release 2024-02-12)
 
 - oai: rebuild schema to dump
 - tests: update run-tests to invenio standard
 - refactore: serializers to rdm-records structure
 - black: fix formating v24.1.1
 
-
-Version v0.12.3 (release 2024-01-11)
+## Version v0.12.3 (release 2024-01-11)
 
 - fix: indexer needs queue name
 
-
-Version v0.12.2 (release 2024-01-07)
+## Version v0.12.2 (release 2024-01-07)
 
 - fix: rebuild-index not working
 - setup: add support for python3.10 and 3.11
 - wording: change
 
-
-Version v0.12.1 (release 2023-12-01)
+## Version v0.12.1 (release 2023-12-01)
 
 - standardize rights-URLs passed to `LOMMetadata`
 - alembic: add deletion_status field
 - modification: alembic scripts
 
-
-Version v0.12.0 (release 2023-11-09)
+## Version v0.12.0 (release 2023-11-09)
 
 - setup: temporary remove python3.10
 - fix: errors (mostly pylint)
@@ -321,13 +293,11 @@ Version v0.12.0 (release 2023-11-09)
 - clean up file headers
 - clean up config files
 
-
-Version v0.11.1 (release 2023-08-03)
+## Version v0.11.1 (release 2023-08-03)
 
 - fix: licenses url with slash as last character
 
-
-Version v0.11.0 (release 2023-08-03)
+## Version v0.11.0 (release 2023-08-03)
 
 - fix: license facets trailing slash
 - fix: translation was configured wrong
@@ -336,13 +306,11 @@ Version v0.11.0 (release 2023-08-03)
 - fix: deposit edit needs permissions
 - ui: add edit-button of records
 
-
-Version v0.10.1 (release 2023-07-25)
+## Version v0.10.1 (release 2023-07-25)
 
 - fix: use save key access
 
-
-Version v0.10.0 (release 2023-07-25)
+## Version v0.10.0 (release 2023-07-25)
 
 - translation: update
 - refactor:
@@ -357,8 +325,7 @@ Version v0.10.0 (release 2023-07-25)
 - clean up various upload-page related things
 - implement vcard and use it for OAI-PMH-output
 
-
-Version v0.9.0 (release 2023-06-01)
+## Version v0.9.0 (release 2023-06-01)
 
 - add `format` and `resource-type` to upload-page
 - add schema for cleaner OAI-PMH-output
@@ -367,41 +334,34 @@ Version v0.9.0 (release 2023-06-01)
 - implement and configure permissions
 - fix image-preview by implementing iiif-resource
 
-
-Version v0.8.1 (release 2023-04-28)
+## Version v0.8.1 (release 2023-04-28)
 
 - upload: require license permission
 
-
-Version v0.8.0 (release 2023-04-20)
+## Version v0.8.0 (release 2023-04-20)
 
 - make compatible with invenio v11
 - support DOI, publishing, deleting
 
-
-Version v0.7.2 (release 2023-03-15)
+## Version v0.7.2 (release 2023-03-15)
 
 - fix file-upload
 
-
-Version v0.7.1 (release 2023-03-13)
+## Version v0.7.1 (release 2023-03-13)
 
 - add .js-files that were erroneously missing from last PR
 
-
-Version v0.7.0 (release 2023-03-13)
+## Version v0.7.0 (release 2023-03-13)
 
 - global: fix various problems
 - finish preview of deposit for test-server
 
-
-Version v0.6.1 (release 2023-02-01)
+## Version v0.6.1 (release 2023-02-01)
 
 - fix: pylint errors
 - fix: syntax error in setup.cfg
 
-
-Version v0.6.0 (release 2022-10-14)
+## Version v0.6.0 (release 2022-10-14)
 
 - global: migrate to reusable workflows for publish
 - typo: fixed wrong position of .
@@ -411,28 +371,24 @@ Version v0.6.0 (release 2022-10-14)
 - global: replace elasticsearch7 with opensearch2
 - setup: update dependencies
 
-
-Version v0.5.2 (release 2022-09-27)
+## Version v0.5.2 (release 2022-09-27)
 
 - fix: javascript dependencies
 
-
-Version v0.5.1 (release 2022-09-27)
+## Version v0.5.1 (release 2022-09-27)
 
 - fix: pylint errors
 - fix: ConfigurationMixin changed location
 - global: pin flake8
 - global: increase version of invenio-search
 
-
-Version v0.5.0 (release 2022-07-29)
+## Version v0.5.0 (release 2022-07-29)
 
 - fix missing schema for type link
 - add the search feature
 - update UI-serialization and landing page
 
-
-Version v0.3.1 (release 2022-06-01)
+## Version v0.3.1 (release 2022-06-01)
 
 - update publish action
 - fix combined fixes

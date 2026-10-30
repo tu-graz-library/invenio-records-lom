@@ -1,11 +1,6 @@
-# -*- coding: utf-8 -*-
-#
-# Copyright (C) 2020-2025 Graz University of Technology.
-# Copyright (C) 2026 BOKU University.
-#
-# invenio-records-lom is free software; you can redistribute it and/or modify it
-# under the terms of the MIT License; see LICENSE file for more details.
-
+# SPDX-FileCopyrightText: 2020-2026 Graz University of Technology.
+# SPDX-FileCopyrightText: 2026 BOKU University
+# SPDX-License-Identifier: MIT
 
 """Flask extension for invenio-records-lom."""
 

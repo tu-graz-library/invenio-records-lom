@@ -1,13 +1,8 @@
-# -*- coding: utf-8 -*-
-#
-# Copyright (C) 2021-2024 Graz University of Technology.
-#
-# invenio-records-lom is free software; you can redistribute it and/or modify it
-# under the terms of the MIT License; see LICENSE file for more details.
+# SPDX-FileCopyrightText: 2021-2026 Graz University of Technology.
+# SPDX-License-Identifier: MIT
 
 """SQL-table definitions for LOM module."""
 
-from invenio_communities.records.records.models import CommunityRelationMixin
 from invenio_db import db
 from invenio_drafts_resources.records import (
     DraftMetadataBase,
@@ -15,6 +10,7 @@ from invenio_drafts_resources.records import (
     ParentRecordStateMixin,
 )
 from invenio_files_rest.models import Bucket
+from invenio_rdm_records.records.models import CommunityRelationMixin
 from invenio_rdm_records.records.systemfields.deletion_status import (
     RecordDeletionStatusEnum,
 )

@@ -1,6 +1,147 @@
+# SPDX-FileCopyrightText: 2020-2026 Graz University of Technology.
+# SPDX-License-Identifier: MIT
+
+[project]
+name = "invenio-records-lom"
+description = "Invenio data model for Learning Object Metadata."
+readme = "README.md"
+keywords = ["invenio", "record", "LOM learning object metadata"]
+license = "MIT"
+authors = [{ name = "Graz University of Technology." }]
+urls = {Repository = "https://github.com/tu-graz-library/invenio-records-lom" }
+classifiers = [
+    "Programming Language :: Python :: 3.14",
+    "Development Status :: 5 - Production/Stable",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dynamic = ["version"]
+
+dependencies = [
+    "invenio-previewer>=4.0.0",
+    "invenio-rdm-records>=24.0.0",
+    "invenio-stats>=6.0.0",
+    "marshmallow>=3.24.0",
+]
+
+
+[project.entry-points."flask.commands"]
+lom = "invenio_records_lom.cli:lom"
+
+[project.entry-points."invenio_assets.webpack"]
+invenio_records_lom_theme = "invenio_records_lom.ui.theme.webpack:theme"
+
+[project.entry-points."invenio_base.api_apps"]
+invenio_records_lom = "invenio_records_lom:InvenioRecordsLOM"
+
+[project.entry-points."invenio_base.api_blueprints"]
+invenio_records_lom_draft_files = "invenio_records_lom.views:create_draft_files_bp"
+invenio_records_lom_iiif = "invenio_records_lom.views:create_iiif_bp"
+invenio_records_lom_record_files = "invenio_records_lom.views:create_record_files_bp"
+invenio_records_lom_records = "invenio_records_lom.views:create_records_bp"
+invenio_records_lom_resource_registerer = "invenio_records_lom.views:blueprint"
+
+[project.entry-points."invenio_base.api_finalize_app"]
+invenio_records_lom = "invenio_records_lom.ext:api_finalize_app"
+
+[project.entry-points."invenio_base.apps"]
+invenio_records_lom = "invenio_records_lom:InvenioRecordsLOM"
+
+[project.entry-points."invenio_base.blueprints"]
+invenio_records_lom_ui = "invenio_records_lom.ui:create_blueprint"
+invenio_records_lom_resource_registerer = "invenio_records_lom.views:blueprint"
+
+[project.entry-points."invenio_base.finalize_app"]
+invenio_records_lom = "invenio_records_lom.ext:finalize_app"
+
+[project.entry-points."invenio_celery.tasks"]
+invenio_records_lom_tasks = "invenio_records_lom.fixtures.tasks"
+
+[project.entry-points."invenio_db.alembic"]
+invenio_records_lom = "invenio_records_lom:alembic"
+
+[project.entry-points."invenio_db.models"]
+invenio_records_lom = "invenio_records_lom.records.models"
+
+[project.entry-points."invenio_i18n.translations"]
+messages = "invenio_records_lom"
+
+[project.entry-points."invenio_jsonschemas.schemas"]
+invenio_records_lom = "invenio_records_lom.records.jsonschemas"
+
+[project.entry-points."invenio_search.mappings"]
+lomrecords = "invenio_records_lom.records.mappings"
+
+[project.optional-dependencies]
+tests = [
+    "invenio-app>=3.0.0",
+    "invenio-cache>=3.0.0",
+    "invenio-db>=2.2.0",
+    "invenio-i18n>=3.0.0",
+    "invenio-search[opensearch2]>=3.0.0",
+    "pytest-black>=0.6.0",
+    "pytest-invenio>=4.0.0",
+    "pytest-mock>=1.6.0",
+    "ruff>=0.4.4",
+]
+
 [build-system]
-requires = ["setuptools", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.babel]
+[tool.babel.compile_catalog]
+directory = "invenio_records_lom/translations/"
+
+[tool.babel.extract_messages]
+copyright_holder = "Graz University of Technology."
+msgid_bugs_address = "repository-support@tugraz.at"
+mapping_file = "pyproject.toml"
+output_file = "invenio_records_lom/translations/messages.pot"
+add_comments = "NOTE"
+
+[tool.babel.init_catalog]
+input_file = "invenio_records_lom/translations/messages.pot"
+output_dir = "invenio_records_lom/translations/"
+
+[[tool.babel.mappings]]
+method = "javascript"
+pattern = "**.js"
+encoding = "utf-8"
+extract_messages = "$._, jQuery._"
+
+[[tool.babel.mappings]]
+method = "python"
+pattern = "**.py"
+encoding = "utf-8"
+
+[[tool.babel.mappings]]
+method = "jinja2"
+pattern = "**/templates/**.html"
+encoding = "utf-8"
+
+[tool.hatch.version]
+path = "invenio_records_lom/__init__.py"
+
+[tool.hatch.build]
+artifacts = [
+  "*.mo",
+]
+exclude = [
+  ".github/**",
+  "tests/**",
+  ".gitignore",
+  "run-tests.sh",
+]
+
+[tool.hatch.build.targets.sdist]
+include = ["/invenio_records_lom"]
+
+[tool.isort]
+profile = "black"
+
 
 [tool.ruff]
 exclude = ["docs"]
@@ -32,3 +173,10 @@ ignore = [
   "SLF001",
 
 ]
+
+[tool.pytest.ini_options]
+addopts = "--black --cov=invenio_records_lom --cov-report=term-missing"
+testpaths = "tests invenio_records_lom"
+
+[tool.ruff.lint.flake8-copyright]
+notice-rgx = "(?i)# SPDX-FileCopyrightText:\\s\\d{4}(-(\\d{4}|present))*"
