@@ -5,6 +5,11 @@ SPDX-License-Identifier: MIT
 
 # Changes
 
+## Version v0.24.0 (released 2026-11-03)
+
+- chore: refactore
+- chore(ui): forward compatibility to react-18
+
 ## Version v0.23.2 (released 2026-10-20)
 
 - fix(ruff): ignore rule
